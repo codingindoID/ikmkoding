@@ -25,7 +25,8 @@ class Kuis extends MY_Controller {
 		}else{
 			$data['soal'] 		= $this->M_kuis->getSoal()->result();
 			$data['noreg'] 		= $responden;
-			$this->load->view('proses',$data);
+			//$this->load->view('proses',$data);
+			$this->load->view('proses', $data);
 		}
 		
 	}

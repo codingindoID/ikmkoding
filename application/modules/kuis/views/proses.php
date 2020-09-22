@@ -12,7 +12,7 @@
 </head>
 <body>
 	<div class="container">
-		<form action="kuis/hasil" method="post" accept-charset="utf-8" class="mt-4">
+		<form action="<?php echo site_url('kuis/hasil') ?>" method="post" accept-charset="utf-8" class="mt-4">
 			<input type="hidden" name="noreg" value="<?php echo $noreg ?>">
 			<?php 
 			$no = 1;
