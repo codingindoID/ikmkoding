@@ -1,6 +1,3 @@
-
-
-
 var base = document.getElementById('base').value;
 var nsoal = document.getElementById('n_soal').value;
 
