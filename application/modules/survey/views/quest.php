@@ -34,7 +34,7 @@
               <div class="col">
                 <div class="form-check form-check-inline">
                   <input required class="form-check-input" type="radio" name="pilihan" id="c1" value="a">
-                  <label class="form-check-label" for="inlineRadio1" id="a">a</label>
+                  <label class="form-check-label" for="inlineRadio1" id="a"><?php echo $soal[0]->a ?></label>
                 </div>
               </div>
             </div>
@@ -42,7 +42,7 @@
               <div class="col">
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="pilihan" id="c2" value="b">
-                  <label class="form-check-label" for="inlineRadio1" id="b">b</label>
+                  <label class="form-check-label" for="inlineRadio1" id="b"><?php echo $soal[0]->b ?></label>
                 </div>
               </div>
             </div>
@@ -50,7 +50,7 @@
               <div class="col">
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="pilihan" id="c3" value="c">
-                  <label class="form-check-label" for="inlineRadio1" id="c">c</label>
+                  <label class="form-check-label" for="inlineRadio1" id="c"><?php echo $soal[0]->c ?></label>
                 </div>
               </div>
             </div>
@@ -58,7 +58,7 @@
               <div class="col">
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="pilihan" id="c4" value="d">
-                  <label class="form-check-label" for="inlineRadio1" id="d">d</label>
+                  <label class="form-check-label" for="inlineRadio1" id="d"><?php echo $soal[0]->d ?></label>
                 </div>
               </div>
             </div>
