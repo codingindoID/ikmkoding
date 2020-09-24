@@ -2,11 +2,11 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Survey extends MY_Controller {
-public function __construct()
-{
-	parent::__construct();
-	$this->load->model('M_survey');
-}
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('M_survey');
+	}
 	public function index()
 	{
 		$this->load->view('index');
@@ -64,6 +64,40 @@ public function __construct()
 				'hasil' => 'gagal'
 			));
 		}
+	}
+
+	/*admin page*/
+	function admin()
+	{
+		$this->load->view('sesi/header');
+		$this->load->view('admin/auth');
+		$this->load->view('sesi/script');
+	}	
+
+	function auth()
+	{
+		$data = [
+			'username'		=> $this->input->post('username') ,
+			'password'		=> md5($this->input->post('password')),
+		];
+
+		$cek = $this->M_survey->auth($data)->num_rows();
+		if($cek>= 1){
+			$user = $this->M_survey->auth($data)->row();
+			$this->session->set_userdata('ses_user',$user->username);
+			$this->session->set_userdata('ses_id',$user->id_admin);
+			redirect('survey','refresh');
+		}
+		else{
+			$this->session->set_flashdata('error', 'username atau password salah');
+			redirect('survey/admin','refresh');
+		}
+	}
+
+
+	function errorpage()
+	{
+		$this->load->view('404');
 	}
 
 }

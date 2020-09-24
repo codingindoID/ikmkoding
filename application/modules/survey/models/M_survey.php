@@ -23,6 +23,12 @@ class M_survey extends CI_Model {
 		$this->db->insert('tb_hasil', $data);
 	}
 
+	/*admin*/
+	function auth($where)
+	{
+		return $this->db->get_where('admin', $where);
+	}
+
 }
 
 /* End of file M_survey.php */
