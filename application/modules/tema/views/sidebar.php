@@ -15,7 +15,7 @@
       </div>
     </div>
     <!-- /.search form -->
-    <form action="<?php echo site_url('search') ?>" method="post" class="sidebar-form">
+    <!-- <form action="<?php echo site_url('search') ?>" method="post" class="sidebar-form">
       <div class="input-group">
         <input type="text" name="cari" class="form-control" placeholder="cari kunjungan. . .">
         <span class="input-group-btn">
@@ -23,7 +23,7 @@
           </button>
         </span>
       </div>
-    </form>
+    </form> -->
     <!-- sidebar menu: : style can be found in sidebar.less -->
     <ul class="sidebar-menu" data-widget="tree">
       <li class="header" style="color:black">MENU UTAMA</li>
