@@ -52,5 +52,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] 	= 'survey';
 $route['404_override'] 			= 'survey/errorpage';
 $route['satpam'] 				= 'survey/admin';
-$route['pawang'] 				= 'admin/dashboard';
+$route['pawang'] 				= 'admin/index';
 $route['translate_uri_dashes'] 	= FALSE;
