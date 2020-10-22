@@ -3,6 +3,7 @@ var nsoal = document.getElementById('n_soal').value;
 
 /*button*/
 var lanjut = document.getElementById('lanjut');
+var reset  = document.getElementById('reset');
 var selesai = document.getElementById('selesai');
 
 /*deklarasi variable*/
@@ -21,6 +22,13 @@ lanjut.addEventListener('click', function(){
 	jawaban();
 	soal();
 	
+}, false);
+
+reset.addEventListener('click', function(){
+	var result = confirm('Anda Akan Me-reset Jawaban Anda? Jawaban Sebelumnya Akan Dihapus Dari..');
+	if (result==true) {
+		location.href = base+'survey/reset/'+idreg.value;
+	}
 }, false);
 
 
@@ -53,7 +61,7 @@ function soal(){
 			confirmButtonText: 'Tutup'
 		}).then((result) => {
 			if (result.isConfirmed) {
-				location.href = "index";
+				location.href = base+"survey/upload_jawaban/"+idreg.value;
 			}
 		})
 
@@ -70,7 +78,7 @@ function jawaban(){
 	}
 
 	$.ajax({
-		url: base+'/tes2/jawaban',
+		url: base+'/survey/jawaban',
 		type: 'post',
 		dataType: 'json',
 		data: data,

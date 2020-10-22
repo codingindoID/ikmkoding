@@ -11,8 +11,7 @@
       <nav class="nav-menu d-none d-lg-block">
         <ul>
           <li class="active"><a href="<?php echo site_url().'survey' ?>">Home</a></li>
-          <li><a href="#counts">Presentase</a></li>
-          <li><a href="#statistik">Statistik</a></li>
+          <li><a href="#counts">Statistik</a></li>
           <li><a href="#details">Info</a></li>
           <li><a href="#faq">FAQ</a></li>
           <li><a href="#contact">Contact</a></li>

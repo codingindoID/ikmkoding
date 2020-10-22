@@ -18,9 +18,16 @@ class M_survey extends CI_Model {
 		return $this->db->get_where('tb_hasil', $where);
 	}
 
-	function save($data)
+	function save($table,$data)
 	{
-		$this->db->insert('tb_hasil', $data);
+		$this->db->insert($table,$data);
+	}
+
+	function get_responden()
+	{
+		$this->db->distinct();
+		$this->db->select('id_responden');
+		return $this->db->get('tb_hasil')->num_rows();
 	}
 
 	/*admin*/

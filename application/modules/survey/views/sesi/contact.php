@@ -1,9 +1,9 @@
     <section id="contact" class="contact">
       <div class="container">
 
-        <div class="section-title" data-aos="fade-up">
-          <h2>Contact</h2>
-          <p>Contact Us</p>
+       <div class="section-title" data-aos="fade-up">
+          <h2>MPP Kabupaten Jepara</h2>
+          <p>Please Login</p>
         </div>
 
         <div class="row">
@@ -12,8 +12,8 @@
             <div class="info">
               <div class="address">
                 <i class="icofont-google-map"></i>
-                <h4>Location:</h4>
-                <p>A108 Adam Street, New York, NY 535022</p>
+                <h4>Alamat:</h4>
+                <p>Jl. Kartini No. 1 Jepara</p>
               </div>
 
               <div class="email">
@@ -24,13 +24,14 @@
 
               <div class="phone">
                 <i class="icofont-phone"></i>
-                <h4>Call:</h4>
+                <h4>telp:</h4>
                 <p>+1 5589 55488 55s</p>
               </div>
 
             </div>
 
           </div>
+
 
           <div class="col-lg-8 mt-5 mt-lg-0" data-aos="fade-left" data-aos-delay="200">
 

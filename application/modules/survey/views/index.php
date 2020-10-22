@@ -7,6 +7,7 @@
 
   <main id="main">
 <?php $this->load->view('sesi/count') ?>
+<?php $this->load->view('sesi/presentase_pie') ?>
 <?php $this->load->view('sesi/statistik') ?>
 <?php $this->load->view('sesi/detil') ?>
 <?php $this->load->view('sesi/faq') ?>

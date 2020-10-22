@@ -13,6 +13,13 @@
     margin-right: 50px;
     width: 150px;
     margin-top: 3%;
+  } 
+
+  #reset{
+    margin-right: 10px;
+    width: 150px;
+    color: white;
+    margin-top: 3%;
   }
 
 </style>
@@ -65,6 +72,7 @@
           </ul>
           <p>
             <button id="lanjut" class="btn btn-success float-right">Selanjutnya  <i class="fa fa-arrow-circle-right"></i></button>
+            <button id="reset" class="btn btn-warning">Reset  <i class="fa fa-refresh"></i></button>
           </p>
         </div>
         <div class="col-md-4" data-aos="fade-right">

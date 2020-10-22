@@ -11,7 +11,7 @@
                 </button>
               </div>
             <?php endif ?>
-            <form action="<?php echo site_url('survey/pertanyaan') ?>" method="post">
+            <form action="<?php echo site_url('survey/cek_user') ?>" method="post">
              <h1>MPP <span>Kabupaten Jepara</span></h1>
              <div class="form-group">
               <input type="text" class="form-control" name="noreg" id="noreg" placeholder="NOMOR REGISTRASI"/>
