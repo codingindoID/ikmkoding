@@ -1,6 +1,6 @@
     <section id="details" class="details">
       <div class="container">
-
+<!-- 
         <div class="row content">
           <div class="col-md-4" data-aos="fade-right">
             <img src="<?php echo base_url().'assets/bot/'?>img/details-1.png" class="img-fluid" alt="">
@@ -21,7 +21,7 @@
               Voluptas nisi in quia excepturi nihil voluptas nam et ut. Expedita omnis eum consequatur non. Sed in asperiores aut repellendus. Error quisquam ab maiores. Quibusdam sit in officia
             </p>
           </div>
-        </div>
+        </div> -->
 
         <div class="row content">
           <div class="col-md-4 order-1 order-md-2" data-aos="fade-left">

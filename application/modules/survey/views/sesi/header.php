@@ -26,4 +26,5 @@
 
   <!-- Template Main CSS File -->
   <link href="<?php echo base_url().'assets/bot/'?>css/style.css" rel="stylesheet">
+  <script src="<?php echo base_url().'assets/js/'?>jquery-3.1.1.min.js"></script>
 </head>

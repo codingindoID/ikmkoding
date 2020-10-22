@@ -1,11 +1,11 @@
     <section id="features" class="features">
       <div class="container">
 
-        <div class="section-title" data-aos="fade-up">
+<!--         <div class="section-title" data-aos="fade-up">
           <h2>Features</h2>
           <p>Check The Features</p>
         </div>
-
+ -->
         <div class="row" data-aos="fade-left">
           <div class="col-lg-3 col-md-4">
             <div class="icon-box" data-aos="zoom-in" data-aos-delay="50">
