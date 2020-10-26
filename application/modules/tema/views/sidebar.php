@@ -14,34 +14,27 @@
 
       </div>
     </div>
-    <!-- /.search form -->
-    <!-- <form action="<?php echo site_url('search') ?>" method="post" class="sidebar-form">
-      <div class="input-group">
-        <input type="text" name="cari" class="form-control" placeholder="cari kunjungan. . .">
-        <span class="input-group-btn">
-          <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-          </button>
-        </span>
-      </div>
-    </form> -->
-    <!-- sidebar menu: : style can be found in sidebar.less -->
     <ul class="sidebar-menu" data-widget="tree">
       <li class="header" style="color:black">MENU UTAMA</li>
       <li>
-        <a href="#">
+        <a href="<?php echo site_url('admin') ?>">
           <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+        </a>
+        <a href="<?php echo site_url() ?>">
+          <i class="fa fa-mail-forward "></i> <span>FrontEnd</span>
         </a>
       </li>
       <li class="treeview">
         <a href="#">
-          <i class="fa fa-dashboard fa-black"></i>
+          <i class="fa fa-tasks fa-black"></i>
           <span>Admin</span>
         </a>
         <ul id="menu_surat" class="treeview-menu">
-          <li><a href="#"><i class="fa  fa-exchange"></i>Pertanyaan</a></li>
-          <li><a href="#"><i class="fa fa-filter"></i>Report</a></li>
+          <li><a href="<?php echo site_url('admin/pertanyaan') ?>"><i class="fa  fa-edit"></i>Pertanyaan</a></li>
+          <li><a href="<?php echo site_url('admin/publish') ?>"><i class="fa fa-send"></i>Publish</a></li>
+           <li><a href="<?php echo site_url('admin/saran') ?>"><i class="fa fa-file"></i>Kritik dan Saran</a></li>
         </ul>
       </li>
-  </section>
-  <!-- /.sidebar -->
-</aside>
+    </section>
+    <!-- /.sidebar -->
+  </aside>

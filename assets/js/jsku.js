@@ -53,20 +53,12 @@ function soal(){
 		});
 	})
 	.fail(function(data) {
-		Swal.fire({
-			title: 'Terimakasih',
-			text: "Anda Sudah Berpartisipasi,.",
-			icon: 'success',
-			confirmButtonColor: '#3085d6',
-			confirmButtonText: 'Tutup'
-		}).then((result) => {
-			if (result.isConfirmed) {
-				location.href = base+"survey/upload_jawaban/"+idreg.value;
-			}
-		})
-
+		location.href = base+"survey/saran/"+idreg.value;
 	});
 }
+
+/*upload saran*/
+
 
 /*post jawaban*/
 function jawaban(){

@@ -17,27 +17,54 @@ class Survey extends MY_Controller {
 			'pengunjung' 	=> $this->M_survey->get_responden(),
 			'hasil'			=>  $this->_get_hasil()
 		];
+		//menentukan tingkat kepuasan
+		$kepuasan = $data['kepuasan'];
+		if ($kepuasan > 81.25 && $kepuasan < 100 ) {
+			$index = "Sangat Baik";
+		}else if($kepuasan > 62.50 && $kepuasan < 81.26){
+			$index = 'Baik';
+		}else if($kepuasan > 43.75 && $kepuasan < 62.51){
+			$index = 'Kurang Baik';
+		} else if($kepuasan > 24.9 && $kepuasan < 43.76){
+			$index = 'Tidak Baik';
+		} else {
+			$index = null;
+		}
 
+		$data['tingkat_kepuasan'] = $index;
+		//hasilnya untuk index kepuasan per soal
 		$soal = $this->M_master->getall('tb_pertanyaan')->result();
 		$hasil = array();
+		$rata  = array();
 		$no = 1;
 		foreach ($soal as $v) {
 			$hasil[$no] = [
 				'id_soal'	=> $v->id_soal,
 				'kategori'	=> $v->kategori,
 				'soal'		=> $v->soal,
+				'sp'		=> $this->_get_rataan($v->id_soal,'d'),
+				'p'			=> $this->_get_rataan($v->id_soal,'c'),
+				'tp'		=> $this->_get_rataan($v->id_soal,'b'),
+				'kec'		=> $this->_get_rataan($v->id_soal,'a'),
 				'kepuasan'	=> $this->_get_nilai($v->id_soal)
+			];
+
+			$rata[$no] = [
+
 			];
 			$no++;
 		}
 		$data['rekap'] = $hasil;
 		$this->load->view('index',$data);
-		//echo json_encode($data);
 	}
 
 	public function cek_user()
 	{
 		$responden		= $this->input->post('noreg');
+		if ($responden == null || $responden == '') {
+			$this->session->set_flashdata('error','Nomor registrasi belum diisi');
+			redirect('survey','refresh');
+		}
 		$cek = $this->M_master->getWhere('tb_hasil',['id_responden' => $responden])->num_rows();
 		if ($cek > 0) {
 			echo "<script>alert('responden Sudah Pernah Mengisi.,.')</script>";
@@ -45,90 +72,37 @@ class Survey extends MY_Controller {
 		}
 		else
 		{
-			$this->pertanyaan($responden);
+			$data = [
+				'id_responden' 	=> $responden,
+				'pekerjaan'		=> $this->M_master->getall('tb_pekerjaan')->result(),
+				'pendidikan'	=> $this->M_master->getall('tb_pendidikan')->result()
+			];
+			$this->load->view('detil_responden', $data);
+			//$this->pertanyaan($responden);
 		}
 	}
 
-	private function _get_hasil()
+	function post_detil_responden()
 	{
-		$sangat_puas 	= $this->M_master->getWhere('tb_hasil',['jawaban' => 'd'])->num_rows();
-		$puas 		 	= $this->M_master->getWhere('tb_hasil',['jawaban' => 'c'])->num_rows();
-		$tidak_puas 	= $this->M_master->getWhere('tb_hasil',['jawaban' => 'b'])->num_rows();
-		$kecewa 		= $this->M_master->getWhere('tb_hasil',['jawaban' => 'a'])->num_rows();
-
-		$all = $sangat_puas+$puas+$tidak_puas+$kecewa;
-
-		if($all != 0)
-		{
-			$data = [
-				[
-					'name' 	=> 'sangat_puas',
-					'y'		=> intval(number_format(($sangat_puas/$all)*100,2)),
-					'color' => '#00FF00'
-				],
-				[
-					'name' 	=> 'puas',
-					'y'		=> intval(number_format(($puas/$all)*100,2)),
-					'color' => 'blue'
-				],
-				[
-					'name' 	=> 'tidak_puas',
-					'y'		=> intval(number_format(($tidak_puas/$all)*100,2)),
-					'color' => 'purple'
-				],
-				[
-					'name' 	=> 'kecewa',
-					'y'		=> intval(number_format(($kecewa/$all)*100,2)),
-					'color' => 'red'
-				]
-			];
-			return $data;
+		$data = [
+			'id_responden'	=> $this->input->post('id_responden'),
+			'nama'			=> $this->input->post('nama'),
+			'umur'			=> $this->input->post('umur'),
+			'jk'			=> $this->input->post('jk'),
+			'pekerjaan'		=> $this->input->post('pekerjaan'),
+			'pendidikan'	=> $this->input->post('pendidikan')
+		];
+		$input = $this->M_master->input('tb_detil_responden',$data);
+		if (!$input) {
+			$this->pertanyaan($this->input->post('id_responden'));
 		}
 		else
 		{
-			return null;
+			$this->session->set_flashdata('error', 'terjadi Kesalahan');
+			redirect('survey','refresh');
 		}
-
-		
 	}
 
-	private function _get_kepuasan()
-	{
-		$total = $this->M_master->getall('tb_hasil')->num_rows();
-		$soal = $this->M_master->getall('tb_pertanyaan')->num_rows();
-		$total_responden = $this->M_survey->get_responden();
-		$a = $this->M_master->getWhere('tb_hasil',['jawaban' => 'a'])->num_rows();
-		$b = $this->M_master->getWhere('tb_hasil',['jawaban' => 'b'])->num_rows();
-		$c = $this->M_master->getWhere('tb_hasil',['jawaban' => 'c'])->num_rows();
-		$d = $this->M_master->getWhere('tb_hasil',['jawaban' => 'd'])->num_rows();
-
-		if ($total_responden != 0) {
-			$kepuasan = (($d*4)+($c*3)+($b*2)+($a*1))/($total_responden*4*$soal);
-			return number_format(($kepuasan*100),2);
-		}
-
-		return 0;
-		
-		
-	}
-
-	private function _get_nilai($id)
-	{
-		$total = $this->M_master->getall('tb_hasil')->num_rows();
-		$soal = $this->M_master->getall('tb_pertanyaan')->num_rows();
-		$total_responden = $this->M_survey->get_responden();
-		$a = $this->M_master->getWhere('tb_hasil',['jawaban' => 'a','id_soal' => $id])->num_rows();
-		$b = $this->M_master->getWhere('tb_hasil',['jawaban' => 'b','id_soal' => $id])->num_rows();
-		$c = $this->M_master->getWhere('tb_hasil',['jawaban' => 'c','id_soal' => $id])->num_rows();
-		$d = $this->M_master->getWhere('tb_hasil',['jawaban' => 'd','id_soal' => $id])->num_rows();
-
-		if ($total_responden != 0) {
-			$kepuasan = (($d*4)+($c*3)+($b*2)+($a*1))/($total_responden*4);
-			return number_format(($kepuasan*100),2);
-		}
-		return 0;
-		
-	}
 
 	public function pertanyaan($responden)
 	{
@@ -184,13 +158,49 @@ class Survey extends MY_Controller {
 		}
 	}
 
-	function upload_jawaban($id)
+	function upload_jawaban()
 	{
+		$id 	= $this->input->post('id');
+		$saran 	= $this->input->post('saran');
+
+/*		echo json_encode(array(
+			'id'	=> $id, 'saran' => $saran
+		));*/
 		$jawaban = $this->M_master->getWhere('jawaban_sementara',['id_responden' => $id])->result();
+
+		$data_saran = [
+			'id_responden'	=> $id,
+			'saran'			=> $saran
+		];
 		
+		$this->M_master->input('tb_saran',$data_saran);
 		$cek 	= $this->M_survey->save_batch($jawaban);
 		if($cek){
 			$this->M_master->delete('jawaban_sementara',['id_responden' => $id]);
+			echo json_encode(array(
+				'hasil' => 'berhasil'
+			));
+		} 
+		else {
+			echo json_encode(array(
+				'hasil' => 'gagal'
+			));
+		}
+	}
+
+	function saran($id_responden)
+	{
+		$data['responden'] = $id_responden;
+		$this->load->view('saran', $data);
+	}
+
+	function publish_jawaban($id_responden)
+	{
+		$where = ['published' => '1','id_responden' => $id_responden];
+		$jawaban = $this->M_master->getWhere('tb_hasil',$where)->result();
+		
+		$publish 	= $this->M_survey->update('tb_hasil',$where,['published' => '2']);
+		if(!$publish){
 			redirect('survey','refresh');
 		} 
 		else {
@@ -206,12 +216,91 @@ class Survey extends MY_Controller {
 		redirect('survey','refresh');
 	}
 
+	//private function
+	private function _get_hasil()
+	{
+		$sangat_puas 	= $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'd'])->num_rows();
+		$puas 		 	= $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'c'])->num_rows();
+		$tidak_puas 	= $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'b'])->num_rows();
+		$kecewa 		= $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'a'])->num_rows();
+
+		$all = $sangat_puas+$puas+$tidak_puas+$kecewa;
+
+		if($all != 0)
+		{
+			$data = [
+				[
+					'name' 	=> 'sangat_puas',
+					'y'		=> floatval(number_format(($sangat_puas/$all)*100,2)),
+					'color' => '#00FF00'
+				],
+				[
+					'name' 	=> 'puas',
+					'y'		=> floatval(number_format(($puas/$all)*100,2)),
+					'color' => 'blue'
+				],
+				[
+					'name' 	=> 'tidak_puas',
+					'y'		=> floatval(number_format(($tidak_puas/$all)*100,2)),
+					'color' => 'purple'
+				],
+				[
+					'name' 	=> 'kecewa',
+					'y'		=> floatval(number_format(($kecewa/$all)*100,2)),
+					'color' => 'red'
+				]
+			];
+			return $data;
+		}
+		else
+		{
+			return null;
+		}	
+	}
+
+	private function _get_kepuasan()
+	{
+		$total = $this->M_master->getall('tb_hasil')->num_rows();
+		$soal = $this->M_master->getall('tb_pertanyaan')->num_rows();
+		$total_responden = $this->M_survey->get_responden();
+		$a = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'a'])->num_rows();
+		$b = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'b'])->num_rows();
+		$c = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'c'])->num_rows();
+		$d = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'd'])->num_rows();
+
+		if ($total_responden != 0) {
+			$kepuasan = (($d*4)+($c*3)+($b*2)+($a*1))/($total_responden*4*$soal);
+			return number_format(($kepuasan*100),2);
+		}
+		return 0;
+	}
+
+	private function _get_nilai($id)
+	{
+		$total = $this->M_master->getall('tb_hasil')->num_rows();
+		$soal = $this->M_master->getall('tb_pertanyaan')->num_rows();
+		$total_responden = $this->M_survey->get_responden();
+		$a = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'a','id_soal' => $id])->num_rows();
+		$b = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'b','id_soal' => $id])->num_rows();
+		$c = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'c','id_soal' => $id])->num_rows();
+		$d = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'd','id_soal' => $id])->num_rows();
+
+		if ($total_responden != 0) {
+			$kepuasan = (($d*4)+($c*3)+($b*2)+($a*1))/($total_responden);
+			return number_format($kepuasan,2);
+		}
+		return 0;
+	}
+
+	private function _get_rataan($id_soal,$jawaban)
+	{
+		$total_responden = $this->M_survey->get_responden();
+		$data = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => $jawaban,'id_soal' => $id_soal])->num_rows();
+		return $data;
+	}
+
 	private function _auto_reset()
 	{
-/*		$where = [
-			'HOUR(created_date) < ' => date('H'),
-			'or DAY(created_date)'  => date('d')
-		];*/
 		$this->db->where('HOUR(created_date) < ', date('H'));
 		$this->db->or_where('DAY(created_date) ', date('d'));
 		$this->db->delete('jawaban_sementara');
@@ -233,18 +322,18 @@ class Survey extends MY_Controller {
 		];
 
 		$cek = $this->M_survey->auth($data)->num_rows();
+		//echo json_encode($cek);
 		if($cek>= 1){
 			$user = $this->M_survey->auth($data)->row();
 			$this->session->set_userdata('ses_user',$user->username);
 			$this->session->set_userdata('ses_id',$user->id_admin);
-			redirect('survey','refresh');
+			redirect('admin','refresh');
 		}
 		else{
 			$this->session->set_flashdata('error', 'username atau password salah');
-			redirect('survey/admin','refresh');
+			redirect('satpam','refresh');
 		}
 	}
-
 
 	function errorpage()
 	{

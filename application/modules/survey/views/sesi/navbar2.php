@@ -3,9 +3,7 @@
     <div class="container d-flex align-items-center">
 
       <div class="logo mr-auto">
-        <h1 class="text-light"><a href="<?php echo site_url().'survey' ?>"><span>IKM</span></a></h1>
-        <!-- Uncomment below if you prefer to use an image logo -->
-        <!-- <a href="index.html"><img src="<?php echo base_url().'assets/bot/'?>img/logo.png" alt="" class="img-fluid"></a> -->
+        <h1 class="text-light"><a href="<?php echo site_url().'survey' ?>"><span>SKM</span></a></h1>
       </div>
 
       <nav class="nav-menu d-none d-lg-block">

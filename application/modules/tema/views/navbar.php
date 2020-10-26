@@ -2,9 +2,9 @@
   <!-- Logo -->
   <a href="<?php echo site_url('') ?>" class="logo">
     <!-- mini logo for sidebar mini 50x50 pixels -->
-    <span class="logo-mini"><b>IK</b>M</span>
+    <span class="logo-mini"><b>SK</b>M</span>
     <!-- logo for regular state and mobile devices -->
-    <span class="logo-lg"><b>IKM</b>-App</span>
+    <span class="logo-lg"><b>SKM</b>-App</span>
   </a>
   <!-- Header Navbar: style can be found in header.less -->
   <nav class="navbar navbar-static-top">
@@ -19,7 +19,7 @@
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
            <img src="<?php echo base_url().'assets/'?>dist/img/app.jpg" class="user-image" alt="User Image">
-           <span class="hidden-xs"><?php echo $this->session->userdata('ses_username'); ?></span>
+           <span class="hidden-xs"><?php echo $this->session->userdata('ses_user'); ?></span>
 
          </a>
          <ul class="dropdown-menu">
@@ -28,24 +28,18 @@
            <img src="<?php echo base_url().'assets/'?>dist/img/app.jpg" class="img-circle" alt="User Image">
 
            <p>
-            <?php echo $this->session->userdata('ses_nama'); ?>
-            <small>E-Monitoring</small>
+            <?php echo $this->session->userdata('ses_user'); ?>
+            <small>SKM <br> DPMPTSP Kabupaten Jepara</small>
           </p>
         </li>
         <!-- Menu Footer-->
         <li class="user-footer">
-<!--           <div class="pull-left">
-            <a href="<?php echo site_url('profile') ?>" class="btn btn-default btn-flat">Profile</a>
-          </div> -->
           <div class="pull-right">
-            <a href="<?php echo site_url('login/logout') ?>" class="btn btn-default btn-flat">Sign out</a>
+            <a href="<?php echo site_url('admin/log_out') ?>" class="btn btn-default btn-flat">Sign out</a>
           </div>
         </li>
       </ul>
     </li>
-    <!-- <li>
-      <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-    </li> -->
   </ul>
 </div>
 </nav>

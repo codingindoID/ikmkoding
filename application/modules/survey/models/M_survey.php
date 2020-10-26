@@ -23,11 +23,17 @@ class M_survey extends CI_Model {
 		$this->db->insert($table,$data);
 	}
 
+	function update($table,$where,$data)
+	{
+		$this->db->where($where);
+		$this->db->update($table, $data);
+	}
+
 	function get_responden()
 	{
 		$this->db->distinct();
 		$this->db->select('id_responden');
-		return $this->db->get('tb_hasil')->num_rows();
+		return $this->db->get_where('tb_hasil',['published' => '2'])->num_rows();
 	}
 
 	/*admin*/
