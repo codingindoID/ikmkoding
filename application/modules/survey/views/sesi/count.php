@@ -1,8 +1,3 @@
-<script src="<?php echo site_url('assets/highchart/')?>highcharts.js"></script>
-<script src="<?php echo site_url('assets/highchart/')?>highcharts-3d.js"></script>
-<script src="<?php echo site_url('assets/highchart/')?>exporting.js"></script>
-<script src="<?php echo site_url('assets/highchart/')?>export-data.js"></script>
-<script src="<?php echo site_url('assets/highchart/')?>accessibility.js"></script>
 <style>
   .boxc{
     height: 180px;

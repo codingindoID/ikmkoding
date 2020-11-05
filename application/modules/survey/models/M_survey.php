@@ -36,6 +36,19 @@ class M_survey extends CI_Model {
 		return $this->db->get_where('tb_hasil',['published' => '2'])->num_rows();
 	}
 
+	function get_responden_1()
+	{
+		$this->db->distinct();
+		$this->db->select('id_responden');
+		return $this->db->get_where('tb_hasil',['published' => '1']);
+	}
+
+	function join_get_responden_2($kolom,$param)
+	{
+		return $this->db->query('select * from (SELECT DISTINCT id_responden as a FROM tb_hasil where published = 2) as a  , tb_detil_responden  b where  a = b.id_responden and b.'.$kolom.' = "'.$param.'"');
+	}
+
+
 	/*admin*/
 	function auth($where)
 	{

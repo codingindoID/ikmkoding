@@ -5,12 +5,12 @@
     .a{
       color: white;
     }
+    @import url(https://fonts.googleapis.com/css?family=Roboto);
+
+    body {
+      font-family: Roboto, sans-serif;
+    }
   </style>
-  <script src="<?php echo site_url('assets/highchart/')?>highcharts.js"></script>
-  <script src="<?php echo site_url('assets/highchart/')?>highcharts-3d.js"></script>
-  <script src="<?php echo site_url('assets/highchart/')?>exporting.js"></script>
-  <script src="<?php echo site_url('assets/highchart/')?>export-data.js"></script>
-  <script src="<?php echo site_url('assets/highchart/')?>accessibility.js"></script>
   <!-- Main content -->
   <section class="content">
     <!-- Small boxes (Stat box) -->
@@ -82,7 +82,7 @@
     <!-- /.row -->
     <!-- Main row -->
     <div class="row">
-      <section class="col-lg-7 connectedSortable">
+      <section class="col-lg-12 connectedSortable">
 
         <!-- Table Data Pilihan -->
         <div class="box box-primary">
@@ -105,15 +105,16 @@
                 <tr style="background-color: #1f6f8b; color: white;">
                   <th class="text-center" rowspan="2" style="vertical-align: middle;">No</th>
                   <th class="text-center" width="50%" rowspan="2" style="vertical-align: middle;">Unsur Pelayanan</th>
-                  <th class="text-center" rowspan="1" style="background-color: #8bcdcd; color: white;" colspan="4">Jumlah Responden Yang Menjawab (orang)</th>
+                  <th class="text-center" rowspan="1" style="background-color: #68b0ab; color: white;" colspan="4">Jumlah Responden Yang Menjawab (orang)</th>
                   <th class="text-center" rowspan="2" style="vertical-align: middle;">Nilai Rata2</th>
                   <th class="text-center" rowspan="2" style="vertical-align: middle;">Kategori Mutu</th>
+                  <th class="text-center" rowspan="2" style="vertical-align: middle;">Prioritas</th>
                 </tr>
-                <tr style="background-color: #28abb9; color: white;">
-                 <th class="text-center" width="10%" style="vertical-align: middle;">Sangat Puas</th>
-                 <th class="text-center" width="10%" style="vertical-align: middle;" >Puas</th>
-                 <th class="text-center" width="10%" style="vertical-align: middle;">Kurang Puas</th>
-                 <th class="text-center" width="10%" style="vertical-align: middle;" >Kecewa</th>
+                <tr style="color: white;">
+                 <th class="text-center" width="10%" style="vertical-align: middle; background-color: #0278ae" >Sangat Puas</th>
+                 <th class="text-center" width="10%" style="vertical-align: middle; background-color: #01c5c4" >Puas</th>
+                 <th class="text-center" width="10%" style="vertical-align: middle; background-color: #f0a500">Kurang Puas</th>
+                 <th class="text-center" width="10%" style="vertical-align: middle; background-color: red;" >Kecewa</th>
                </tr>
              </thead>
              <tbody>
@@ -140,6 +141,7 @@
                   <td class="text-center"><?php echo $data['kec'] != null ? '<strong>'.$data['kec'].'</strong>' : '-' ?></td>
                   <td class="text-center" style="font-weight: bold;"><?php echo $data['kepuasan'] ?></td>
                   <td  class="text-center" style="font-weight: bold;"><?php echo $index ?></td>
+                  <td  class="text-center" style="font-weight: bold;"><?php echo $data['prioritas'] ?></td>
                 </tr>
               <?php endforeach ?>
             </tbody>
@@ -149,10 +151,70 @@
     </div>
     <!-- /.box -->
   </section>
-  <!-- /.Left col -->
-  <section class="col-lg-5 connectedSortable">
+
+  <section class="col-lg-6 connectedSortable">
+    <!-- solid sales graph -->
+    <div class="box box-solid">
+      <div class="box-header">
+        <i class="fa fa-th"></i>
+
+        <h3 class="box-title">Kategori Pemilih Berdasarkan Pekerjaan</h3>
+
+        <div class="box-tools pull-right">
+          <button type="button" class="btn bg-teal btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="box-body border-radius-none">
+        <div id="piepekerjaan">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="col-lg-6 connectedSortable">
+    <!-- solid sales graph -->
+    <div class="box box-solid">
+      <div class="box-header">
+        <i class="fa fa-th"></i>
+
+        <h3 class="box-title">Rata - rata Pilihan Responden</h3>
+
+        <div class="box-tools pull-right">
+          <button type="button" class="btn bg-teal btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="box-body border-radius-none">
+        <div id="pie">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="col-lg-6 connectedSortable">
+    <!-- solid sales graph -->
+    <div class="box box-solid">
+      <div class="box-header">
+        <i class="fa fa-th"></i>
+
+        <h3 class="box-title">Kategori Pemilih Berdasarkan Pendidikan</h3>
+
+        <div class="box-tools pull-right">
+          <button type="button" class="btn bg-teal btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="box-body border-radius-none">
+          <div id="piepend">
+          </div>
+        </div>
+    </div>
+  </section>
+
+  <section class="col-lg-6 connectedSortable">
     <!-- Diagram Pilihan-->
-    <div class="box box-solid bg-light-blue-gradient">
+    <div class="box box-solid">
       <div class="box-header">
         <h3 class="box-title">
           Data Pilihan
@@ -163,138 +225,153 @@
         </div>
       </div>
       <div class="box-body">
-       <figure class="highcharts-figure" style="padding: 10px; margin-top: -30px;">
-        <div id="container"></div>
-
-      </figure>
-    </div>
-  </div>
-  <!-- /.box -->
-
-  <!-- solid sales graph -->
-  <div class="box box-solid" style="background-color: #f6f5f5">
-    <div class="box-header">
-      <i class="fa fa-th"></i>
-
-      <h3 class="box-title">Rata - rata Pilihan Responden</h3>
-
-      <div class="box-tools pull-right">
-        <button type="button" class="btn bg-teal btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
-        </button>
+        <div id="chart">
+        </div>
       </div>
     </div>
-    <div class="box-body border-radius-none">
-     <figure class="highcharts-figure">
-      <div id="pie"></div>
-    </figure>
-  </div>
-  <!-- /.box-body -->
+  </section>
+  <!-- /.box -->
+
 </div>
-<!-- /.box -->
 
 </section>
-<!-- right col -->
-</div>
-<!-- /.row (main row) -->
+<?php 
+$no= 1;
+foreach ($rekap as $rekap) {
+  $data[$no] = [
+    'id_soal' => $rekap['id_soal'],
+    'kepuasan'  => number_format($rekap['kepuasan'],2)
+  ];
+  $no++;
+}
+$kepuasan = array_column($data, 'kepuasan');
+$id_soal  = array_column($data, 'id_soal');
 
-</section>
-<script type="text/javascript">
-  Highcharts.chart('container', {
-    chart: {
-      type: 'column',
-      backgroundColor: 'transparent'
-    },
-    title: {
-      text: 'Statistik Kepuasan Masyarakat',
-      color : '#f6f5f5'
-    },
-    subtitle: {
-      text: 'Mall Pelayanan Publik'
-    },
-    xAxis: {
-      type: 'category',
-      labels: {
-        rotation: -45,
-        style: {
-          fontSize: '13px',
-          color : '#f6f5f5',
-          fontFamily: 'Verdana, sans-serif'
-        }
+//data pie
+$h = 1;
+foreach ($hasil as $hasil) {
+  $dt[$h] = [
+    'nilai' => $hasil['y'],
+    'label' => $hasil['name']
+  ];
+  $h++;
+}
+$nilai_pie  = array_column($dt, 'nilai');
+$label      = array_column($dt, 'label');
+
+//data pendikan
+$l = 1;
+foreach ($pendidikan as $p) {
+  $pk[$l] = [
+    'jumlah'            => $p['jumlah'],
+    'pendidikan'        => $p['pendidikan']
+  ];
+  $l++;
+}
+$j_pend     = array_column($pk, 'jumlah');
+$l_pend     = array_column($pk, 'pendidikan');
+
+//data pendikan
+$m = 1;
+foreach ($pekerjaan as $pk) {
+  $pkr[$m] = [
+    'jumlah'            => $pk['jumlah'],
+    'pekerjaan'         => $pk['pekerjaan']
+  ];
+  $m++;
+}
+$j_pek     = array_column($pkr, 'jumlah');
+$l_pek     = array_column($pkr, 'pekerjaan');
+?>
+
+<script>
+ var options = {
+  chart: {
+    type: 'bar'
+  },
+  series: [{
+    name: 'Mutu',
+    data: <?php echo json_encode($kepuasan) ?>
+  }],
+  xaxis: {
+    categories: <?php echo json_encode($id_soal) ?>
+  }
+}
+
+var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+chart.render(); 
+
+
+/*pie chart*/
+var options = {
+  series: <?php echo json_encode($nilai_pie) ?>,
+  chart: {
+    width: 380,
+    type: 'pie',
+  },
+  labels: <?php echo json_encode($label) ?>,
+  responsive: [{
+    breakpoint: 480,
+    options: {
+      chart: {
+        width: 200
+      },
+      legend: {
+        position: 'bottom'
       }
-    },
-    yAxis: {
-      min: 0,
-      title: {
-        text: 'Index Kepuasan',
+    }
+  }]
+};
+
+var chart = new ApexCharts(document.querySelector("#pie"), options);
+chart.render();
+
+/*pie chart pendidikan*/
+var options = {
+  series: <?php echo json_encode($j_pend) ?>,
+  chart: {
+    width: 380,
+    type: 'pie',
+  },
+  labels: <?php echo json_encode($l_pend) ?>,
+  responsive: [{
+    breakpoint: 480,
+    options: {
+      chart: {
+        width: 200
+      },
+      legend: {
+        position: 'bottom'
       }
-    },
-    legend: {
-      enabled: false
-    },
-    tooltip: {
-      pointFormat: 'Index Kepuasan'
-    },
-    series: [
-    {
-      name: 'Kepuasan',
-      data: [
-      <?php foreach ($rekap as $data): ?>
-        {
-          name: '<?php echo $data['id_soal'] ?>',
-          color: '#f6f5f5',
-          y: <?php echo $data['kepuasan'] ?>
-        },
-      <?php endforeach ?>
-      ],
-      dataLabels: {
-        enabled: true,
-        rotation: -90,
-        color: '#FFFFFF',
-        align: 'right',
-            format: '{point.y:.1f}', // one decimal
-            y: 10, // 10 pixels down from the top
-            style: {
-              fontSize: '13px',
-              fontFamily: 'Verdana, sans-serif'
-            }
-          }
-        }]
-      });
-    </script>
-    <script type="text/javascript">
-      Highcharts.chart('pie', {
-        chart: {
-          type: 'pie',
-          backgroundColor: 'transparent'
-        },
-        title: {
-          text: ''
-        },
-        exporting: {
-          enabled: false
-        },
-        accessibility: {
-          point: {
-            valueSuffix: '%'
-          }
-        },
-        plotOptions: {
-          pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-              enabled: true,
-              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-              borderWidth: 0,
-              shadow: false,
-              font: '11px Trebuchet MS, Verdana, sans-serif'
-            }
-          }
-        },
-        series: [{
-          name: 'Kepuasan',
-          colorByPoint: true,
-          data: <?php echo json_encode($hasil) ?>
-        }]
-      });
-    </script>
+    }
+  }]
+};
+
+var chart = new ApexCharts(document.querySelector("#piepend"), options);
+chart.render();
+
+/*pie chart pekerjaan*/
+var options = {
+  series: <?php echo json_encode($j_pek) ?>,
+  chart: {
+    width: 380,
+    type: 'pie',
+  },
+  labels: <?php echo json_encode($l_pek) ?>,
+  responsive: [{
+    breakpoint: 480,
+    options: {
+      chart: {
+        width: 200
+      },
+      legend: {
+        position: 'bottom'
+      }
+    }
+  }]
+};
+
+var chart = new ApexCharts(document.querySelector("#piepekerjaan"), options);
+chart.render();
+</script>

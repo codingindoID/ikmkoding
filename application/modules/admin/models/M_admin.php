@@ -15,6 +15,11 @@ class M_admin extends CI_Model {
 		return $this->db->get_where('tb_hasil',['published' => '1']);
 	}
 
+	function join_get_responden_2($kolom,$param)
+	{
+		return $this->db->query('select * from (SELECT DISTINCT id_responden as a FROM tb_hasil where published = 2) as a  , tb_detil_responden  b where  a = b.id_responden and b.'.$kolom.' = "'.$param.'"');
+	}
+
 	function getdetil($id_responden)
 	{
 		$this->db->join('tb_pertanyaan', 'tb_pertanyaan.id_soal = tb_hasil.id_soal');

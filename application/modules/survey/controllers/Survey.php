@@ -14,6 +14,8 @@ class Survey extends MY_Controller {
 		$this->_auto_reset();
 		$data = [
 			'kepuasan' 		=> $this->_get_kepuasan(),
+			'pendidikan'	=> $this->_get_pendidikan(),
+			'pekerjaan'		=> $this->_get_pekerjaan(),
 			'pengunjung' 	=> $this->M_survey->get_responden(),
 			'hasil'			=>  $this->_get_hasil()
 		];
@@ -55,6 +57,7 @@ class Survey extends MY_Controller {
 			$no++;
 		}
 		$data['rekap'] = $hasil;
+		//echo json_encode($data['hasil']);
 		$this->load->view('index',$data);
 	}
 
@@ -231,22 +234,26 @@ class Survey extends MY_Controller {
 			$data = [
 				[
 					'name' 	=> 'sangat_puas',
-					'y'		=> floatval(number_format(($sangat_puas/$all)*100,2)),
+					/*'y'		=> floatval(number_format(($sangat_puas/$all)*100,2)),*/
+					'y'		=> $sangat_puas,
 					'color' => '#00FF00'
 				],
 				[
 					'name' 	=> 'puas',
-					'y'		=> floatval(number_format(($puas/$all)*100,2)),
+					/*'y'		=> floatval(number_format(($puas/$all)*100,2)),*/
+					'y'		=> $puas,
 					'color' => 'blue'
 				],
 				[
 					'name' 	=> 'tidak_puas',
-					'y'		=> floatval(number_format(($tidak_puas/$all)*100,2)),
+					/*'y'		=> floatval(number_format(($tidak_puas/$all)*100,2)),*/
+					'y'		=> $tidak_puas,
 					'color' => 'purple'
 				],
 				[
 					'name' 	=> 'kecewa',
-					'y'		=> floatval(number_format(($kecewa/$all)*100,2)),
+					/*'y'		=> floatval(number_format(($kecewa/$all)*100,2)),*/
+					'y'		=> $kecewa,
 					'color' => 'red'
 				]
 			];
@@ -297,6 +304,34 @@ class Survey extends MY_Controller {
 		$total_responden = $this->M_survey->get_responden();
 		$data = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => $jawaban,'id_soal' => $id_soal])->num_rows();
 		return $data;
+	}
+
+	private function _get_pendidikan()
+	{
+		$pendidikan = $this->M_master->getall('tb_pendidikan')->result();
+		$no = 1;
+		foreach ($pendidikan as $p) {
+			$hasil[$no] = [
+				'pendidikan'	=> $p->pendidikan,
+				'jumlah'		=> $this->M_survey->join_get_responden_2('pendidikan',$p->pendidikan)->num_rows()
+			];
+			$no++;
+		}
+		return $hasil;
+	}
+
+	private function _get_pekerjaan()
+	{
+		$pekerjaan = $this->M_master->getall('tb_pekerjaan')->result();
+		$no = 1;
+		foreach ($pekerjaan as $p) {
+			$hasil[$no] = [
+				'pekerjaan'		=> $p->pekerjaan,
+				'jumlah'		=> $this->M_survey->join_get_responden_2('pekerjaan',$p->pekerjaan)->num_rows()
+			];
+			$no++;
+		}
+		return $hasil;
 	}
 
 	private function _auto_reset()

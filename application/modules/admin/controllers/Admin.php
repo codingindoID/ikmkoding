@@ -23,6 +23,8 @@ class Admin extends MY_Controller {
 			'icon'			=> 'clip-home-3',
 			'soal'			=> $this->M_admin->getSoal()->result(),
 			'kepuasan' 		=> $this->_get_kepuasan(),
+			'pendidikan'	=> $this->_get_pendidikan(),
+			'pekerjaan'		=> $this->_get_pekerjaan(),
 			'pengunjung' 	=> $this->M_master->get_responden(),
 			'hasil'			=> $this->_get_hasil(),
 			'responden'		=> $this->M_master->get_responden(),
@@ -53,6 +55,7 @@ class Admin extends MY_Controller {
 		$no = 1;
 		foreach ($soal as $v) {
 			$hasil[$no] = [
+				'kepuasan'	=> $this->_get_nilai($v->id_soal),
 				'id_soal'	=> $v->id_soal,
 				'kategori'	=> $v->kategori,
 				'soal'		=> $v->soal,
@@ -60,16 +63,15 @@ class Admin extends MY_Controller {
 				'p'			=> $this->_get_rataan($v->id_soal,'c'),
 				'tp'		=> $this->_get_rataan($v->id_soal,'b'),
 				'kec'		=> $this->_get_rataan($v->id_soal,'a'),
-				'kepuasan'	=> $this->_get_nilai($v->id_soal)
-			];
-
-			$rata[$no] = [
-
 			];
 			$no++;
 		}
-		$data['rekap'] = $hasil;
-		//echo json_encode($data);
+		sort($hasil);
+
+		$data_short = $this->_get_prioritas($hasil);
+		sort($data_short);
+		$data['rekap'] 	= $data_short;
+		//echo json_encode($data['pekerjaan']);
 		$this->template->load('tema/index','index',$data);
 	} 
 
@@ -191,7 +193,7 @@ class Admin extends MY_Controller {
 		foreach ($res as $key) {
 			$hasil[$no]= [
 				'id_responden'	=> $key->id_responden,
-				'jawaban' =>$this->_get_jawaban($key->id_responden)
+				'jawaban' 		=> $this->_get_jawaban($key->id_responden)
 			];
 			$no++;
 		}
@@ -279,22 +281,26 @@ class Admin extends MY_Controller {
 			$data = [
 				[
 					'name' 	=> 'sangat_puas',
-					'y'		=> floatval(number_format(($sangat_puas/$all)*100,2)),
+					/*'y'		=> floatval(number_format(($sangat_puas/$all)*100,2)),*/
+					'y'		=> $sangat_puas,
 					'color' => '#00FF00'
 				],
 				[
 					'name' 	=> 'puas',
-					'y'		=> floatval(number_format(($puas/$all)*100,2)),
+					/*'y'		=> floatval(number_format(($puas/$all)*100,2)),*/
+					'y'		=> $puas,
 					'color' => 'blue'
 				],
 				[
 					'name' 	=> 'tidak_puas',
-					'y'		=> floatval(number_format(($tidak_puas/$all)*100,2)),
+					/*'y'		=> floatval(number_format(($tidak_puas/$all)*100,2)),*/
+					'y'		=> $tidak_puas,
 					'color' => 'purple'
 				],
 				[
 					'name' 	=> 'kecewa',
-					'y'		=> floatval(number_format(($kecewa/$all)*100,2)),
+					/*'y'		=> floatval(number_format(($kecewa/$all)*100,2)),*/
+					'y'		=> $kecewa,
 					'color' => 'red'
 				]
 			];
@@ -304,6 +310,34 @@ class Admin extends MY_Controller {
 		{
 			return null;
 		}	
+	}
+
+	private function _get_pendidikan()
+	{
+		$pendidikan = $this->M_master->getall('tb_pendidikan')->result();
+		$no = 1;
+		foreach ($pendidikan as $p) {
+			$hasil[$no] = [
+				'pendidikan'	=> $p->pendidikan,
+				'jumlah'		=> $this->M_admin->join_get_responden_2('pendidikan',$p->pendidikan)->num_rows()
+			];
+			$no++;
+		}
+		return $hasil;
+	}
+
+	private function _get_pekerjaan()
+	{
+		$pekerjaan = $this->M_master->getall('tb_pekerjaan')->result();
+		$no = 1;
+		foreach ($pekerjaan as $p) {
+			$hasil[$no] = [
+				'pekerjaan'		=> $p->pekerjaan,
+				'jumlah'		=> $this->M_admin->join_get_responden_2('pekerjaan',$p->pekerjaan)->num_rows()
+			];
+			$no++;
+		}
+		return $hasil;
 	}
 
 	private function _get_kepuasan()
