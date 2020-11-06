@@ -1,20 +1,59 @@
+<style type="text/css" media="screen">
+  .table-wrapper{
+    margin: 10px 70px 70px;
+    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.2 );
+  }
+
+  .fl-table {
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: normal;
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    white-space: nowrap;
+    background-color: white;
+  }
+
+  .fl-table td, .fl-table th {
+    text-align: center;
+    padding: 8px;
+  }
+
+  .fl-table td {
+    border-right: 1px solid #f8f8f8;
+    font-size: 12px;
+  }
+
+  .fl-table thead th {
+    color: #ffffff;
+    background: #4FC3A1;
+  }
+
+
+
+  .fl-table tr:nth-child(even) {
+    background: #F8F8F8;
+  }
+
+</style>
 <section id="statistik" style="margin-top: -20px;">
   <div class="container">
-    <div class="row">
-      <div class="col-md-7" data-aos="fade-right">
-       <div class="card" style="height: 535px;">
+    <div class="row" >
+      <div class="col-md-7 col-xs-12" data-aos="fade-right">
+       <div class="card" style="margin-bottom: 5px;">
         <div class="card-body">
          <br>
          <div id="chart" ></div>
        </div>
      </div>
    </div>
-
    <!-- diagram -->
-   <div class="col-md-5" data-aos="fade-up">
-     <di class="row">
-      <div class="col">
-       <div class="card" style="height: 265px;">
+   <div class="col-md-5 col-xs-12" data-aos="fade-up">
+     <div class="row">
+      <div class="col-md-12">
+       <div class="card">
         <div class="card-body">
           <div id="piepend">
 
@@ -22,21 +61,19 @@
         </div>
       </div>
     </div>
-  </di>
-  <di class="row" style="margin-top: 5px;">
-    <div class="col">
-     <div class="card" style="height: 265px;">
+  </div>
+  <div class="row" style="margin-top: 5px;">
+    <div class="col-md-12">
+     <div class="card">
       <div class="card-body">
-        <div id="piepekerjaan">
+        <div id="piepek">
 
         </div>
       </div>
     </div>
   </div>
-</di>
-
 </div>
-
+</div>
 </div>
 
 <div class="card" style="margin-top: 15px;">
@@ -44,8 +81,8 @@
   <div class="card-body">
     <p><strong>Detil Jawaban Responden Per Kategori</strong></p>
     <div class="table-responsive" style="margin-top: 10px;">
-      <table class="magic-table" >
-        <thead style="background-color: #f4f4f2">
+      <table class="fl-table" >
+        <thead style="background-color: #f4f4f2;" >
           <tr >
             <th class="text-center" rowspan="2" style="vertical-align: middle;">No</th>
             <th class="text-center" width="50%" rowspan="2" style="vertical-align: middle;">Unsur Pelayanan</th>
@@ -115,7 +152,7 @@ $id_soal  = array_column($data, 'id_soal');
 //data pie
 if ($hasil) {
  $h = 1;
-foreach ($hasil as $hasil) {
+ foreach ($hasil as $hasil) {
   $dt[$h] = [
     'nilai' => $hasil['y'],
     'label' => $hasil['name']
@@ -129,16 +166,16 @@ $label      = array_column($dt, 'label');
 
 //data pendikan
 if (count($pendidikan)>0) {
-$l = 1;
-foreach ($pendidikan as $p) {
-  $pk[$l] = [
-    'jumlah'            => $p['jumlah'],
-    'pendidikan'        => $p['pendidikan']
-  ];
-  $l++;
-}
-$j_pend     = array_column($pk, 'jumlah');
-$l_pend     = array_column($pk, 'pendidikan');
+  $l = 1;
+  foreach ($pendidikan as $p) {
+    $pk[$l] = [
+      'jumlah'            => $p['jumlah'],
+      'pendidikan'        => $p['pendidikan']
+    ];
+    $l++;
+  }
+  $j_pend     = array_column($pk, 'jumlah');
+  $l_pend     = array_column($pk, 'pendidikan');
 
 }
 
@@ -183,15 +220,15 @@ var options = {
   title : {text : 'responden berdasarkan pendidikan' },
   series: <?php echo $j_pend== true ? json_encode($j_pend) : [] ?>,
   chart: {
-    width: 380,
+    width : "100%",
     type: 'pie',
   },
   labels: <?php echo $l_pend==true ? json_encode($l_pend) : [] ?>,
   responsive: [{
-    breakpoint: 480,
+    breakpoint: undefined,
     options: {
       chart: {
-        width: 200
+        width : "100%"
       },
       legend: {
         position: 'bottom'
@@ -208,23 +245,23 @@ var options = {
   title : {text : 'responden berdasarkan pekerjaan' },
   series: <?php echo $j_pek == true ? json_encode($j_pek) : []?>,
   chart: {
-    width: 380,
+    width : "100%",
     type: 'pie',
   },
   labels: <?php echo $l_pek==true ? json_encode($l_pek) : [] ?>,
   responsive: [{
-    breakpoint: 480,
+    breakpoint: undefined,
     options: {
       chart: {
-        width: 200
-      },
-      legend: {
-        position: 'bottom'
-      }
+       width : "100%"
+     },
+     legend: {
+      position: 'bottom'
     }
-  }]
+  }
+}]
 };
 
-var chart = new ApexCharts(document.querySelector("#piepekerjaan"), options);
+var chart = new ApexCharts(document.querySelector("#piepek"), options);
 chart.render();
 </script>

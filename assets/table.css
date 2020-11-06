@@ -1,60 +1,37 @@
- .magic-table {
-  border-collapse: collapse;
-  font-family: sans-serif;
-  font-size: 12px;
-  background-color: #fff;
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
+.table-wrapper{
+    margin: 10px 70px 70px;
+    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.2 );
 }
 
-.magic-table tbody tr:nth-child(odd) {
-  background-color: rgba(100, 150, 250, 0.05);
-}
-
-.magic-table td,
-th {
-  padding: 10px;
-}
-
-@media screen and (max-width: 500px) {
-  .magic-table {
+.fl-table {
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: normal;
+    border: none;
+    border-collapse: collapse;
     width: 100%;
-    background-color: transparent;
-    box-shadow: none;
-  }
+    max-width: 100%;
+    white-space: nowrap;
+    background-color: white;
+}
 
-  .magic-table thead {
-    display: none;
-  }
-  .magic-table tr {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
-  }
-  .magic-table tbody tr:nth-child(odd) {
-    background-color: #fff;
-  }
-  .magic-table td {
-    padding: 0.25rem;
-  }
+.fl-table td, .fl-table th {
+    text-align: center;
+    padding: 8px;
+}
 
-  .magic-table td:nth-child(1) {
-    font-weight: bold;
-    font-size: 1.2em;
-  }
-  .magic-table td:nth-child(2)::before {
-    content: "Age: ";
-  }
-  .magic-table td:nth-child(3)::before {
-    content: "Job title: ";
-  }
-  .magic-table td:nth-child(4)::before {
-    content: "Favorite meal: ";
-  }
-  .magic-table td::before {
-    font-weight: bold;
-  }
+.fl-table td {
+    border-right: 1px solid #f8f8f8;
+    font-size: 12px;
+}
+
+.fl-table thead th {
+    color: #ffffff;
+    background: #4FC3A1;
+}
+
+
+
+.fl-table tr:nth-child(even) {
+    background: #F8F8F8;
 }

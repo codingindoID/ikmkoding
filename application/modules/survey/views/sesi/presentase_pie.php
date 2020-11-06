@@ -47,12 +47,12 @@ if ($hasil) {
 	var options = {
 		series: <?php echo $nilai_pie == true ?  json_encode($nilai_pie) : [] ?>,
 		chart: {
-			width: 380,
+			width: "100%",
 			type: 'pie',
 		},
 		labels: <?php echo $label == true ?  json_encode($label) : [] ?>,
 		responsive: [{
-			breakpoint: 480,
+			breakpoint: undefined,
 			options: {
 				chart: {
 					width: 200

@@ -100,7 +100,7 @@
           <!-- /.box-header -->
           <div class="box-body">
            <div class="table-responsive">
-            <table class="table" border="1px" >
+            <table class="fl-table" border="1px" >
               <thead>
                 <tr style="background-color: #1f6f8b; color: white;">
                   <th class="text-center" rowspan="2" style="vertical-align: middle;">No</th>
@@ -319,15 +319,15 @@ chart.render();
 var options = {
   series: <?php echo $nilai_pie==true ? json_encode($nilai_pie) : [] ?>,
   chart: {
-    width: 380,
+    width: "90%",
     type: 'pie',
   },
   labels: <?php echo $label==true ? json_encode($label) : [] ?>,
   responsive: [{
-    breakpoint: 480,
+    breakpoint: undefined,
     options: {
       chart: {
-        width: 200
+        width: "100%"
       },
       legend: {
         position: 'bottom'
@@ -343,15 +343,15 @@ chart.render();
 var options = {
   series: <?php echo $j_pend == true ?  json_encode($j_pend) : [] ?>,
   chart: {
-    width: 380,
+    width: "90%",
     type: 'pie',
   },
   labels: <?php echo $l_pend == true?  json_encode($l_pend) : [] ?>,
   responsive: [{
-    breakpoint: 480,
+    breakpoint: undefined,
     options: {
       chart: {
-        width: 200
+        width: "100%"
       },
       legend: {
         position: 'bottom'
@@ -367,15 +367,15 @@ chart.render();
 var options = {
   series: <?php echo $j_pek ?  json_encode($j_pek) : [] ?>,
   chart: {
-    width: 380,
+    width: "90%",
     type: 'pie',
   },
   labels: <?php echo $l_pek ?  json_encode($l_pek) : [] ?>,
   responsive: [{
-    breakpoint: 480,
+    breakpoint: undefined,
     options: {
       chart: {
-        width: 200
+        width: "100%"
       },
       legend: {
         position: 'bottom'
