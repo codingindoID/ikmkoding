@@ -26,28 +26,31 @@
 
 <?php 
 //data pie
-$h = 1;
-foreach ($hasil as $hasil) {
-  $dt[$h] = [
-    'nilai' => $hasil['y'],
-    'label' => $hasil['name']
-  ];
-  $h++;
+if ($hasil) {
+	$h = 1;
+	foreach ($hasil as $hasil) {
+		$dt[$h] = [
+			'nilai' => $hasil['y'],
+			'label' => $hasil['name']
+		];
+		$h++;
+	}
+	$nilai_pie  = array_column($dt, 'nilai');
+	$label      = array_column($dt, 'label');
 }
-$nilai_pie  = array_column($dt, 'nilai');
-$label      = array_column($dt, 'label');
+
 
 ?>
 
 <script>
 	/*pie chart*/
 	var options = {
-		series: <?php echo json_encode($nilai_pie) ?>,
+		series: <?php echo $nilai_pie == true ?  json_encode($nilai_pie) : [] ?>,
 		chart: {
 			width: 380,
 			type: 'pie',
 		},
-		labels: <?php echo json_encode($label) ?>,
+		labels: <?php echo $label == true ?  json_encode($label) : [] ?>,
 		responsive: [{
 			breakpoint: 480,
 			options: {

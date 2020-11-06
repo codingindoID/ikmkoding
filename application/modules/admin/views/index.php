@@ -206,9 +206,9 @@
         </div>
       </div>
       <div class="box-body border-radius-none">
-          <div id="piepend">
-          </div>
+        <div id="piepend">
         </div>
+      </div>
     </div>
   </section>
 
@@ -236,8 +236,9 @@
 
 </section>
 <?php 
-$no= 1;
-foreach ($rekap as $rekap) {
+if (count($rekap) > 0) {
+ $no= 1;
+ foreach ($rekap as $rekap) {
   $data[$no] = [
     'id_soal' => $rekap['id_soal'],
     'kepuasan'  => number_format($rekap['kepuasan'],2)
@@ -247,21 +248,27 @@ foreach ($rekap as $rekap) {
 $kepuasan = array_column($data, 'kepuasan');
 $id_soal  = array_column($data, 'id_soal');
 
-//data pie
-$h = 1;
-foreach ($hasil as $hasil) {
-  $dt[$h] = [
-    'nilai' => $hasil['y'],
-    'label' => $hasil['name']
-  ];
-  $h++;
 }
-$nilai_pie  = array_column($dt, 'nilai');
-$label      = array_column($dt, 'label');
+
+//data pie
+if ($hasil) {
+  $h = 1;
+  foreach ($hasil as $hs) {
+    $dt[$h] = [
+      'nilai' => $hs['y'],
+      'label' => $hs['name']
+    ];
+    $h++;
+  }
+  $nilai_pie  = array_column($dt, 'nilai');
+  $label      = array_column($dt, 'label');
+}
+
 
 //data pendikan
-$l = 1;
-foreach ($pendidikan as $p) {
+if (count($pendidikan) > 0) {
+ $l = 1;
+ foreach ($pendidikan as $p) {
   $pk[$l] = [
     'jumlah'            => $p['jumlah'],
     'pendidikan'        => $p['pendidikan']
@@ -270,10 +277,13 @@ foreach ($pendidikan as $p) {
 }
 $j_pend     = array_column($pk, 'jumlah');
 $l_pend     = array_column($pk, 'pendidikan');
+}
+
 
 //data pendikan
-$m = 1;
-foreach ($pekerjaan as $pk) {
+if (count($pekerjaan) > 0) {
+ $m = 1;
+ foreach ($pekerjaan as $pk) {
   $pkr[$m] = [
     'jumlah'            => $pk['jumlah'],
     'pekerjaan'         => $pk['pekerjaan']
@@ -282,6 +292,8 @@ foreach ($pekerjaan as $pk) {
 }
 $j_pek     = array_column($pkr, 'jumlah');
 $l_pek     = array_column($pkr, 'pekerjaan');
+}
+
 ?>
 
 <script>
@@ -291,10 +303,10 @@ $l_pek     = array_column($pkr, 'pekerjaan');
   },
   series: [{
     name: 'Mutu',
-    data: <?php echo json_encode($kepuasan) ?>
+    data: <?php echo $kepuasan==true ? json_encode($kepuasan) : [] ?>
   }],
   xaxis: {
-    categories: <?php echo json_encode($id_soal) ?>
+    categories: <?php echo $id_soal==true ? json_encode($id_soal) : [] ?>
   }
 }
 
@@ -305,12 +317,12 @@ chart.render();
 
 /*pie chart*/
 var options = {
-  series: <?php echo json_encode($nilai_pie) ?>,
+  series: <?php echo $nilai_pie==true ? json_encode($nilai_pie) : [] ?>,
   chart: {
     width: 380,
     type: 'pie',
   },
-  labels: <?php echo json_encode($label) ?>,
+  labels: <?php echo $label==true ? json_encode($label) : [] ?>,
   responsive: [{
     breakpoint: 480,
     options: {
@@ -329,12 +341,12 @@ chart.render();
 
 /*pie chart pendidikan*/
 var options = {
-  series: <?php echo json_encode($j_pend) ?>,
+  series: <?php echo $j_pend == true ?  json_encode($j_pend) : [] ?>,
   chart: {
     width: 380,
     type: 'pie',
   },
-  labels: <?php echo json_encode($l_pend) ?>,
+  labels: <?php echo $l_pend == true?  json_encode($l_pend) : [] ?>,
   responsive: [{
     breakpoint: 480,
     options: {
@@ -353,12 +365,12 @@ chart.render();
 
 /*pie chart pekerjaan*/
 var options = {
-  series: <?php echo json_encode($j_pek) ?>,
+  series: <?php echo $j_pek ?  json_encode($j_pek) : [] ?>,
   chart: {
     width: 380,
     type: 'pie',
   },
-  labels: <?php echo json_encode($l_pek) ?>,
+  labels: <?php echo $l_pek ?  json_encode($l_pek) : [] ?>,
   responsive: [{
     breakpoint: 480,
     options: {

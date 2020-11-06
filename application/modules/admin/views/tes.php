@@ -1,5 +1,5 @@
 <?php 
-$no= 1;
+/*$no= 1;
 foreach ($rekap as $rekap) {
 	$data[$no] = [
 		'id_soal'	=> $rekap['id_soal'],
@@ -32,5 +32,7 @@ foreach ($pendidikan as $p) {
 $j_pend     = array_column($pk, 'jumlah');
 $l_pend     = array_column($pk, 'pendidikan');
 
-echo json_encode($l_pend);
+echo json_encode($l_pend);*/
+$data = count($pendidikan);
+echo $data;
 ?>
