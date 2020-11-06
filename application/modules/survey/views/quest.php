@@ -71,8 +71,8 @@
             </div>
           </ul>
           <p>
-            <button id="lanjut" class="btn btn-success float-right">Selanjutnya  <i class="fa fa-arrow-circle-right"></i></button>
-            <button id="reset" class="btn btn-warning">Reset  <i class="fa fa-refresh"></i></button>
+            <button id="reset" class="btn btn-warning float-right">Reset  <i class="fa fa-refresh"></i></button>
+            <button id="lanjut" class="btn btn-success">Selanjutnya  <i class="fa fa-arrow-circle-right"></i></button>
           </p>
         </div>
         <div class="col-md-4" data-aos="fade-right">

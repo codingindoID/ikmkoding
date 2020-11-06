@@ -17,7 +17,10 @@ class Survey extends MY_Controller {
 			'pendidikan'	=> $this->_get_pendidikan(),
 			'pekerjaan'		=> $this->_get_pekerjaan(),
 			'pengunjung' 	=> $this->M_survey->get_responden(),
-			'hasil'			=>  $this->_get_hasil()
+			'hasil'			=>  $this->_get_hasil(),
+			'news1'			=> $this->M_master->getWhere('news',['id'=>1])->row(),
+			'news2'			=> $this->M_master->getWhere('news',['id'=>2])->row(),
+			'faq'			=> $this->M_master->getall('faq')->result(),
 		];
 		//menentukan tingkat kepuasan
 		$kepuasan = $data['kepuasan'];
@@ -70,7 +73,7 @@ class Survey extends MY_Controller {
 		}
 		$cek = $this->M_master->getWhere('tb_hasil',['id_responden' => $responden])->num_rows();
 		if ($cek > 0) {
-			echo "<script>alert('responden Sudah Pernah Mengisi.,.')</script>";
+			$this->session->set_flashdata('error','Anda Sudah Pernah Mengisi');
 			redirect('survey','refresh');
 		}
 		else
@@ -126,10 +129,42 @@ class Survey extends MY_Controller {
 		
 	}
 
+	function sendEmail()
+	{
+		$email 		= $this->input->post('email');
+		$nama 		= $this->input->post('nama');
+		$subject 	= $this->input->post('subject');
+		$msg 		= $this->input->post('msg');
+
+		$config = [
+			'protocol' 	=> 'smtp',
+			'smtp_host' => 'ssl://smtp.googlemail.com',
+			'smtp_port' => 465,
+			'smtp_user' => 'agussetiawan@gmail.com',
+			'smtp_pass' => 'agus200191', 
+			'mailtype' 	=> 'html',
+			'charset' 	=> 'iso-8859-1',
+			'wordwrap' 	=> TRUE
+		];
+
+		$this->load->library('email', $config);
+		$this->email->from($email, $nama); 
+		$this->email->to('agussetiawan@gmail.com');
+		$this->email->subject($subject); 
+		$this->email->message($msg); 
+
+         //Send mail 
+		if($this->email->send()) 
+			$this->session->set_flashdata("error","Email sent successfully."); 
+		else 
+			show_error($this->email->print_debugger());
+		//redirect('survey','refresh');
+	}
+
 	function get_soal($param)
 	{
 		$data	= $this->M_survey->getSoal()->result();
-		
+
 		echo json_encode($data[$param]);
 	}
 

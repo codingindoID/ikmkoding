@@ -71,7 +71,7 @@ class Admin extends MY_Controller {
 		$data_short = $this->_get_prioritas($hasil);
 		sort($data_short);
 		$data['rekap'] 	= $data_short;
-		//echo json_encode($data['pekerjaan']);
+		//echo json_encode($data['rekap']);
 		$this->template->load('tema/index','index',$data);
 	} 
 

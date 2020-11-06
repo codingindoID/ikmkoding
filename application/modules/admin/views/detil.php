@@ -45,7 +45,7 @@
 					endforeach ?>
 					<tr>
 						<td colspan="2" class="text-center"><strong>Rata - Rata</strong></td>
-						<td class="text-center" ><strong><?php echo $n/9?></strong></td>
+						<td class="text-center" ><strong><?php echo number_format(($n/9),2)?></strong></td>
 					</tr>
 				</tbody>
 			</table>

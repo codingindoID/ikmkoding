@@ -89,8 +89,8 @@
           <div class="box-header">
             <i class="ion ion-clipboard"></i>
             <h3 class="box-title">Statistik</h3>
-            <a style="margin-left: 20px;" target="_blank" class="btn-sm btn-success" href="<?php echo site_url('admin/cetakrekap') ?>" title="cetak"><i class="fa fa-print"></i> Cetak</a>
-            <a style="margin-left: 10px;" target="_blank" class="btn-sm btn-success" href="<?php echo site_url('admin/cetakrekapdetil') ?>" title="cetak"><i class="fa fa-print"></i> Cetak Detil</a>
+            <a style="margin-left: 20px;" target="_blank" class="btn-sm btn-success" href="<?php echo site_url('admin/cetakrekap') ?>" title="cetak"><i class="fa fa-file-excel-o"></i> export</a>
+            <a style="margin-left: 10px;" target="_blank" class="btn-sm btn-success" href="<?php echo site_url('admin/cetakrekapdetil') ?>" title="cetak"><i class="fa fa-file-excel-o"></i> Export Detil</a>
           </button>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>

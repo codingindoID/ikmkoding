@@ -13,16 +13,23 @@ class M_master extends CI_Model {
 		$this->db->insert($table, $data);
 	}
 
+	function delete($table,$where)
+	{
+		$this->db->where($where);
+		$this->db->delete($table);
+	}
+
+	function update($table,$where,$data)
+	{
+		$this->db->where($where);
+		$this->db->update($table, $data);
+	}
+
 	function getWhere($table,$where)
 	{
 		return $this->db->get_where($table,$where);
 	}	
 
-	function delete($table,$where)
-	{
-		$this->db->where($where);
-		$this->db->delete($table);
-	}	
 
 	function get_responden()
 	{

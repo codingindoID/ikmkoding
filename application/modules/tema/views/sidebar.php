@@ -35,6 +35,16 @@
            <li><a href="<?php echo site_url('admin/saran') ?>"><i class="fa fa-file"></i>Kritik dan Saran</a></li>
         </ul>
       </li>
+       <li class="treeview">
+        <a href="#">
+          <i class="fa fa-bullhorn fa-black"></i>
+          <span>News & FAQ</span>
+        </a>
+        <ul id="menu_surat" class="treeview-menu">
+          <li><a href="<?php echo site_url('news/index') ?>"><i class="fa fa-rss-square"></i>News</a></li>
+          <li><a href="<?php echo site_url('news/FAQ') ?>"><i class="fa  fa-question"></i>FAQ</a></li>
+        </ul>
+      </li>
     </section>
     <!-- /.sidebar -->
   </aside>

@@ -3,8 +3,12 @@
    <head>
      <title>Cetak</title>
    </head>
-   <body onload="window.print()">
-     <div class="table-responsive">
+   <body>
+    <?php 
+    header("Content-type: application/vnd-ms-excel");
+    header("Content-Disposition: attachment; filename= SURVEY_KEPUASAN_MASYARAKAT_PER_RESPONDEN.xls");
+    ?>
+    <div class="table-responsive">
       <table class="table" border="1" style="border-collapse: collapse;" >
         <thead>
           <tr>
