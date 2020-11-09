@@ -45,6 +45,12 @@
           <li><a href="<?php echo site_url('news/FAQ') ?>"><i class="fa  fa-question"></i>FAQ</a></li>
         </ul>
       </li>
+       <li>
+        <a href="<?php echo site_url('admin/cetaklaporan') ?>">
+          <i class="fa fa-print fa-black"></i>
+          <span>Cetak Laporan</span>
+        </a>
+      </li>
     </section>
     <!-- /.sidebar -->
   </aside>

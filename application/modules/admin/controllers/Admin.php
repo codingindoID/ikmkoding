@@ -9,6 +9,8 @@ class Admin extends MY_Controller {
 		$this->load->model('M_master');
 		$this->load->model('M_admin');
 
+		date_default_timezone_set("Asia/Bangkok");
+
 		//cek session
 		if ($this->session->userdata('ses_id') == null) {
 			redirect('survey/admin','refresh');
@@ -17,6 +19,10 @@ class Admin extends MY_Controller {
 
 	function index()
 	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
 		$data = [
 			'title'			=> 'Dashboard',
 			'sub'			=> '',
@@ -34,19 +40,25 @@ class Admin extends MY_Controller {
 
 		//menentukan tingkat kepuasan
 		$kepuasan = $data['kepuasan'];
-		if ($kepuasan > 81.25 && $kepuasan < 100 ) {
+		if ($kepuasan >88.31){
+			$mutu = 'A';
 			$index = "Sangat Baik";
-		}else if($kepuasan > 62.50 && $kepuasan < 81.26){
+		}else if($kepuasan > 76.61){
+			$mutu = 'B';
 			$index = 'Baik';
-		}else if($kepuasan > 43.75 && $kepuasan < 62.51){
+		}else if($kepuasan > 65.00){
+			$mutu = 'C';
 			$index = 'Kurang Baik';
-		} else if($kepuasan > 24.9 && $kepuasan < 43.76){
-			$index = 'Tidak Baik';
-		} else {
-			$index = null;
 		}
-
-		$data['tingkat_kepuasan'] = $index;
+		else if($kepuasan > 25.00 ) {
+			$mutu = 'D';
+			$index = 'Tidak Baik';
+		}
+		else {
+			$mutu = null;
+		}
+		$data['tingkat_kepuasan']	= $index;
+		$data['mutu'] 				= $mutu;
 
 
 		//hasilnya untuk index kepuasan per soal
@@ -75,8 +87,13 @@ class Admin extends MY_Controller {
 		$this->template->load('tema/index','index',$data);
 	} 
 
+	/*PERTANYAAN*/
 	function pertanyaan()
 	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
 		$data = [
 			'title'		=> 'Dashboard',
 			'sub'		=> 'overview',
@@ -86,9 +103,102 @@ class Admin extends MY_Controller {
 		$this->template->load('tema/index','pertanyaan',$data);
 	}
 
+	function detilpertanyaan($id)
+	{
+		$data = $this->M_master->getWhere('tb_pertanyaan',['id_soal' => $id])->row();
+		echo json_encode($data);
+	}
 
+	function addpertanyaan()
+	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
+		$data = [
+			'soal'		=> $this->input->post('pertanyaan'),
+			'kategori'	=> $this->input->post('kategori'),
+			'a'			=> $this->input->post('a'),
+			'b'			=> $this->input->post('b'),
+			'c'			=> $this->input->post('c'),
+			'd'			=> $this->input->post('d'),
+			'id_soal' 	=> $this->input->post('id_soal')
+		];
+
+		$cek = $this->M_master->getWhere('tb_pertanyaan',['id_soal' => $this->input->post('id_soal')])->num_rows();
+		if ($cek > 0) {
+			$this->session->set_flashdata('error', 'Nomor Pertanyaan Sudah Terdaftar, Silahkan Ganti Nomor atau Edit Nomor Pertanyaan Yang Sudah Ada...');
+			redirect('admin/pertanyaan','refresh');
+		}
+		else
+		{			
+			$cek = $this->M_master->input('tb_pertanyaan',$data);
+			if (!$cek) {
+				$this->session->set_flashdata('success', 'Data Updated');
+				redirect('admin/pertanyaan','refresh');
+			}
+			else
+			{
+				$this->session->set_flashdata('error', 'Error...');
+				redirect('admin/pertanyaan','refresh');
+			}
+		}
+
+	}
+
+	function updatepertanyaan()
+	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
+		$where = ['id_soal' => $this->input->post('id_soal')];
+		$data = [
+			'soal'		=> $this->input->post('pertanyaan'),
+			'kategori'	=> $this->input->post('kategori'),
+			'a'			=> $this->input->post('a'),
+			'b'			=> $this->input->post('b'),
+			'c'			=> $this->input->post('c'),
+			'd'			=> $this->input->post('d')
+		];
+		$cek = $this->M_master->update('tb_pertanyaan',$where,$data);
+		if (!$cek) {
+			$this->session->set_flashdata('success', 'Data inserted');
+			redirect('admin/pertanyaan','refresh');
+		}
+		else
+		{
+			$this->session->set_flashdata('error', 'Error...');
+			redirect('admin/pertanyaan','refresh');
+		}
+	}
+
+	function hapuspertanyaan($id)
+	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
+		$cek = $this->M_master->delete('tb_pertanyaan',['id_soal' => $id]);
+		if (!$cek) {
+			$this->session->set_flashdata('success', 'Data Deleted');
+			redirect('admin/pertanyaan','refresh');
+		}
+		else
+		{
+			$this->session->set_flashdata('error', 'Error...');
+			redirect('admin/pertanyaan','refresh');
+		}
+	}
+
+
+	/*publish*/
 	function publish()
 	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
 		$responden = $this->M_admin->get_responden_1()->result();
 
 		$hasil = array();
@@ -113,6 +223,10 @@ class Admin extends MY_Controller {
 
 	function detil($id_responden)
 	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
 		$data = [
 			'title'			=> 'Survey',
 			'sub'			=> 'pre publish',
@@ -125,21 +239,49 @@ class Admin extends MY_Controller {
 
 	function aksipublish($id)
 	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
 		$where = ['id_responden' => $id];
 		$this->db->where($where);
 		$this->db->update('tb_hasil', ['published' => '2']);
 		redirect('admin','refresh');
 	}
 
+	/*SARAN*/
 	function saran()
 	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
 		$data = [
 			'title'			=> 'Kritik Dan Saran',
 			'sub'			=> '',
 			'icon'			=> 'clip-file',
-			'rekap'			=> $this->M_master->getWhere('tb_saran',['status'=>'1'])->result()
+			'rekap'			=> $this->M_admin->getSaran()->result()
 		];
 		$this->template->load('tema/index','saran',$data);
+	}
+
+	function tanggapisaran($id)
+	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
+		$cek = $this->M_master->update('tb_saran',['id_responden' => $id],['status' => '2']);
+		if (!$cek) {
+			$this->session->set_flashdata('success', 'Data Updated');
+			redirect('admin/saran','refresh');
+		}
+		else
+		{
+			$this->session->set_flashdata('error', 'Error...');
+			redirect('admin/saran','refresh');
+		}
+
 	}
 
 	function log_out()
@@ -148,14 +290,112 @@ class Admin extends MY_Controller {
 		redirect('survey','refresh');
 	}
 
+	/*cetak*/
+	function cetaklaporan()
+	{
+		$data['tgl_indo']	= $this->M_master->tglindo(date('m'));
+		$data['pengunjung']	= $this->M_master->getall('tb_detil_responden')->num_rows();
+
+		//data umur
+		$up40 	= $this->M_admin->get_umur('up40')->num_rows();
+		$min40 	= $this->M_admin->get_umur('min40')->num_rows();
+		//presentase umur
+		$p40	= $up40/($up40+$min40);
+		$m40 	= $min40/($up40+$min40);
+
+		$data['umur'] = [
+			'up40'	=> [
+				'index'			=> '< 40',
+				'jumlah'		=> $up40,
+				'presentase'	=> number_format($p40*100,2)
+			],
+			'min40'	=> [
+				'index'			=> '>= 40',
+				'jumlah'		=> $min40,
+				'presentase'	=> number_format($m40*100,2)
+			]
+		];
+
+		//data JK
+		$lk 	= $this->M_master->getWhere('tb_detil_responden',['jk' => 'Laki-laki'])->num_rows();
+		$pr 	= $this->M_master->getWhere('tb_detil_responden',['jk' => 'Perempuan'])->num_rows();
+		//presentase umur
+		$plk	= $lk/($lk+$pr);
+		$ppr 	= $pr/($lk+$pr);
+		$data['jk'] = [
+			'laki'	=> [
+				'jk'		=> 'Laki-laki',
+				'jumlah'	=> $lk,
+				'presentase'=> number_format($plk*100,2)
+			],
+			'pr'	=> [
+				'jk'		=> 'Perempuan',
+				'jumlah'	=> $pr,
+				'presentase'=> number_format($ppr*100,2)
+			],
+		];
+
+		//index kepuasan
+		$soal = $this->M_master->getall('tb_pertanyaan')->result();
+		$no = 1;
+		foreach ($soal as $v) {
+			$hasil[$no] = [
+				'kepuasan'	=> $this->_get_nilai($v->id_soal),
+				'id_soal'	=> $v->id_soal,
+				'kategori'	=> $v->kategori,
+				'soal'		=> $v->soal,
+				'sp'		=> $this->_get_rataan($v->id_soal,'d'),
+				'p'			=> $this->_get_rataan($v->id_soal,'c'),
+				'tp'		=> $this->_get_rataan($v->id_soal,'b'),
+				'kec'		=> $this->_get_rataan($v->id_soal,'a'),
+			];
+			$no++;
+		}
+		$data['hasil']	= $hasil;
+		$data['min']	= min($hasil);
+		$data['max']	= max($hasil);
+
+		//Index Kepuasan
+		$kepuasan = $this->_get_kepuasan();
+		if ($kepuasan >88.31){
+			$mutu = 'A';
+			$index = "Sangat Baik";
+		}else if($kepuasan > 76.61){
+			$mutu = 'B';
+			$index = 'Baik';
+		}else if($kepuasan > 65.00){
+			$mutu = 'C';
+			$index = 'Kurang Baik';
+		}
+		else if($kepuasan > 25.00 ) {
+			$mutu = 'D';
+			$index = 'Tidak Baik';
+		}
+		else {
+			$mutu = null;
+		}
+
+		$data['tingkat_kepuasan'] = [
+			'index'			=> $index,
+			'mutu'			=> $mutu,
+			'presentase'	=> $this->_get_kepuasan()
+		];
+		//echo json_encode($data);
+		$this->load->view('cetak/cetak_laporan', $data);
+	}
+
 	function cetaksaran()
 	{
-		$data['rekap']	= $this->M_master->getWhere('tb_saran',['status'=>'1'])->result();
+		$data['rekap']	= $this->M_admin->getSaran()->result();
 		$this->load->view('cetak/cetak_saran', $data);
 	}
 
 	function cetakrekap()
 	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
 		//hasilnya untuk index kepuasan per soal
 		$soal = $this->M_master->getall('tb_pertanyaan')->result();
 		$hasil = array();
@@ -185,6 +425,10 @@ class Admin extends MY_Controller {
 
 	function cetakrekapdetil()
 	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+		
 		$res = $this->M_admin->get_responden_1()->result();
 		$data['soal'] = $this->M_master->getall('tb_pertanyaan')->result();
 		$hasil =array();

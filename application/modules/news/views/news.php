@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="panel">
 			<div class="panel-body">
-				<table class="table" style="font-size: 16px;">
+				<table class="table table-hover" style="font-size: 16px;">
 					<thead>
 						<tr>
 							<th width="10%">News</th>

@@ -201,9 +201,6 @@ class Survey extends MY_Controller {
 		$id 	= $this->input->post('id');
 		$saran 	= $this->input->post('saran');
 
-/*		echo json_encode(array(
-			'id'	=> $id, 'saran' => $saran
-		));*/
 		$jawaban = $this->M_master->getWhere('jawaban_sementara',['id_responden' => $id])->result();
 
 		$data_saran = [
@@ -250,7 +247,8 @@ class Survey extends MY_Controller {
 
 	function reset($id)
 	{
-		$cek 	= $this->M_master->delete('jawaban_sementara',['id_responden' => $id]);
+		$this->M_master->delete('jawaban_sementara',['id_responden' => $id]);
+		$this->M_master->delete('tb_detil_responden',['id_responden' => $id]);
 		redirect('survey','refresh');
 	}
 

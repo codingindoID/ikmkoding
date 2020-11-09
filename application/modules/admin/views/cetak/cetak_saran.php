@@ -5,8 +5,6 @@
 	<style>
 		.head{
 			height: 40px;
-			background-color: blue;
-			color: white;
 			vertical-align: middle;
 			text-align: center;
 		}
@@ -21,13 +19,18 @@
 		}
 	</style>
 </head>
-<body onload="window.print()">
+<body
+ <?php 
+    header("Content-type: application/vnd-ms-excel");
+    header("Content-Disposition: attachment; filename= SURVEY_KEPUASAN_MASYARAKAT_SARAN.xls");
+    ?>>
 	<center><H4>Rekap Saran</H4></center>
 	<table border="1px" id="responden">
 		<thead>
 			<tr class="head">
 				<th class="text-center" width="5%">No</th>
 				<th class="text-center"  width="30%">ID Responden</th>
+				<th class="text-center"  width="30%">Nama Responden</th>
 				<th class="text-center" width="65%">Saran</th>
 			</tr>
 		</thead>
@@ -38,6 +41,7 @@
 				<tr>
 					<td class="text-center"><?php echo  $no++ ?></td>
 					<td class="text-center"><?php echo  $saran->id_responden ?></td>
+					<td class="text-center"><?php echo  $saran->nama ?></td>
 					<td style="word-wrap: break-word;"><?php echo  $saran->saran ?></td>
 				</tr>	
 			<?php endforeach ?>

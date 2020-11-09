@@ -39,6 +39,49 @@ class M_master extends CI_Model {
 	}
 
 
+	function tglindo($bulan)
+	{
+		if ($bulan == '01') {
+			$bulan = 'Januari';
+		}
+		else if ($bulan == '02') {
+			$bulan = 'Februari';
+		}
+		else if ($bulan == '03') {
+			$bulan = 'Maret';
+		}
+		else if ($bulan == '04') {
+			$bulan = 'April';
+		}
+		else if ($bulan == '05') {
+			$bulan = 'Mei';
+		}
+		else if ($bulan == '06') {
+			$bulan = 'Juni';
+		}
+		else if ($bulan == '07') {
+			$bulan = 'Juli';
+		}
+		else if ($bulan == '08') {
+			$bulan = 'Agustus';
+		}
+		else if ($bulan == '09') {
+			$bulan = 'September';
+		}
+		else if ($bulan == '10') {
+			$bulan = 'Oktober';
+		}
+		else if ($bulan == '11') {
+			$bulan = 'November';
+		}
+		else if ($bulan == '12') {
+			$bulan = 'Desember';
+		}
+
+		return $bulan;
+	}
+
+
 }
 
 /* End of file M_master.php */

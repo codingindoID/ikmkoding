@@ -22,7 +22,7 @@
             <div class="inner">
               <h3><?php echo $kepuasan ?><sup>%</sup></h3>
               <p>Index Kepuasan</p>
-              <p style="font-weight: bold; font-size: 20px;"><?php echo strtoupper($tingkat_kepuasan) ?></p>
+              <p style="font-weight: bold; font-size: 20px;"><?php echo strtoupper($tingkat_kepuasan)." " ?><strong>(<?php echo $mutu ?>)</strong></p>
             </div>
             <div class="icon">
               <i class="ion-pie-graph"></i>
