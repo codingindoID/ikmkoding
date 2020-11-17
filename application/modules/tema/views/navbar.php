@@ -4,7 +4,7 @@
     <!-- mini logo for sidebar mini 50x50 pixels -->
     <span class="logo-mini"><b>SK</b>M</span>
     <!-- logo for regular state and mobile devices -->
-    <span class="logo-lg"><b>SKM</b>-App</span>
+    <span class="logo-lg"><b>SKM</b>-Admin</span>
   </a>
   <!-- Header Navbar: style can be found in header.less -->
   <nav class="navbar navbar-static-top">
@@ -38,7 +38,7 @@
             <a href="<?php echo site_url('admin/edit_admin') ?>" class="btn btn-default btn-flat">Edit</a>
           </div>
           <div class="pull-right">
-            <a href="<?php echo site_url('admin/log_out') ?>" class="btn btn-default btn-flat">Sign out</a>
+            <a onclick="return confirm('Keluar Aplikasi?')" href="<?php echo site_url('admin/log_out') ?>" class="btn btn-default btn-flat">Sign out</a>
           </div>
         </li>
       </ul>

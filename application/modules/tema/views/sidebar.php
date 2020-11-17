@@ -9,7 +9,7 @@
         <img src="<?php echo base_url().'assets/'?>dist/img/app.jpg" class="img-circle" alt="User Image">
       </div>
       <div class="pull-left info">
-        <p><?php echo $this->session->userdata('ses_username') ?></p>
+        <p><?php echo $this->session->userdata('ses_disp') ?></p>
         <a href="#"><i class="fa fa-circle text-success"></i>Online</a>
 
       </div>
