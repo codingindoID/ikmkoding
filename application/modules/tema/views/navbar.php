@@ -19,7 +19,7 @@
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
            <img src="<?php echo base_url().'assets/'?>dist/img/app.jpg" class="user-image" alt="User Image">
-           <span class="hidden-xs"><?php echo $this->session->userdata('ses_user'); ?></span>
+           <span class="hidden-xs"><?php echo $this->session->userdata('ses_disp'); ?></span>
 
          </a>
          <ul class="dropdown-menu">
@@ -28,12 +28,15 @@
            <img src="<?php echo base_url().'assets/'?>dist/img/app.jpg" class="img-circle" alt="User Image">
 
            <p>
-            <?php echo $this->session->userdata('ses_user'); ?>
+            <span style="font-size: 13px;"><?php echo $this->session->userdata('ses_disp'); ?></span>
             <small>SKM <br> DPMPTSP Kabupaten Jepara</small>
           </p>
         </li>
         <!-- Menu Footer-->
         <li class="user-footer">
+          <div class="pull-left">
+            <a href="<?php echo site_url('admin/edit_admin') ?>" class="btn btn-default btn-flat">Edit</a>
+          </div>
           <div class="pull-right">
             <a href="<?php echo site_url('admin/log_out') ?>" class="btn btn-default btn-flat">Sign out</a>
           </div>

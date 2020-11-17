@@ -387,6 +387,7 @@ class Survey extends MY_Controller {
 			$user = $this->M_survey->auth($data)->row();
 			$this->session->set_userdata('ses_user',$user->username);
 			$this->session->set_userdata('ses_id',$user->id_admin);
+			$this->session->set_userdata('ses_disp',$user->display);
 			redirect('admin','refresh');
 		}
 		else{

@@ -152,7 +152,7 @@
     <!-- /.box -->
   </section>
 
-  <section class="col-lg-6 connectedSortable">
+  <section class="col-xl-3 col-lg-6 col-md-6 col-xs-12 connectedSortable">
     <!-- solid sales graph -->
     <div class="box box-solid">
       <div class="box-header">
@@ -172,7 +172,7 @@
     </div>
   </section>
 
-  <section class="col-lg-6 connectedSortable">
+  <section class="col-xl-3 col-lg-6 col-md-6 col-xs-12 connectedSortable">
     <!-- solid sales graph -->
     <div class="box box-solid">
       <div class="box-header">
@@ -192,7 +192,7 @@
     </div>
   </section>
 
-  <section class="col-lg-6 connectedSortable">
+  <section class="col-xl-3 col-lg-6 col-md-6 col-xs-12 connectedSortable">
     <!-- solid sales graph -->
     <div class="box box-solid">
       <div class="box-header">
@@ -212,7 +212,7 @@
     </div>
   </section>
 
-  <section class="col-lg-6 connectedSortable">
+  <section class="col-xl-3 col-lg-6 col-md-6 col-xs-12 connectedSortable">
     <!-- Diagram Pilihan-->
     <div class="box box-solid">
       <div class="box-header">

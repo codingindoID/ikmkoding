@@ -11,7 +11,7 @@
  Target Server Version : 100414
  File Encoding         : 65001
 
- Date: 17/11/2020 11:57:03
+ Date: 17/11/2020 20:27:59
 */
 
 SET NAMES utf8mb4;
@@ -25,13 +25,14 @@ CREATE TABLE `admin`  (
   `id_admin` int(5) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `password` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `display` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id_admin`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of admin
 -- ----------------------------
-INSERT INTO `admin` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3');
+INSERT INTO `admin` VALUES (1, 'admin', 'b9b5d80fd5e2593bcc5219ab2dee08c6', 'DPMPTSP');
 
 -- ----------------------------
 -- Table structure for faq
@@ -130,6 +131,8 @@ CREATE TABLE `tb_loket`  (
 -- ----------------------------
 -- Records of tb_loket
 -- ----------------------------
+INSERT INTO `tb_loket` VALUES ('5fb3c4f1b8e52', 'SAMSAT JEPARA', '2020-11-17 19:41:21');
+INSERT INTO `tb_loket` VALUES ('5fb3c5838289c', 'BPJS KETENAGAKERJAAN', '2020-11-17 19:43:47');
 INSERT INTO `tb_loket` VALUES ('asdascas', 'DPMPTSP', '2020-11-17 10:25:11');
 INSERT INTO `tb_loket` VALUES ('jsfsdk', 'BPJS KESEHATAN', '2020-11-17 11:12:54');
 

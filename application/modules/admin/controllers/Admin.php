@@ -88,9 +88,66 @@ class Admin extends MY_Controller {
 		$this->template->load('tema/index','index',$data);
 	} 
 
+	/*ADMIN*/
+	function edit_admin()
+	{
+		$id = $this->session->userdata('ses_id');
+		if ($id == null) {
+			redirect('satpam','refresh');
+		}
+
+		$data = [
+			'title'			=> 'Edit User',
+			'sub'			=> '',
+			'icon'			=> 'fa-pencil',
+			'admin'			=> $this->M_master->getWhere('admin',['id_admin' => $id])->row()
+		];
+
+		$this->template->load('tema/index','edit_admin',$data);
+	}
+
+	function update_admin()
+	{
+		$id = $this->session->userdata('ses_id');
+		if ($id == null) {
+			redirect('satpam','refresh');
+		}
+
+		$password 	= $this->input->post('password');
+		$password2	= $this->input->post('password2');
+
+
+		if ($password != $password2) {
+			$this->session->set_flashdata('error', 'password dan ulang password tidak sama');
+			redirect('admin/edit_admin','refresh');
+		}
+
+		$where = ['id_admin' => $id];
+		$data  = [
+			'username'	=> $this->input->post('username'),
+			'password'	=> md5($password),
+			'display'	=> $this->input->post('display')
+		];
+
+		$cek = $this->M_master->update('admin',$where,$data);
+		if(!$cek){
+			$this->session->set_flashdata('success', 'Data berhasil diupdate, Silahkan login ulang untuk melihat perubahan');
+			redirect('admin/edit_admin','refresh');
+		}
+		else
+		{
+			$this->session->set_flashdata('error', 'update data gagal..');
+			redirect('admin/edit_admin','refresh');
+		}
+	}
+
 	/*LOKET*/
 	function loket()
 	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
 		$data = [
 			'title'			=> 'Monitoring Kepuasan',
 			'sub'			=> 'Loket Pelayanan',
@@ -100,6 +157,85 @@ class Admin extends MY_Controller {
 
 		$this->template->load('tema/index','loket',$data);
 	}
+
+	function detil_loket($id)
+	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
+		$data = $this->M_master->getWhere('tb_loket',['id_loket' => $id])->row();
+		echo json_encode($data);
+	}
+
+	function tambah_loket()
+	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
+		$data = [
+			'id_loket'		=> uniqid(),
+			'nama_loket'	=> $this->input->post('nama')
+		];
+
+		$cek = $this->M_master->input('tb_loket',$data);
+		if(!$cek){
+			$this->session->set_flashdata('success', 'loket berhasil ditambahkan');
+			redirect('admin/loket','refresh');
+		}
+		else
+		{
+			$this->session->set_flashdata('error', 'penambahan loket gagal..');
+			redirect('admin/loket','refresh');
+		}
+	}
+
+	function update_loket()
+	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
+		$data = [
+			'nama_loket'	=> $this->input->post('nama_loket')
+		];
+
+		$where = [
+			'id_loket'		=> $this->input->post('id_loket')
+		];
+
+		$cek = $this->M_master->update('tb_loket',$where,$data);
+		if(!$cek){
+			$this->session->set_flashdata('success', 'loket berhasil diupdate');
+			redirect('admin/loket','refresh');
+		}
+		else
+		{
+			$this->session->set_flashdata('error', 'update loket gagal..');
+			redirect('admin/loket','refresh');
+		}
+	}
+
+	function hapus_loket($id)
+	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam','refresh');
+		}
+
+		$cek = $this->M_master->delete('tb_loket',['id_loket' => $id]);
+		if(!$cek){
+			$this->session->set_flashdata('success', 'loket berhasil dihapus');
+			redirect('admin/loket','refresh');
+		}
+		else
+		{
+			$this->session->set_flashdata('error', 'Hapus loket gagal..');
+			redirect('admin/loket','refresh');
+		}
+	}
+
+
 
 	/*PERTANYAAN*/
 	function pertanyaan()
@@ -470,14 +606,14 @@ class Admin extends MY_Controller {
 		foreach($loket as $loket)
 		{
 			$data[$no] = [
-				'id_loket'		=> $loket->id_loket,
 				'nama_loket'	=> $loket->nama_loket,
+				'id_loket'		=> $loket->id_loket,
 				'responden'		=> $this->M_admin->get_responden_by_loket($loket->id_loket)->num_rows(),
 				'nilai'			=> $this->_get_nilai_loket($loket->id_loket)
 			];
 			$no++;
 		}
-
+		sort($data);
 		return $data;
 	}
 
