@@ -11,7 +11,7 @@
  Target Server Version : 100414
  File Encoding         : 65001
 
- Date: 09/11/2020 15:01:52
+ Date: 17/11/2020 11:57:03
 */
 
 SET NAMES utf8mb4;
@@ -51,7 +51,6 @@ CREATE TABLE `faq`  (
 INSERT INTO `faq` VALUES (1, 'pukul Berapa pelayanan di MPP dibuka?', 'Pelayanan Buka mulai jam : 08.00 - 13.00 WIB', '2020-11-06 20:29:26');
 INSERT INTO `faq` VALUES (6, 'Ada Berapakah Counter Pelayanan Di MPP Jepara', 'Ada 18 Counter Yang Siap Melayani Anda', '2020-11-06 22:32:08');
 INSERT INTO `faq` VALUES (7, 'Bagaimana Dengan Protokol kesehatan di MPP Selama Pandemi?', 'Kami Menerapkan Protokol Kesehatan dengan Baik, Setiap Pengunjung Wajib Memakai Masker Dan Cek Suhu Badan Sebelum Memasuki MPP,.', '2020-11-06 22:33:27');
-INSERT INTO `faq` VALUES (8, 'Apakah perijinan bisa dilakukan secara online?', 'Bisa ', '2020-11-07 16:21:26');
 
 -- ----------------------------
 -- Table structure for jawaban_sementara
@@ -90,7 +89,7 @@ INSERT INTO `news` VALUES (2, 'Mal Pelayanan Publik Dibuka dengan Pembatasan Kun
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_detil_responden`;
 CREATE TABLE `tb_detil_responden`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `id_responden` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `umur` int(255) NULL DEFAULT NULL,
@@ -98,19 +97,10 @@ CREATE TABLE `tb_detil_responden`  (
   `pendidikan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `pekerjaan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `created_date` datetime(0) NULL DEFAULT current_timestamp(0),
+  `status` enum('1','2') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '1',
+  `loket` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 38 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of tb_detil_responden
--- ----------------------------
-INSERT INTO `tb_detil_responden` VALUES (5, '12345', 'Wawan', 29, 'Laki-laki', 'SMA', 'Wiraswasta', '2020-01-01 09:45:18');
-INSERT INTO `tb_detil_responden` VALUES (6, '45664', 'wahda', 65, 'Laki-laki', 'S2 Keatas', 'Wiraswasta', '2020-11-09 09:45:18');
-INSERT INTO `tb_detil_responden` VALUES (7, 'asdasdasd', 'asdasd', 76, 'Laki-laki', 'SMP', 'Wiraswasta', '2020-11-09 09:45:18');
-INSERT INTO `tb_detil_responden` VALUES (8, 'fsdsd', 'wawan', 33, 'Laki-laki', 'SMA', 'Wiraswasta', '2020-11-09 09:45:18');
-INSERT INTO `tb_detil_responden` VALUES (9, '89699', 'jamian', 34, 'Laki-laki', 'S1', 'PNS/TNI/POLRI', '2020-11-09 09:45:18');
-INSERT INTO `tb_detil_responden` VALUES (36, 'ry', 'agus', 45, 'Laki-laki', 'SD Kebawah', 'PNS/TNI/POLRI', '2020-11-09 09:45:18');
-INSERT INTO `tb_detil_responden` VALUES (37, 'ry', 'agus', 45, 'Laki-laki', 'SD Kebawah', 'PNS/TNI/POLRI', '2020-11-09 09:45:18');
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_hasil
@@ -127,53 +117,21 @@ CREATE TABLE `tb_hasil`  (
 ) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of tb_hasil
+-- Table structure for tb_loket
 -- ----------------------------
-INSERT INTO `tb_hasil` VALUES ('125fa407131', '12345', 'U1', 'b', '2020-11-05 21:12:22', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa407154', '12345', 'U2', 'c', '2020-11-05 21:12:22', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa40717a', '12345', 'U3', 'b', '2020-11-05 21:12:22', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa4071a2', '12345', 'U4', 'c', '2020-11-05 21:12:22', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa4071c9', '12345', 'U5', 'b', '2020-11-05 21:12:22', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa4071f2', '12345', 'U6', 'c', '2020-11-05 21:12:22', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa407214', '12345', 'U7', 'c', '2020-11-05 21:12:22', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa40723e', '12345', 'U8', 'c', '2020-11-05 21:12:22', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa40726e', '12345', 'U9', 'c', '2020-11-05 21:12:22', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa40bcce', '45664', 'U1', 'b', '2020-11-05 21:28:42', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa40bcf2', '45664', 'U2', 'c', '2020-11-05 21:28:42', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa40bd28', '45664', 'U3', 'a', '2020-11-05 21:28:42', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa40bd4f', '45664', 'U4', 'b', '2020-11-05 21:28:42', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa40bd76', '45664', 'U5', 'b', '2020-11-05 21:28:42', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa40bdb0', '45664', 'U6', 'd', '2020-11-05 21:28:42', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa40bdde', '45664', 'U7', 'b', '2020-11-05 21:28:42', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa40be5e', '45664', 'U8', 'a', '2020-11-05 21:28:42', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa40be92', '45664', 'U9', 'b', '2020-11-05 21:28:42', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa4114a5', 'asdasdasd', 'U1', 'b', '2020-11-05 21:51:29', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa4114f9', 'asdasdasd', 'U2', 'b', '2020-11-05 21:51:29', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa411520', 'asdasdasd', 'U3', 'c', '2020-11-05 21:51:29', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa41155e', 'asdasdasd', 'U4', 'b', '2020-11-05 21:51:29', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa411584', 'asdasdasd', 'U5', 'b', '2020-11-05 21:51:29', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa4115a7', 'asdasdasd', 'U6', 'b', '2020-11-05 21:51:29', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa4115cc', 'asdasdasd', 'U7', 'b', '2020-11-05 21:51:29', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa4115f2', 'asdasdasd', 'U8', 'c', '2020-11-05 21:51:29', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa41161c', 'asdasdasd', 'U9', 'd', '2020-11-05 21:51:29', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa569b98', 'fsdsd', 'U1', 'b', '2020-11-06 22:27:15', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa569bba', 'fsdsd', 'U2', 'd', '2020-11-06 22:27:15', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa569bf5', 'fsdsd', 'U3', 'c', '2020-11-06 22:27:15', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa569c17', 'fsdsd', 'U4', 'd', '2020-11-06 22:27:15', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa569c46', 'fsdsd', 'U5', 'c', '2020-11-06 22:27:15', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa569c65', 'fsdsd', 'U6', 'd', '2020-11-06 22:27:15', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa569c8a', 'fsdsd', 'U7', 'b', '2020-11-06 22:27:15', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa569caf', 'fsdsd', 'U8', 'd', '2020-11-06 22:27:15', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa569cd1', 'fsdsd', 'U9', 'd', '2020-11-06 22:27:15', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa56b89d', '89699', 'U1', 'c', '2020-11-06 22:28:46', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa56b8ec', '89699', 'U2', 'd', '2020-11-06 22:28:46', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa56b90e', '89699', 'U3', 'd', '2020-11-06 22:28:46', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa56b94a', '89699', 'U4', 'd', '2020-11-06 22:28:46', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa56b970', '89699', 'U5', 'c', '2020-11-06 22:28:46', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa56b990', '89699', 'U6', 'd', '2020-11-06 22:28:46', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa56b9b4', '89699', 'U7', 'b', '2020-11-06 22:28:46', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa56b9d2', '89699', 'U8', 'd', '2020-11-06 22:28:46', '2');
-INSERT INTO `tb_hasil` VALUES ('125fa56b9f8', '89699', 'U9', 'd', '2020-11-06 22:28:46', '2');
+DROP TABLE IF EXISTS `tb_loket`;
+CREATE TABLE `tb_loket`  (
+  `id_loket` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_loket` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `created_date` datetime(0) NULL DEFAULT current_timestamp(0),
+  PRIMARY KEY (`id_loket`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of tb_loket
+-- ----------------------------
+INSERT INTO `tb_loket` VALUES ('asdascas', 'DPMPTSP', '2020-11-17 10:25:11');
+INSERT INTO `tb_loket` VALUES ('jsfsdk', 'BPJS KESEHATAN', '2020-11-17 11:12:54');
 
 -- ----------------------------
 -- Table structure for tb_pekerjaan
@@ -252,15 +210,6 @@ CREATE TABLE `tb_saran`  (
   `created_date` datetime(0) NULL DEFAULT current_timestamp(0),
   `status` enum('1','2') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '1',
   PRIMARY KEY (`id_saran`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of tb_saran
--- ----------------------------
-INSERT INTO `tb_saran` VALUES (8, '12345', 'tingkatkan', '2020-11-05 21:07:43', '1');
-INSERT INTO `tb_saran` VALUES (9, '45664', 'terimakasih\n', '2020-11-05 21:28:02', '1');
-INSERT INTO `tb_saran` VALUES (10, 'asdasdasd', 'ok', '2020-11-05 21:51:19', '1');
-INSERT INTO `tb_saran` VALUES (11, 'fsdsd', 'tingkatkan pelayanan', '2020-11-06 22:20:54', '1');
-INSERT INTO `tb_saran` VALUES (12, '89699', 'oke', '2020-11-06 22:28:37', '1');
+) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

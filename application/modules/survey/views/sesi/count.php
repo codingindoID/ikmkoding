@@ -12,7 +12,7 @@
 
     <div class="row" data-aos="fade-up">
 
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-4 col-md-6">
         <div class="count-box boxc">
           <i class="icofont-simple-smile"></i>
           <span data-toggle="counter-up"><?php echo $kepuasan ?></span>
@@ -21,7 +21,7 @@
           <h4><strong><?php echo $tingkat_kepuasan; ?></strong></h4>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 mt-5 mt-lg-0">
+      <div class="col-lg-4 col-md-6 mt-5 mt-lg-0">
         <div class="count-box boxc">
           <i class="icofont-users-alt-5"></i>
           <span data-toggle="counter-up"><?php echo $pengunjung ?></span>
@@ -29,19 +29,19 @@
         </div>
       </div>
 
-      <div class="col-lg-3 col-md-6 mt-5 mt-md-0">
+<!--       <div class="col-lg-4 col-md-6 mt-5 mt-md-0">
         <div class="count-box boxc">
           <i class="icofont-document-folder"></i>
           <span data-toggle="counter-up">521</span>
           <p>Jumlah Pengajuan</p>
         </div>
       </div>
-
-      <div class="col-lg-3 col-md-6 mt-5 mt-lg-0">
+ -->
+      <div class="col-lg-4 col-md-6 mt-5 mt-lg-0">
         <div class="count-box boxc">
           <i class="icofont-live-support"></i>
-          <span data-toggle="counter-up">400</span>
-          <p>Perijinan Selesai</p>
+          <span data-toggle="counter-up"><?php echo $loket ?></span>
+          <p>Total Loket Pelayanan</p>
         </div>
       </div>
     </div>

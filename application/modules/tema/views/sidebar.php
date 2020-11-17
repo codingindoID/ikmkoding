@@ -46,6 +46,12 @@
         </ul>
       </li>
        <li>
+        <a href="<?php echo site_url('admin/loket') ?>">
+          <i class="fa fa-user-circle fa-black"></i>
+          <span>Loket</span>
+        </a>
+      </li>
+       <li>
         <a href="<?php echo site_url('admin/cetaklaporan') ?>">
           <i class="fa fa-print fa-black"></i>
           <span>Cetak Laporan</span>

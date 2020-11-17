@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="300">
-        <img src="<?php echo base_url().'assets/bot/'?>img/hero-img.png" class="img-fluid animated" alt="">
+        <img src="<?php echo base_url().'assets/bot/'?>img/new-hero.png" class="img-fluid animated" alt="">
       </div>
     </div>
   </div>

@@ -14,6 +14,7 @@ class Survey extends MY_Controller {
 		$this->_auto_reset();
 		$data = [
 			'kepuasan' 		=> $this->_get_kepuasan(),
+			'loket'			=> $this->M_master->getall('tb_loket')->num_rows(),
 			'pendidikan'	=> $this->_get_pendidikan(),
 			'pekerjaan'		=> $this->_get_pekerjaan(),
 			'pengunjung' 	=> $this->M_survey->get_responden(),
@@ -81,7 +82,8 @@ class Survey extends MY_Controller {
 			$data = [
 				'id_responden' 	=> $responden,
 				'pekerjaan'		=> $this->M_master->getall('tb_pekerjaan')->result(),
-				'pendidikan'	=> $this->M_master->getall('tb_pendidikan')->result()
+				'pendidikan'	=> $this->M_master->getall('tb_pendidikan')->result(),
+				'loket'			=> $this->M_master->getall('tb_loket')->result(),
 			];
 			$this->load->view('detil_responden', $data);
 			//$this->pertanyaan($responden);
@@ -90,17 +92,20 @@ class Survey extends MY_Controller {
 
 	function post_detil_responden()
 	{
+		$id_detil = uniqid(12);
 		$data = [
+			'id'			=> $id_detil,
 			'id_responden'	=> $this->input->post('id_responden'),
 			'nama'			=> $this->input->post('nama'),
 			'umur'			=> $this->input->post('umur'),
 			'jk'			=> $this->input->post('jk'),
 			'pekerjaan'		=> $this->input->post('pekerjaan'),
-			'pendidikan'	=> $this->input->post('pendidikan')
+			'pendidikan'	=> $this->input->post('pendidikan'),
+			'loket'			=> $this->input->post('loket')
 		];
 		$input = $this->M_master->input('tb_detil_responden',$data);
 		if (!$input) {
-			$this->pertanyaan($this->input->post('id_responden'));
+			redirect('survey/pertanyaan/'.$this->input->post('id_responden').'/'.$id_detil,'refresh');
 		}
 		else
 		{
@@ -110,7 +115,7 @@ class Survey extends MY_Controller {
 	}
 
 
-	public function pertanyaan($responden)
+	public function pertanyaan($responden,$id_detil)
 	{
 		//$responden		= $this->input->post('noreg');
 		$cek 			= $this->M_survey->cekResponden(['id_responden' => $responden])->row();
@@ -122,43 +127,12 @@ class Survey extends MY_Controller {
 			$data['nsoal'] 		= $this->M_survey->getSoal()->num_rows();
 			$data['soal']		= $this->M_survey->getSoal()->result();
 			$data['noreg'] 		= $responden;
+			$data['id_detil']	= $id_detil;
 			
 			//echo json_encode($data);
 			$this->load->view('quest', $data);
 		}
 		
-	}
-
-	function sendEmail()
-	{
-		$email 		= $this->input->post('email');
-		$nama 		= $this->input->post('nama');
-		$subject 	= $this->input->post('subject');
-		$msg 		= $this->input->post('msg');
-
-		$config = [
-			'protocol' 	=> 'smtp',
-			'smtp_host' => 'ssl://smtp.googlemail.com',
-			'smtp_port' => 465,
-			'smtp_user' => 'agussetiawan@gmail.com',
-			'smtp_pass' => 'agus200191', 
-			'mailtype' 	=> 'html',
-			'charset' 	=> 'iso-8859-1',
-			'wordwrap' 	=> TRUE
-		];
-
-		$this->load->library('email', $config);
-		$this->email->from($email, $nama); 
-		$this->email->to('agussetiawan@gmail.com');
-		$this->email->subject($subject); 
-		$this->email->message($msg); 
-
-         //Send mail 
-		if($this->email->send()) 
-			$this->session->set_flashdata("error","Email sent successfully."); 
-		else 
-			show_error($this->email->print_debugger());
-		//redirect('survey','refresh');
 	}
 
 	function get_soal($param)
@@ -183,17 +157,35 @@ class Survey extends MY_Controller {
 			'jawaban'		=> $this->input->post('jawaban')
 		];
 
-		$cek 	= $this->M_survey->save('jawaban_sementara',$data);
-		if($cek){
-			echo json_encode(array(
-				'hasil' => 'berhasil'
-			));
-		} 
-		else {
-			echo json_encode(array(
-				'hasil' => 'gagal'
-			));
+		$cek_soal = $this->M_master->getWhere('jawaban_sementara',['id_soal' => $this->input->post('id_soal')])->num_rows();
+		if ($cek_soal>0) {
+			$cek 	= $this->M_master->update('jawaban_sementara',['id_soal' => $this->input->post('id_soal')],$data);
+			if($cek){
+				echo json_encode(array(
+					'hasil' => 'berhasil'
+				));
+			} 
+			else {
+				echo json_encode(array(
+					'hasil' => 'gagal'
+				));
+			}
 		}
+		else
+		{
+			$cek 	= $this->M_survey->save('jawaban_sementara',$data);
+			if($cek){
+				echo json_encode(array(
+					'hasil' => 'berhasil'
+				));
+			} 
+			else {
+				echo json_encode(array(
+					'hasil' => 'gagal'
+				));
+			}
+		}
+		
 	}
 
 	function upload_jawaban()

@@ -15,6 +15,8 @@ class M_admin extends CI_Model {
 		return $this->db->get_where('tb_hasil',['published' => '1']);
 	}
 
+
+
 	function join_get_responden_2($kolom,$param)
 	{
 		return $this->db->query('select * from (SELECT DISTINCT id_responden as a FROM tb_hasil where published = 2) as a  , tb_detil_responden  b where  a = b.id_responden and b.'.$kolom.' = "'.$param.'"');
@@ -50,6 +52,28 @@ class M_admin extends CI_Model {
 
 		$this->db->where($date);
 		return $this->db->get_where('tb_detil_responden', [$kolom => 40 ]);
+	}
+
+
+	/*nilai Loket*/
+	function get_nilai_loket($id)
+	{
+		$this->db->join('tb_detil_responden', 'tb_detil_responden.id_responden = tb_hasil.id_responden');
+		$this->db->join('tb_loket', 'tb_detil_responden.loket = tb_loket.id_loket');
+		$this->db->where('tb_loket.id_loket', $id);
+		$this->db->where('tb_hasil.published', '2');
+		return $this->db->get('tb_hasil');
+	}
+
+	function get_responden_by_loket($id)
+	{
+		$this->db->distinct();
+		$this->db->select('tb_hasil.id_responden');
+		$this->db->join('tb_detil_responden', 'tb_detil_responden.id_responden = tb_hasil.id_responden');
+		$this->db->join('tb_loket', 'tb_detil_responden.loket = tb_loket.id_loket');
+		$this->db->where('tb_loket.id_loket', $id);
+		$this->db->where('tb_hasil.published', '2');
+		return $this->db->get('tb_hasil');
 	}
 
 }

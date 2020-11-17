@@ -56,6 +56,7 @@ class Admin extends MY_Controller {
 		}
 		else {
 			$mutu = null;
+			$index = null;
 		}
 		$data['tingkat_kepuasan']	= $index;
 		$data['mutu'] 				= $mutu;
@@ -83,9 +84,22 @@ class Admin extends MY_Controller {
 		$data_short = $this->_get_prioritas($hasil);
 		sort($data_short);
 		$data['rekap'] 	= $data_short;
-		//echo json_encode($data['rekap']);
+		//echo json_encode($data);
 		$this->template->load('tema/index','index',$data);
 	} 
+
+	/*LOKET*/
+	function loket()
+	{
+		$data = [
+			'title'			=> 'Monitoring Kepuasan',
+			'sub'			=> 'Loket Pelayanan',
+			'icon'			=> 'fa-user-circle',
+			'loket'			=> $this->_get_loket(),
+		];
+
+		$this->template->load('tema/index','loket',$data);
+	}
 
 	/*PERTANYAAN*/
 	function pertanyaan()
@@ -448,6 +462,67 @@ class Admin extends MY_Controller {
 
 
 	//private function
+	//loket
+	private function _get_loket()
+	{
+		$loket = $this->M_master->getall('tb_loket')->result();
+		$no = 1;
+		foreach($loket as $loket)
+		{
+			$data[$no] = [
+				'id_loket'		=> $loket->id_loket,
+				'nama_loket'	=> $loket->nama_loket,
+				'responden'		=> $this->M_admin->get_responden_by_loket($loket->id_loket)->num_rows(),
+				'nilai'			=> $this->_get_nilai_loket($loket->id_loket)
+			];
+			$no++;
+		}
+
+		return $data;
+	}
+
+	private function _get_nilai_loket($id)
+	{
+		$data 		= $this->M_admin->get_nilai_loket($id)->result();
+		$responden 	= $this->M_admin->get_responden_by_loket($id)->num_rows();
+		$total_soal	= $this->M_master->getall('tb_pertanyaan')->num_rows();
+
+		$no = 1;
+		$total = 0;
+		foreach($data as $data)
+		{
+			if ($data->jawaban == 'd') {
+				$n = 4;;
+			}
+			else if($data->jawaban == 'c')
+			{
+				$n = 3;
+			}
+			else if ($data->jawaban == 'b') {
+				$n = 2;
+			}
+			else
+			{
+				$n = 1;
+			}
+			$nilai[$no] = [
+				'jawaban' => $n
+			];
+			$total += $nilai[$no]['jawaban'];
+			$no++;
+		}
+
+		$nilai_max = $total_soal*4*$responden;
+		if ($responden > 0) {
+			$kepuasan = ($total/$nilai_max)*100;
+		}
+		else{
+			$kepuasan = 0;
+		}
+
+		return $kepuasan;
+	}
+
 	private function _get_jawaban($id_responden)
 	{
 		$dt	= $this->M_master->getWhere('tb_hasil',['id_responden' => $id_responden])->result();
