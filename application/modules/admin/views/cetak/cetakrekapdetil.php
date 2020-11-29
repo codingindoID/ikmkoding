@@ -33,7 +33,7 @@
 	
 	<center>
 		<strong>PENGOLAHAN SURVEY KEPUASAN MASYARAKAT PER RESPONDEN</strong><br>
-		<strong>DAN PER UNSUR PELAYANAN TAHUN <?php echo date('Y'); ?></strong>
+		<strong>DAN PER UNSUR PELAYANAN  <?php echo $bulan != 'setahun' ? "BULAN ".strtoupper($bulan) : '' ?> TAHUN <?php echo $tahun; ?></strong>
 	</center>
 	<br>
 	<table border="1px">

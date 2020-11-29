@@ -5,7 +5,7 @@ $(document).on('click', '.modal_edit', function(event) {
 	$('input[name="id_loket"]').val(id)
 
 	$.ajax({
-		url:base+'admin/detil_loket/'+id,
+		url:base+'loket/detil_loket/'+id,
 		type: 'get',
 		dataType: 'json',
 	})
@@ -17,9 +17,39 @@ $(document).on('click', '.modal_edit', function(event) {
 	});
 
 	$('#btn_hapus').click(function(event) {
-		var result = confirm('Anda Akan Menghapus Data Ini? Semua data Statistik Terkait akan terhapus..')
-		if (result == true) {
-			location.href = base + "admin/hapus_loket/"+id
-		}
+		Swal.fire({
+			title: 'Apakah Anda Yakin?',
+			text: "Data Terhapus Tidak Dapat Dikembalikan!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Ya, Tetap Hapus!',
+			cancelButtonText: 'Batal'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				location.href = base + "loket/hapus_loket/"+id
+			}
+		})
 	});
+});
+
+/*FILTER LOKET*/
+$('#btn_filter_loket').click(function(event) {
+	var base = $('#base').val()
+	var bulan = $('#bulan_loket').val()
+	var tahun = $('#tahun_loket').val()
+
+	if (bulan == '' || tahun == '') {
+		Swal.fire({
+			icon: 'error',
+			title: 'Oops...',
+			text: 'Parameter Belum Diisi!',
+			footer: 'silahkan isi kolom bulan dan tahun',
+		})
+	}
+	else
+	{
+		location.href = base+'loket/index/'+bulan+'/'+tahun
+	}
 });

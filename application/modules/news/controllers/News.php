@@ -19,7 +19,8 @@ class News extends MY_Controller {
 			'title'			=> 'News',
 			'sub'			=> '',
 			'icon'			=> 'fa-rss-square',
-			'news'			=> $this->M_master->getall('news')->result()
+			'news'			=> $this->M_master->getall('news')->result(),
+			'menu'			=> 'news'
 		];
 
 		
@@ -102,7 +103,8 @@ class News extends MY_Controller {
 			'title'			=> 'FAQ',
 			'sub'			=> '',
 			'icon'			=> 'fa-question',
-			'faq'			=> $this->M_master->getall('faq')->result()
+			'faq'			=> $this->M_master->getall('faq')->result(),
+			'menu'			=> 'faq'
 		];
 
 		$this->template->load('tema/index','faq',$data);	

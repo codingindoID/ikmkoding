@@ -19,7 +19,7 @@
 	?>
 	<p>
 		<h4><center>DINAS PENANAMAN MODAL & PELAYANAN TERPADU SATU PINTU (DPMPTSP) <br>
-			JANUARI s/d <?php echo strtoupper($tgl_indo).' '.date('Y') ?>
+			<?php echo $tgl_indo != 'setahun' ? "JANUARI s/d ".strtoupper($tgl_indo).' '.$tahun : "TAHUN ".$tahun ?>
 		</center></h4>
 	</p>
 	<p>

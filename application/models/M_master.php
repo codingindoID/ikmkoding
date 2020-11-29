@@ -38,6 +38,31 @@ class M_master extends CI_Model {
 		return $this->db->get_where('tb_hasil',['published' => '2'])->num_rows();
 	}
 
+	function get_responden_filter($bulan,$tahun)
+	{
+		if ($bulan == 'setahun') {
+			$awal = date('m',strtotime('2020-01-01'));
+			$where = 'MONTH(created_date) BETWEEN "'.$awal.'" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'" and published="2"';
+		}
+		else
+		{
+			$where = 'MONTH(created_date) = "'.$bulan.'" and YEAR(created_date) = "'.$tahun.'" and published="2"';
+		}
+
+
+		$this->db->distinct();
+		$this->db->select('id_responden');
+		return $this->db->get_where('tb_hasil',$where)->num_rows();
+	}
+
+	function get_responden_filter_2($where)
+	{
+		$this->db->distinct();
+		$this->db->select('id_responden');
+		return $this->db->get_where('tb_hasil',$where)->num_rows();
+	}
+
+
 
 	function tglindo($bulan)
 	{

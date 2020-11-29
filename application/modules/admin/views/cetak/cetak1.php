@@ -6,7 +6,7 @@
    <body>
     <?php 
     header("Content-type: application/vnd-ms-excel");
-    header("Content-Disposition: attachment; filename= SURVEY_KEPUASAN_MASYARAKAT_PER_RESPONDEN.xls");
+    header("Content-Disposition: attachment; filename= SURVEY_KEPUASAN_MASYARAKAT.xls");
     ?>
     <div class="table-responsive">
       <table class="table" border="1" style="border-collapse: collapse;" >

@@ -17,25 +17,35 @@ class Admin extends MY_Controller {
 		}
 	}
 
-	function index()
+	/*FILTER*/
+	function index($bulan = 'setahun',$tahun = false)
 	{
 		if ($this->session->userdata('ses_user') == null) {
 			redirect('satpam','refresh');
 		}
 
+		if ($bulan == 'setahun') {
+			$tahun = date('Y');
+		}
+
 		$data = [
 			'title'			=> 'Dashboard',
 			'sub'			=> '',
+			'tahun'			=> $this->M_master->getall('tahun')->result(),
+			'bulan'			=> $this->M_master->getall('bulan')->result(),
 			'icon'			=> 'clip-home-3',
+			'f_bulan'		=> $bulan,
+			'f_tahun'		=> $tahun,
 			'soal'			=> $this->M_admin->getSoal()->result(),
-			'kepuasan' 		=> $this->_get_kepuasan(),
-			'pendidikan'	=> $this->_get_pendidikan(),
-			'pekerjaan'		=> $this->_get_pekerjaan(),
-			'pengunjung' 	=> $this->M_master->get_responden(),
-			'hasil'			=> $this->_get_hasil(),
-			'responden'		=> $this->M_master->get_responden(),
-			's_publish'		=> $this->M_master->getWhere('tb_hasil',['published' => '2'])->num_rows(),
-			'b_publish'		=> $this->M_master->getWhere('tb_hasil',['published' => '1'])->num_rows()
+			'kepuasan' 		=> $this->_get_kepuasan_filter($bulan,$tahun),
+			'pendidikan'	=> $this->_get_pendidikan_filter($bulan,$tahun),
+			'pekerjaan'		=> $this->_get_pekerjaan_filter($bulan,$tahun),
+			'pengunjung' 	=> $this->M_master->get_responden_filter($bulan,$tahun),
+			'hasil'			=> $this->_get_hasil_filter($bulan,$tahun),
+			'responden'		=> $this->M_master->get_responden_filter($bulan,$tahun),
+			's_publish'		=> $this->M_master->getall('tb_loket')->num_rows(),
+			'b_publish'		=> $this->M_admin->get_blm_publish($bulan,$tahun)->num_rows(),
+			'menu'			=> 'Dashboard'
 		];
 
 		//menentukan tingkat kepuasan
@@ -61,21 +71,20 @@ class Admin extends MY_Controller {
 		$data['tingkat_kepuasan']	= $index;
 		$data['mutu'] 				= $mutu;
 
-
 		//hasilnya untuk index kepuasan per soal
 		$soal = $this->M_master->getall('tb_pertanyaan')->result();
 		$hasil = array();
 		$no = 1;
 		foreach ($soal as $v) {
 			$hasil[$no] = [
-				'kepuasan'	=> $this->_get_nilai($v->id_soal),
+				'kepuasan'	=> $this->_get_nilai_filter($v->id_soal,$bulan,$tahun),
 				'id_soal'	=> $v->id_soal,
 				'kategori'	=> $v->kategori,
 				'soal'		=> $v->soal,
-				'sp'		=> $this->_get_rataan($v->id_soal,'d'),
-				'p'			=> $this->_get_rataan($v->id_soal,'c'),
-				'tp'		=> $this->_get_rataan($v->id_soal,'b'),
-				'kec'		=> $this->_get_rataan($v->id_soal,'a'),
+				'sp'		=> $this->_get_rataan_filter($v->id_soal,'d', $bulan,$tahun),
+				'p'			=> $this->_get_rataan_filter($v->id_soal,'c', $bulan,$tahun),
+				'tp'		=> $this->_get_rataan_filter($v->id_soal,'b', $bulan,$tahun),
+				'kec'		=> $this->_get_rataan_filter($v->id_soal,'a', $bulan,$tahun),
 			];
 			$no++;
 		}
@@ -84,7 +93,7 @@ class Admin extends MY_Controller {
 		$data_short = $this->_get_prioritas($hasil);
 		sort($data_short);
 		$data['rekap'] 	= $data_short;
-		//echo json_encode($data);
+		//echo json_encode($data['kepuasan']);
 		$this->template->load('tema/index','index',$data);
 	} 
 
@@ -100,7 +109,8 @@ class Admin extends MY_Controller {
 			'title'			=> 'Edit User',
 			'sub'			=> '',
 			'icon'			=> 'fa-pencil',
-			'admin'			=> $this->M_master->getWhere('admin',['id_admin' => $id])->row()
+			'admin'			=> $this->M_master->getWhere('admin',['id_admin' => $id])->row(),
+			'menu'			=> 'edit_admin'
 		];
 
 		$this->template->load('tema/index','edit_admin',$data);
@@ -141,102 +151,6 @@ class Admin extends MY_Controller {
 		}
 	}
 
-	/*LOKET*/
-	function loket()
-	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
-		}
-
-		$data = [
-			'title'			=> 'Monitoring Kepuasan',
-			'sub'			=> 'Loket Pelayanan',
-			'icon'			=> 'fa-user-circle',
-			'loket'			=> $this->_get_loket(),
-		];
-
-		$this->template->load('tema/index','loket',$data);
-	}
-
-	function detil_loket($id)
-	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
-		}
-
-		$data = $this->M_master->getWhere('tb_loket',['id_loket' => $id])->row();
-		echo json_encode($data);
-	}
-
-	function tambah_loket()
-	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
-		}
-
-		$data = [
-			'id_loket'		=> uniqid(),
-			'nama_loket'	=> $this->input->post('nama')
-		];
-
-		$cek = $this->M_master->input('tb_loket',$data);
-		if(!$cek){
-			$this->session->set_flashdata('success', 'loket berhasil ditambahkan');
-			redirect('admin/loket','refresh');
-		}
-		else
-		{
-			$this->session->set_flashdata('error', 'penambahan loket gagal..');
-			redirect('admin/loket','refresh');
-		}
-	}
-
-	function update_loket()
-	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
-		}
-
-		$data = [
-			'nama_loket'	=> $this->input->post('nama_loket')
-		];
-
-		$where = [
-			'id_loket'		=> $this->input->post('id_loket')
-		];
-
-		$cek = $this->M_master->update('tb_loket',$where,$data);
-		if(!$cek){
-			$this->session->set_flashdata('success', 'loket berhasil diupdate');
-			redirect('admin/loket','refresh');
-		}
-		else
-		{
-			$this->session->set_flashdata('error', 'update loket gagal..');
-			redirect('admin/loket','refresh');
-		}
-	}
-
-	function hapus_loket($id)
-	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
-		}
-
-		$cek = $this->M_master->delete('tb_loket',['id_loket' => $id]);
-		if(!$cek){
-			$this->session->set_flashdata('success', 'loket berhasil dihapus');
-			redirect('admin/loket','refresh');
-		}
-		else
-		{
-			$this->session->set_flashdata('error', 'Hapus loket gagal..');
-			redirect('admin/loket','refresh');
-		}
-	}
-
-
-
 	/*PERTANYAAN*/
 	function pertanyaan()
 	{
@@ -248,7 +162,8 @@ class Admin extends MY_Controller {
 			'title'		=> 'Dashboard',
 			'sub'		=> 'overview',
 			'icon'		=> 'clip-home-3',
-			'soal'		=> $this->M_admin->getSoal()->result()
+			'soal'		=> $this->M_admin->getSoal()->result(),
+			'menu'		=> 'pertanyaan'
 		];
 		$this->template->load('tema/index','pertanyaan',$data);
 	}
@@ -365,9 +280,10 @@ class Admin extends MY_Controller {
 			'title'			=> 'Survey',
 			'sub'			=> 'pre publish',
 			'icon'			=> 'fa-share',
-			'rekap'			=> $hasil
+			'rekap'			=> $hasil,
+			'menu'			=> 'publish'
 		];
-		//echo json_encode($data);
+		//echo json_encode($responden);
 		$this->template->load('tema/index','publish',$data);
 	}
 
@@ -381,7 +297,8 @@ class Admin extends MY_Controller {
 			'title'			=> 'Survey',
 			'sub'			=> 'pre publish',
 			'icon'			=> 'fa-share',
-			'rekap'			=> $this->M_admin->getdetil($id_responden)
+			'rekap'			=> $this->M_admin->getdetil($id_responden),
+			'menu'			=> 'publish'
 		];
 		$this->template->load('tema/index','detil',$data);
 		//echo json_encode($data);
@@ -410,7 +327,8 @@ class Admin extends MY_Controller {
 			'title'			=> 'Kritik Dan Saran',
 			'sub'			=> '',
 			'icon'			=> 'clip-file',
-			'rekap'			=> $this->M_admin->getSaran()->result()
+			'rekap'			=> $this->M_admin->getSaran()->result(),
+			'menu'			=> 'saran'
 		];
 		$this->template->load('tema/index','saran',$data);
 	}
@@ -441,14 +359,15 @@ class Admin extends MY_Controller {
 	}
 
 	/*cetak*/
-	function cetaklaporan()
+	function cetaklaporan($bulan,$tahun)
 	{
-		$data['tgl_indo']	= $this->M_master->tglindo(date('m'));
+		$data['tgl_indo']	= $this->M_master->tglindo($bulan);
+		$data['tahun']		= $tahun;
 		$data['pengunjung']	= $this->M_master->getall('tb_detil_responden')->num_rows();
 
 		//data umur
-		$up40 	= $this->M_admin->get_umur('up40')->num_rows();
-		$min40 	= $this->M_admin->get_umur('min40')->num_rows();
+		$up40 	= $this->M_admin->get_umur('up40',$bulan,$tahun)->num_rows();
+		$min40 	= $this->M_admin->get_umur('min40',$bulan,$tahun)->num_rows();
 		//presentase umur
 		$p40	= $up40/($up40+$min40);
 		$m40 	= $min40/($up40+$min40);
@@ -467,8 +386,8 @@ class Admin extends MY_Controller {
 		];
 
 		//data JK
-		$lk 	= $this->M_master->getWhere('tb_detil_responden',['jk' => 'Laki-laki'])->num_rows();
-		$pr 	= $this->M_master->getWhere('tb_detil_responden',['jk' => 'Perempuan'])->num_rows();
+		$lk 	= $this->M_admin->getJK('laki-laki',$bulan,$tahun)->num_rows();
+		$pr 	= $this->M_admin->getJK('perempuan',$bulan,$tahun)->num_rows();
 		//presentase umur
 		$plk	= $lk/($lk+$pr);
 		$ppr 	= $pr/($lk+$pr);
@@ -490,14 +409,14 @@ class Admin extends MY_Controller {
 		$no = 1;
 		foreach ($soal as $v) {
 			$hasil[$no] = [
-				'kepuasan'	=> $this->_get_nilai($v->id_soal),
+				'kepuasan'	=> $this->_get_nilai_filter($v->id_soal,$bulan,$tahun),
 				'id_soal'	=> $v->id_soal,
 				'kategori'	=> $v->kategori,
 				'soal'		=> $v->soal,
-				'sp'		=> $this->_get_rataan($v->id_soal,'d'),
-				'p'			=> $this->_get_rataan($v->id_soal,'c'),
-				'tp'		=> $this->_get_rataan($v->id_soal,'b'),
-				'kec'		=> $this->_get_rataan($v->id_soal,'a'),
+				'sp'		=> $this->_get_rataan_filter($v->id_soal,'d',$bulan,$tahun),
+				'p'			=> $this->_get_rataan_filter($v->id_soal,'c',$bulan,$tahun),
+				'tp'		=> $this->_get_rataan_filter($v->id_soal,'b', $bulan,$tahun),
+				'kec'		=> $this->_get_rataan_filter($v->id_soal,'a', $bulan,$tahun),
 			];
 			$no++;
 		}
@@ -506,7 +425,7 @@ class Admin extends MY_Controller {
 		$data['max']	= max($hasil);
 
 		//Index Kepuasan
-		$kepuasan = $this->_get_kepuasan();
+		$kepuasan = $this->_get_kepuasan_filter($bulan,$tahun);
 		if ($kepuasan >88.31){
 			$mutu = 'A';
 			$index = "Sangat Baik";
@@ -528,7 +447,7 @@ class Admin extends MY_Controller {
 		$data['tingkat_kepuasan'] = [
 			'index'			=> $index,
 			'mutu'			=> $mutu,
-			'presentase'	=> $this->_get_kepuasan()
+			'presentase'	=> $this->_get_kepuasan_filter($bulan,$tahun)
 		];
 		//echo json_encode($data);
 		$this->load->view('cetak/cetak_laporan', $data);
@@ -540,7 +459,7 @@ class Admin extends MY_Controller {
 		$this->load->view('cetak/cetak_saran', $data);
 	}
 
-	function cetakrekap()
+	function cetakrekap($bulan,$tahun)
 	{
 		if ($this->session->userdata('ses_user') == null) {
 			redirect('satpam','refresh');
@@ -553,14 +472,14 @@ class Admin extends MY_Controller {
 		$no = 1;
 		foreach ($soal as $v) {
 			$hasil[$no]= [
-				'kepuasan'	=> $this->_get_nilai($v->id_soal),
+				'kepuasan'	=> $this->_get_nilai_filter($v->id_soal,$bulan,$tahun),
 				'id_soal'	=> $v->id_soal,
 				'kategori'	=> $v->kategori,
 				'soal'		=> $v->soal,
-				'sp'		=> $this->_get_rataan($v->id_soal,'d'),
-				'p'			=> $this->_get_rataan($v->id_soal,'c'),
-				'tp'		=> $this->_get_rataan($v->id_soal,'b'),
-				'kec'		=> $this->_get_rataan($v->id_soal,'a'),
+				'sp'		=> $this->_get_rataan_filter($v->id_soal,'d', $bulan,$tahun),
+				'p'			=> $this->_get_rataan_filter($v->id_soal,'c', $bulan,$tahun),
+				'tp'		=> $this->_get_rataan_filter($v->id_soal,'b', $bulan,$tahun),
+				'kec'		=> $this->_get_rataan_filter($v->id_soal,'a', $bulan,$tahun),
 			];
 			$no++;
 		}
@@ -573,13 +492,13 @@ class Admin extends MY_Controller {
 		$this->load->view('cetak/cetak1', $data);
 	}
 
-	function cetakrekapdetil()
+	function cetakrekapdetil($bulan,$tahun)
 	{
 		if ($this->session->userdata('ses_user') == null) {
 			redirect('satpam','refresh');
 		}
 		
-		$res = $this->M_admin->get_responden_1()->result();
+		$res = $this->M_admin->get_responden_1($bulan,$tahun)->result();
 		$data['soal'] = $this->M_master->getall('tb_pertanyaan')->result();
 		$hasil =array();
 		$jawaban = array();
@@ -592,73 +511,14 @@ class Admin extends MY_Controller {
 			$no++;
 		}
 		$data['rekap'] = $hasil;
-		//echo json_encode($data['rekap']);
+		$data['bulan']	= $this->M_master->tglindo($bulan);
+		$data['tahun']	= $tahun;
+		//echo json_encode($data);
 		$this->load->view('cetak/cetakrekapdetil', $data);
 	}
 
 
 	//private function
-	//loket
-	private function _get_loket()
-	{
-		$loket = $this->M_master->getall('tb_loket')->result();
-		$no = 1;
-		foreach($loket as $loket)
-		{
-			$data[$no] = [
-				'nama_loket'	=> $loket->nama_loket,
-				'id_loket'		=> $loket->id_loket,
-				'responden'		=> $this->M_admin->get_responden_by_loket($loket->id_loket)->num_rows(),
-				'nilai'			=> $this->_get_nilai_loket($loket->id_loket)
-			];
-			$no++;
-		}
-		sort($data);
-		return $data;
-	}
-
-	private function _get_nilai_loket($id)
-	{
-		$data 		= $this->M_admin->get_nilai_loket($id)->result();
-		$responden 	= $this->M_admin->get_responden_by_loket($id)->num_rows();
-		$total_soal	= $this->M_master->getall('tb_pertanyaan')->num_rows();
-
-		$no = 1;
-		$total = 0;
-		foreach($data as $data)
-		{
-			if ($data->jawaban == 'd') {
-				$n = 4;;
-			}
-			else if($data->jawaban == 'c')
-			{
-				$n = 3;
-			}
-			else if ($data->jawaban == 'b') {
-				$n = 2;
-			}
-			else
-			{
-				$n = 1;
-			}
-			$nilai[$no] = [
-				'jawaban' => $n
-			];
-			$total += $nilai[$no]['jawaban'];
-			$no++;
-		}
-
-		$nilai_max = $total_soal*4*$responden;
-		if ($responden > 0) {
-			$kepuasan = ($total/$nilai_max)*100;
-		}
-		else{
-			$kepuasan = 0;
-		}
-
-		return $kepuasan;
-	}
-
 	private function _get_jawaban($id_responden)
 	{
 		$dt	= $this->M_master->getWhere('tb_hasil',['id_responden' => $id_responden])->result();
@@ -721,114 +581,6 @@ class Admin extends MY_Controller {
 		return $hasil;
 	}
 
-
-	private function _get_hasil()
-	{
-		$sangat_puas 	= $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'd'])->num_rows();
-		$puas 		 	= $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'c'])->num_rows();
-		$tidak_puas 	= $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'b'])->num_rows();
-		$kecewa 		= $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'a'])->num_rows();
-
-		$all = $sangat_puas+$puas+$tidak_puas+$kecewa;
-
-		if($all != 0)
-		{
-			$data = [
-				[
-					'name' 	=> 'sangat_puas',
-					/*'y'		=> floatval(number_format(($sangat_puas/$all)*100,2)),*/
-					'y'		=> $sangat_puas,
-					'color' => '#00FF00'
-				],
-				[
-					'name' 	=> 'puas',
-					/*'y'		=> floatval(number_format(($puas/$all)*100,2)),*/
-					'y'		=> $puas,
-					'color' => 'blue'
-				],
-				[
-					'name' 	=> 'tidak_puas',
-					/*'y'		=> floatval(number_format(($tidak_puas/$all)*100,2)),*/
-					'y'		=> $tidak_puas,
-					'color' => 'purple'
-				],
-				[
-					'name' 	=> 'kecewa',
-					/*'y'		=> floatval(number_format(($kecewa/$all)*100,2)),*/
-					'y'		=> $kecewa,
-					'color' => 'red'
-				]
-			];
-			return $data;
-		}
-		else
-		{
-			return null;
-		}	
-	}
-
-	private function _get_pendidikan()
-	{
-		$pendidikan = $this->M_master->getall('tb_pendidikan')->result();
-		$no = 1;
-		foreach ($pendidikan as $p) {
-			$hasil[$no] = [
-				'pendidikan'	=> $p->pendidikan,
-				'jumlah'		=> $this->M_admin->join_get_responden_2('pendidikan',$p->pendidikan)->num_rows()
-			];
-			$no++;
-		}
-		return $hasil;
-	}
-
-	private function _get_pekerjaan()
-	{
-		$pekerjaan = $this->M_master->getall('tb_pekerjaan')->result();
-		$no = 1;
-		foreach ($pekerjaan as $p) {
-			$hasil[$no] = [
-				'pekerjaan'		=> $p->pekerjaan,
-				'jumlah'		=> $this->M_admin->join_get_responden_2('pekerjaan',$p->pekerjaan)->num_rows()
-			];
-			$no++;
-		}
-		return $hasil;
-	}
-
-	private function _get_kepuasan()
-	{
-		$total = $this->M_master->getall('tb_hasil')->num_rows();
-		$soal = $this->M_master->getall('tb_pertanyaan')->num_rows();
-		$total_responden = $this->M_master->get_responden();
-		$a = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'a'])->num_rows();
-		$b = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'b'])->num_rows();
-		$c = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'c'])->num_rows();
-		$d = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'd'])->num_rows();
-
-		if ($total_responden != 0) {
-			$kepuasan = (($d*4)+($c*3)+($b*2)+($a*1))/($total_responden*4*$soal);
-			return number_format(($kepuasan*100),2);
-		}
-		return 0;
-	}
-
-	private function _get_nilai($id)
-	{
-		$total = $this->M_master->getall('tb_hasil')->num_rows();
-		$soal = $this->M_master->getall('tb_pertanyaan')->num_rows();
-		$total_responden = $this->M_master->get_responden();
-		$a = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'a','id_soal' => $id])->num_rows();
-		$b = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'b','id_soal' => $id])->num_rows();
-		$c = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'c','id_soal' => $id])->num_rows();
-		$d = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => 'd','id_soal' => $id])->num_rows();
-
-		if ($total_responden != 0) {
-			$kepuasan = (($d*4)+($c*3)+($b*2)+($a*1))/($total_responden);
-			return number_format($kepuasan,2);
-		}
-		return 0;
-	}
-
 	private function _get_rataan($id_soal,$jawaban)
 	{
 		$data = $this->M_master->getWhere('tb_hasil',['published' => '2','jawaban' => $jawaban,'id_soal' => $id_soal])->num_rows();
@@ -845,6 +597,172 @@ class Admin extends MY_Controller {
 
 		$kepuasan = (($d*4)+($c*3)+($b*2)+($a*1))/($soal);
 		return number_format($kepuasan,2);
+	}
+
+
+	/*PRIVATE FUNCTION FILTER*/
+	private function _get_kepuasan_filter($bulan,$tahun)
+	{
+		if ($bulan == 'setahun') {
+			$where = 'MONTH(created_date) BETWEEN "01" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'" and published = "2"';
+			$where_a = 'published = "2" and jawaban = "a" and MONTH(created_date) BETWEEN "01" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'"';
+			$where_b = 'published = "2" and jawaban = "b" and MONTH(created_date) BETWEEN "01" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'"';
+			$where_c = 'published = "2" and jawaban = "c" and MONTH(created_date) BETWEEN "01" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'"';
+			$where_d = 'published = "2" and jawaban = "d" and MONTH(created_date) BETWEEN "01" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'"';
+		}
+		else
+		{
+			$where = 'MONTH(created_date) = "'.$bulan.'" and YEAR(created_date) = "'.$tahun.'" and published = "2"';
+			$where_a = 'published = "2" and jawaban = "a" and MONTH(created_date) = "'.$bulan.'"  and YEAR(created_date) = "'.$tahun.'"';
+			$where_b = 'published = "2" and jawaban = "b" and MONTH(created_date) = "'.$bulan.'"  and YEAR(created_date) = "'.$tahun.'"';
+			$where_c = 'published = "2" and jawaban = "c" and MONTH(created_date) = "'.$bulan.'"  and YEAR(created_date) = "'.$tahun.'"';
+			$where_d = 'published = "2" and jawaban = "d" and MONTH(created_date) = "'.$bulan.'"  and YEAR(created_date) = "'.$tahun.'"';
+		}
+
+		$total = $this->M_master->getWhere('tb_hasil', $where)->num_rows();
+		$soal = $this->M_master->getall('tb_pertanyaan')->num_rows();
+		$total_responden = $this->M_master->get_responden_filter($bulan,$tahun);
+		$a = $this->M_master->getWhere('tb_hasil', $where_a )->num_rows();
+		$b = $this->M_master->getWhere('tb_hasil', $where_b )->num_rows();
+		$c = $this->M_master->getWhere('tb_hasil', $where_c )->num_rows();
+		$d = $this->M_master->getWhere('tb_hasil', $where_d )->num_rows();
+
+		if ($total_responden != 0) {
+			$kepuasan = (($d*4)+($c*3)+($b*2)+($a*1))/($total_responden*4*$soal);
+			return number_format(($kepuasan*100),2);
+		}
+		return 0;
+	}
+
+	private function _get_pendidikan_filter($bulan,$tahun)
+	{
+		$pendidikan = $this->M_master->getall('tb_pendidikan')->result();
+		$no = 1;
+		foreach ($pendidikan as $p) {
+			$hasil[$no] = [
+				'pendidikan'	=> $p->pendidikan,
+				'jumlah'		=> $this->M_admin->join_get_responden_2_filter('pendidikan',$p->pendidikan,$bulan,$tahun)->num_rows()
+			];
+			$no++;
+		}
+		return $hasil;
+	}
+
+	private function _get_pekerjaan_filter($bulan,$tahun)
+	{
+		$pekerjaan = $this->M_master->getall('tb_pekerjaan')->result();
+		$no = 1;
+		foreach ($pekerjaan as $p) {
+			$hasil[$no] = [
+				'pekerjaan'		=> $p->pekerjaan,
+				'jumlah'		=> $this->M_admin->join_get_responden_2_filter('pekerjaan',$p->pekerjaan,$bulan,$tahun)->num_rows()
+			];
+			$no++;
+		}
+		return $hasil;
+	}
+
+	private function _get_hasil_filter($bulan,$tahun)
+	{
+		if ($bulan == 'setahun') {
+			$where_a = 'published = "2" and jawaban = "a" and MONTH(created_date) BETWEEN "01" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'"';
+			$where_b = 'published = "2" and jawaban = "b" and MONTH(created_date) BETWEEN "01" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'"';
+			$where_c = 'published = "2" and jawaban = "c" and MONTH(created_date) BETWEEN "01" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'"';
+			$where_d = 'published = "2" and jawaban = "d" and MONTH(created_date) BETWEEN "01" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'"';
+		}
+		else
+		{
+			$where_a = 'published = "2" and jawaban = "a" and MONTH(created_date) = "'.$bulan.'"  and YEAR(created_date) = "'.$tahun.'"';
+			$where_b = 'published = "2" and jawaban = "b" and MONTH(created_date) = "'.$bulan.'"  and YEAR(created_date) = "'.$tahun.'"';
+			$where_c = 'published = "2" and jawaban = "c" and MONTH(created_date) = "'.$bulan.'"  and YEAR(created_date) = "'.$tahun.'"';
+			$where_d = 'published = "2" and jawaban = "d" and MONTH(created_date) = "'.$bulan.'"  and YEAR(created_date) = "'.$tahun.'"';
+		}
+
+		$sangat_puas 	= $this->M_master->getWhere('tb_hasil',$where_d)->num_rows();
+		$puas 		 	= $this->M_master->getWhere('tb_hasil',$where_c)->num_rows();
+		$tidak_puas 	= $this->M_master->getWhere('tb_hasil',$where_b)->num_rows();
+		$kecewa 		= $this->M_master->getWhere('tb_hasil',$where_a)->num_rows();
+
+		$all = $sangat_puas+$puas+$tidak_puas+$kecewa;
+
+		if($all != 0)
+		{
+			$data = [
+				[
+					'name' 	=> 'sangat_puas',
+					'y'		=> $sangat_puas,
+					'color' => '#00FF00'
+				],
+				[
+					'name' 	=> 'puas',
+					'y'		=> $puas,
+					'color' => 'blue'
+				],
+				[
+					'name' 	=> 'tidak_puas',
+					'y'		=> $tidak_puas,
+					'color' => 'purple'
+				],
+				[
+					'name' 	=> 'kecewa',
+					'y'		=> $kecewa,
+					'color' => 'red'
+				]
+			];
+			return $data;
+		}
+		else
+		{
+			return null;
+		}	
+	}
+
+	private function _get_nilai_filter($id,$bulan,$tahun)
+	{
+		if ($bulan == 'setahun') {
+			$awal = date('m',strtotime('2020-01-01'));
+			$where = 'id_soal = "'.$id.'" and MONTH(created_date) BETWEEN "'.$awal.'" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'" and published="2"';
+			$where_a = 'id_soal = "'.$id.'" and published = "2" and jawaban = "a" and MONTH(created_date) BETWEEN "'.$awal.'" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'"';
+			$where_b = 'id_soal = "'.$id.'" and published = "2" and jawaban = "b" and MONTH(created_date) BETWEEN "'.$awal.'" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'" ';
+			$where_c = 'id_soal = "'.$id.'" and published = "2" and jawaban = "c" and MONTH(created_date) BETWEEN "'.$awal.'" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'"';
+			$where_d = 'id_soal = "'.$id.'" and published = "2" and jawaban = "d" and MONTH(created_date) BETWEEN "'.$awal.'" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'"';
+		}
+		else
+		{
+			$where = 'MONTH(created_date) = "'.$bulan.'" and YEAR(created_date) = "'.$tahun.'" and id_soal = "'.$id.'" and published="2"';
+			$where_a = 'published = "2" and jawaban = "a" and MONTH(created_date) = "'.$bulan.'"  and YEAR(created_date) = "'.$tahun.'" and id_soal = "'.$id.'"';
+			$where_b = 'published = "2" and jawaban = "b" and MONTH(created_date) = "'.$bulan.'"  and YEAR(created_date) = "'.$tahun.'" and id_soal = "'.$id.'"';
+			$where_c = 'published = "2" and jawaban = "c" and MONTH(created_date) = "'.$bulan.'"  and YEAR(created_date) = "'.$tahun.'" and id_soal = "'.$id.'"';
+			$where_d = 'published = "2" and jawaban = "d" and MONTH(created_date) = "'.$bulan.'"  and YEAR(created_date) = "'.$tahun.'" and id_soal = "'.$id.'"';
+		}
+
+		//$total = $this->M_master->getWhere('tb_hasil',$where)->num_rows();
+		$soal = $this->M_master->getall('tb_pertanyaan')->num_rows();
+		$total_responden = $this->M_master->get_responden_filter($bulan,$tahun);
+
+		$a = $this->M_master->getWhere('tb_hasil',$where_a)->num_rows();
+		$b = $this->M_master->getWhere('tb_hasil',$where_b)->num_rows();
+		$c = $this->M_master->getWhere('tb_hasil',$where_c)->num_rows();
+		$d = $this->M_master->getWhere('tb_hasil',$where_d)->num_rows();
+
+		if ($total_responden != 0) {
+			$kepuasan = (($d*4)+($c*3)+($b*2)+($a*1))/$total_responden;
+			return number_format($kepuasan,2);
+		}
+		return 0;
+	}
+
+	private function _get_rataan_filter($id_soal,$jawaban,$bulan,$tahun)
+	{
+		if ($bulan == 'setahun') {
+			$where = 'MONTH(created_date) BETWEEN "01" AND "'.date('m').'" and YEAR(created_date) = "'.$tahun.'" and id_soal = "'.$id_soal.'" and jawaban = "'.$jawaban.'" and published="2"';
+		}
+		else
+		{
+			$where = 'MONTH(created_date) = "'.$bulan.'" and YEAR(created_date) = "'.$tahun.'" and id_soal = "'.$id_soal.'" and jawaban = "'.$jawaban.'" and published="2"';
+		}
+		$data = $this->M_master->getWhere('tb_hasil',$where)->num_rows();
+		return $data;
 	}
 
 

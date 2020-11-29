@@ -1,4 +1,7 @@
-
+<?php 
+$menu_admin = ['pertanyaan', 'publish','saran'];
+$menu_news  = ['news', 'faq'];
+?>
 <!-- Left side column. contains the logo and sidebar -->
 <aside class="main-sidebar">
   <!-- sidebar: style can be found in sidebar.less -->
@@ -24,39 +27,42 @@
           <i class="fa fa-mail-forward "></i> <span>FrontEnd</span>
         </a>
       </li>
-      <li class="treeview">
+      <li class="treeview" >
         <a href="#">
           <i class="fa fa-tasks fa-black"></i>
           <span>Admin</span>
         </a>
-        <ul id="menu_surat" class="treeview-menu">
-          <li><a href="<?php echo site_url('admin/pertanyaan') ?>"><i class="fa  fa-edit"></i>Pertanyaan</a></li>
-          <li><a href="<?php echo site_url('admin/publish') ?>"><i class="fa fa-send"></i>Publish</a></li>
-           <li><a href="<?php echo site_url('admin/saran') ?>"><i class="fa fa-file"></i>Kritik dan Saran</a></li>
+        <ul class="treeview-menu" <?php if(in_array($menu, $menu_admin , true)) {echo 'style="display : block"';} ?> >
+          <li <?php echo $menu=='pertanyaan' ? 'class="active"' : '' ?>><a href="<?php echo site_url('admin/pertanyaan') ?>"><i class="fa  fa-edit"></i>Pertanyaan</a></li>
+          <li <?php echo $menu=='publish' ? 'class="active"' : '' ?>><a href="<?php echo site_url('admin/publish') ?>"><i class="fa fa-send"></i>Publish</a></li>
+          <li <?php echo $menu=='saran' ? 'class="active"' : '' ?>><a href="<?php echo site_url('admin/saran') ?>"><i class="fa fa-file"></i>Kritik dan Saran</a></li>
         </ul>
       </li>
-       <li class="treeview">
+      <li class="treeview">
         <a href="#">
           <i class="fa fa-bullhorn fa-black"></i>
           <span>News & FAQ</span>
         </a>
-        <ul id="menu_surat" class="treeview-menu">
-          <li><a href="<?php echo site_url('news/index') ?>"><i class="fa fa-rss-square"></i>News</a></li>
-          <li><a href="<?php echo site_url('news/FAQ') ?>"><i class="fa  fa-question"></i>FAQ</a></li>
+        <ul id="menu_surat" class="treeview-menu" <?php if(in_array($menu, $menu_news , true)) {echo 'style="display : block"';} ?>>
+          <li <?php echo $menu=='news' ? 'class="active"' : '' ?>><a href="<?php echo site_url('news/index') ?>"><i class="fa fa-rss-square"></i>News</a></li>
+          <li <?php echo $menu=='faq' ? 'class="active"' : '' ?>><a href="<?php echo site_url('news/FAQ') ?>"><i class="fa  fa-question"></i>FAQ</a></li>
         </ul>
       </li>
-       <li>
-        <a href="<?php echo site_url('admin/loket') ?>">
+      <li <?php echo $menu=='loket' ? 'class="active"' : '' ?>>
+        <a href="<?php echo site_url('loket') ?>">
           <i class="fa fa-user-circle fa-black"></i>
           <span>Loket</span>
         </a>
       </li>
-       <li>
-        <a href="<?php echo site_url('admin/cetaklaporan') ?>">
-          <i class="fa fa-print fa-black"></i>
-          <span>Cetak Laporan</span>
-        </a>
-      </li>
+      <?php if ($menu == 'Dashboard'): ?>
+        <li>
+          <a href="#" id="cetak_laporan_akhir">
+            <i class="fa fa-print fa-black"></i>
+            <span>Cetak Laporan</span>
+          </a>
+        </li>
+      <?php endif ?>
+      
     </section>
     <!-- /.sidebar -->
   </aside>

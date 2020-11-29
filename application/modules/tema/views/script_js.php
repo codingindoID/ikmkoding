@@ -33,15 +33,7 @@
 
 <!-- Select2 -->
 <script src="<?php echo base_url().'assets/'?>bower_components/select2/dist/js/select2.full.min.js"></script>
-
-<!-- button -->
-<script src="<?php echo base_url().'assets/bt_datatable/'?>dataTables.buttons.min.js"></script>
-<script src="<?php echo base_url().'assets/bt_datatable/'?>buttons.flash.min.js"></script>
-<script src="<?php echo base_url().'assets/bt_datatable/'?>jszip.min.js"></script>
-<script src="<?php echo base_url().'assets/bt_datatable/'?>pdfmake.min.js"></script>
-<script src="<?php echo base_url().'assets/bt_datatable/'?>vfs_fonts.js"></script>
-<script src="<?php echo base_url().'assets/bt_datatable/'?>buttons.html5.min.js"></script>
-<script src="<?php echo base_url().'assets/bt_datatable/'?>buttons.print.min.js"></script>
+<script src="<?php echo base_url().'assets/'?>js/jsbaru/js_filter.js" ></script>
 
 <script>
 	$(document).ready( function () {
