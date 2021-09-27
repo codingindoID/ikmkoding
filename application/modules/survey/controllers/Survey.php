@@ -65,31 +65,30 @@ class Survey extends MY_Controller {
 		$this->load->view('index',$data);
 	}
 
-/*	public function cek_user()
+	function userToken()
 	{
-		$responden		= $this->input->post('noreg');
-		if ($responden == null || $responden == '') {
-			$this->session->set_flashdata('error','Nomor registrasi belum diisi');
-			redirect('survey','refresh');
-		}
-		$cek = $this->M_master->getWhere('tb_hasil',['id_responden' => $responden])->num_rows();
-		if ($cek > 0) {
-			$this->session->set_flashdata('error','Anda Sudah Pernah Mengisi');
-			redirect('survey','refresh');
-		}
-		else
-		{
-			$data = [
-				'id_responden' 	=> $responden,
-				'pekerjaan'		=> $this->M_master->getall('tb_pekerjaan')->result(),
-				'pendidikan'	=> $this->M_master->getall('tb_pendidikan')->result(),
-				'loket'			=> $this->M_master->getall('tb_loket')->result(),
-			];
-			$this->load->view('detil_responden', $data);
-			//$this->pertanyaan($responden);
-		}
+		$base = "https://atompp.jepara.go.id/";
+		$arrContextOptions = array(
+			"ssl" => array(
+				"verify_peer" => false,
+				"verify_peer_name" => false,
+			),
+		);
+
+		$path 	= $base."api/loket";
+		$loket 	= file_get_contents($path, false, stream_context_create($arrContextOptions));
+		$loket 	= json_decode($loket);
+
+		$data = [
+			'id_responden' 	=> uniqid(),
+			'pekerjaan'		=> $this->M_master->getall('tb_pekerjaan')->result(),
+			'pendidikan'	=> $this->M_master->getall('tb_pendidikan')->result(),
+			'loket'			=> $loket
+		];
+		$this->load->view('detil_responden', $data);
 	}
-	*/
+
+
 	public function cek_user()
 	{
 		$no_antri		= strtoupper($this->input->post('no_antri'));
@@ -142,7 +141,6 @@ class Survey extends MY_Controller {
 					//'loket'			=> $this->M_master->getall('tb_loket')->result(),
 				];
 				$this->load->view('detil_responden', $data);
-				//$this->pertanyaan($responden);
 			}
 		}
 		else
