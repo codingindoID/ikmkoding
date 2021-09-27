@@ -14,32 +14,6 @@ class Api extends MY_Controller {
 		$data = $this->M_api->indexKepuasan();
 		echo json_encode($data);
 	}
-
-	function apiPerijinan()
-	{	
-		$username = $this->input->post('username');
-		$password = $this->input->post('password');
-
-		$arrContextOptions = array(
-			"ssl" => array(
-				"verify_peer" => false,
-				"verify_peer_name" => false,
-			),
-		);
-
-		$base = "http://localhost/perijinan_v2/";
-		//$base = "https://atompp.jepara.go.id/";
-		$path = $base."api/totalPerijinan/".$username.'/'.$password;
-		$data = file_get_contents($path, false, stream_context_create($arrContextOptions));
-		$data = json_decode($data);
-
-		$res = [
-			'index_kepuasan_SKM'	=> $this->indexKepuasan(),
-			'perijinan'				=> $data
-		];
-
-		echo json_encode($res);
-	}
 }
 
 /* End of file Api.php */
