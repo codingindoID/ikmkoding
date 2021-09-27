@@ -49,12 +49,12 @@ $menu_news  = ['news', 'faq'];
           <li <?php echo $menu=='faq' ? 'class="active"' : '' ?>><a href="<?php echo site_url('news/FAQ') ?>"><i class="fa  fa-question"></i>FAQ</a></li>
         </ul>
       </li>
-
+<!-- 
       <li class="header" style="color:red"><strong>MENU KHUSUS</strong></li>
       <li style="margin-top: -1em">
         <a href="<?php echo site_url('khusus') ?>" style="color:red"><i class="fa fa-info-circle"></i>Rekap Khusus</a>
       </li>
-
+ -->
 
 <!--      <li <?php echo $menu=='loket' ? 'class="active"' : '' ?>>
         <a href="<?php echo site_url('loket') ?>">
