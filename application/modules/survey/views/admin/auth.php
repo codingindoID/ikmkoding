@@ -25,7 +25,7 @@
     					<div class="phone">
     						<i class="icofont-phone"></i>
     						<h4>telp:</h4>
-    						<p>+1 5589 55488 55s</p>
+    						<p>-</p>
     					</div>
 
     				</div>

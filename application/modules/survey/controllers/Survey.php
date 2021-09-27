@@ -65,7 +65,7 @@ class Survey extends MY_Controller {
 		$this->load->view('index',$data);
 	}
 
-	public function cek_user()
+/*	public function cek_user()
 	{
 		$responden		= $this->input->post('noreg');
 		if ($responden == null || $responden == '') {
@@ -88,6 +88,69 @@ class Survey extends MY_Controller {
 			$this->load->view('detil_responden', $data);
 			//$this->pertanyaan($responden);
 		}
+	}
+	*/
+	public function cek_user()
+	{
+		$no_antri		= strtoupper($this->input->post('no_antri'));
+		$tgl_antri		= $this->input->post('tgl_antri');
+		if ($no_antri == null || $no_antri == '' || $tgl_antri == null || $tgl_antri == '') {
+			$this->session->set_flashdata('error','Isian Kurang Lengkap');
+			redirect('survey','refresh');
+		}
+
+		$arrContextOptions = array(
+			"ssl" => array(
+				"verify_peer" => false,
+				"verify_peer_name" => false,
+			),
+		);
+
+		//$base = "http://localhost/loket_dpmptsp/";
+		$base = "https://atompp.jepara.go.id/";
+		$path = $base."api/cekAntri/".$no_antri.'/'.$tgl_antri;
+		$data = file_get_contents($path, false, stream_context_create($arrContextOptions));
+		$data = json_decode($data);
+		
+		$tgl = date('dmY', strtotime($tgl_antri));
+		if ($data->success == 1) {
+
+			$cek = $this->M_master->getWhere('tb_hasil',['id_responden' => $no_antri.$tgl])->num_rows();
+			if ($cek > 0) {
+				$this->session->set_flashdata('error','Anda Sudah Pernah Mengisi');
+				redirect('survey','refresh');
+			}
+			else
+			{
+				$arrContextOptions = array(
+					"ssl" => array(
+						"verify_peer" => false,
+						"verify_peer_name" => false,
+					),
+				);
+
+				$path 	= $base."api/loket";
+				$loket 	= file_get_contents($path, false, stream_context_create($arrContextOptions));
+				$loket 	= json_decode($loket);
+
+
+				$data = [
+					'id_responden' 	=> $no_antri.$tgl,
+					'pekerjaan'		=> $this->M_master->getall('tb_pekerjaan')->result(),
+					'pendidikan'	=> $this->M_master->getall('tb_pendidikan')->result(),
+					'loket'			=> $loket
+					//'loket'			=> $this->M_master->getall('tb_loket')->result(),
+				];
+				$this->load->view('detil_responden', $data);
+				//$this->pertanyaan($responden);
+			}
+		}
+		else
+		{
+			$this->session->set_flashdata('error','No Antrian Tidak Terdaftar');
+			redirect('survey','refresh');
+		}
+
 	}
 
 	function post_detil_responden()

@@ -18,10 +18,10 @@
                   <form method="post" action="<?php echo site_url('survey/post_detil_responden') ?>">
                     <div class="form-group">
                       <label for="loket">Loket Pelayanan</label>
-                      <select class="form-control" name="loket" id="loket" required>
+                      <select class="form-control" name="loket" id="loket">
                         <option value="">--pilih loket--</option>
                         <?php foreach($loket as $loket) :  ?>
-                          <option value="<?php echo $loket->id_loket ?>"><?php echo $loket->nama_loket ?></option>
+                          <option value="<?php echo $loket->id_loket ?>"><?php echo $loket->jenis_layanan ?></option>
                         <?php endforeach ?>
                       </select>
                     </div>

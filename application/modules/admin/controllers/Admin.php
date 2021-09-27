@@ -271,7 +271,8 @@ class Admin extends MY_Controller {
 		foreach ($responden as $h) {
 			$hasil[$no]	= [
 				'id_responden'	=> $h->id_responden,
-				'rata'			=> $this->_get_rataan_2($h->id_responden)
+				'rata'			=> $this->_get_rataan_2($h->id_responden),
+				'tanggal'		=> $this->M_admin->get_tanggal_responden($h->id_responden),
 			];
 			$no++;
 		}
@@ -764,7 +765,6 @@ class Admin extends MY_Controller {
 		$data = $this->M_master->getWhere('tb_hasil',$where)->num_rows();
 		return $data;
 	}
-
 
 }
 

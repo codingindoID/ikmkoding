@@ -37,6 +37,7 @@ class News extends MY_Controller {
 			'title'			=> 'News',
 			'sub'			=> 'edit',
 			'icon'			=> 'fa-rss-square',
+			'menu'          => 'edit-news',
 			'news'			=> $this->M_master->getWhere('news',['id'=>$id])->row()
 		];
 

@@ -27,6 +27,7 @@ class M_admin extends CI_Model {
 
 		$this->db->where($query);
 		$this->db->where('published', '1');
+		$this->db->group_by('tb_hasil.id_responden');
 		return $this->db->get('tb_hasil');
 	}
 
@@ -97,6 +98,62 @@ class M_admin extends CI_Model {
 		$this->db->where($query);
 		$this->db->group_by('tb_hasil.id_responden');
 		return $this->db->get('tb_detil_responden');
+	}
+
+
+	/*baru*/
+	function getdetilresponden($id_responden)
+	{
+		$this->db->join('tb_loket', 'tb_loket.id_loket = tb_detil_responden.loket');
+		return $this->db->get_where('tb_detil_responden', ['id_responden' => $id_responden])->row();
+	}
+
+	function get_rekap_hasil()
+	{
+		$this->db->distinct();
+		$this->db->select('id_responden');
+		$this->db->where('date(created_date)', date('2021-03-09'));
+		$this->db->where('published', 2);
+		return $this->db->get_where('tb_hasil');
+	}
+
+	function get_kuisioner($id_responden)
+	{
+		$pertanyaan =$this->db->get('tb_pertanyaan')->result();
+
+		$no = 0;
+		foreach ($pertanyaan as $p) {
+			$hasil[$no++] = [
+				'pertanyaan'	=> $p->soal,
+				'jawaban'		=> $this->_get_jawaban($p->id_soal,$id_responden)
+			];
+		}
+
+		return $hasil;
+	}
+
+	function _get_jawaban($id_soal,$id_responden)
+	{
+		$where = [
+			'id_responden'		=> $id_responden,
+			'tb_hasil.id_soal'			=> $id_soal
+		];
+
+		$this->db->join('tb_pertanyaan', 'tb_pertanyaan.id_soal = tb_hasil.id_soal');
+		$data = $this->db->get_where('tb_hasil', $where)->row();
+
+		if ($data) {
+			$kolom = $data->jawaban;
+			return $data->$kolom;
+		}
+		return null;
+	}
+
+	function get_tanggal_responden($id_responden)
+	{
+		$data = $this->db->get_where('tb_hasil',['id_responden' => $id_responden])->row();
+
+		return $data->created_date;
 	}
 
 }

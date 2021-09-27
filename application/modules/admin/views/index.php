@@ -41,7 +41,7 @@ body {
 </div>
 <!-- Small boxes (Stat box) -->
 <div class="row">
-  <div class="col-lg-3 col-xs-6">
+  <div class="col-lg-4 col-xs-12">
     <!-- small box -->
     <a href="" title="">
       <div class="small-box bg-aqua">
@@ -57,7 +57,7 @@ body {
     </a>
   </div>
   <!-- ./col -->
-  <div class="col-lg-3 col-xs-6">
+  <div class="col-lg-4 col-xs-12">
     <!-- small box -->
     <a href="" title="">
       <div class="small-box bg-green">
@@ -72,8 +72,7 @@ body {
     </a>
   </div>
   <!-- ./col -->
-  <div class="col-lg-3 col-xs-6">
-    <!-- small box -->
+<!--  <div class="col-lg-3 col-xs-6">
     <a href="<?php echo site_url('loket') ?>" title="">
       <div class="small-box bg-yellow">
         <div class="inner">
@@ -86,9 +85,9 @@ body {
         </div>
       </div>
     </a>
-  </div>
+  </div>-->
   <!-- ./col -->
-  <div class="col-lg-3 col-xs-6">
+  <div class="col-lg-4 col-xs-12">
     <!-- small box -->
     <a href="<?php echo site_url('admin/publish') ?>" title="">
       <div class="small-box bg-red">

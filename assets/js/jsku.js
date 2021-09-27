@@ -16,6 +16,12 @@ var b 			= document.getElementById('b');
 var c 			= document.getElementById('c');
 var d 			= document.getElementById('d');
 
+/*label untuk row checkbox*/
+var r_a 			= document.getElementById('row_a');
+var r_b 			= document.getElementById('row_b');
+var r_c 			= document.getElementById('row_c');
+var r_d 			= document.getElementById('row_d');
+
 /*event klik save / lanjut*/
 var no = 1;
 lanjut.addEventListener('click', function(){
@@ -42,6 +48,7 @@ function soal(){
 	.done(function(data) {
 		id_soal.value = data['id_soal'];
 		pertanyaan.innerHTML = data['soal'];
+
 		a.innerHTML = data['a'];
 		b.innerHTML = data['b'];
 		c.innerHTML = data['c'];

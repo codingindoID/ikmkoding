@@ -36,6 +36,7 @@ $menu_news  = ['news', 'faq'];
           <li <?php echo $menu=='pertanyaan' ? 'class="active"' : '' ?>><a href="<?php echo site_url('admin/pertanyaan') ?>"><i class="fa  fa-edit"></i>Pertanyaan</a></li>
           <li <?php echo $menu=='publish' ? 'class="active"' : '' ?>><a href="<?php echo site_url('admin/publish') ?>"><i class="fa fa-send"></i>Publish</a></li>
           <li <?php echo $menu=='saran' ? 'class="active"' : '' ?>><a href="<?php echo site_url('admin/saran') ?>"><i class="fa fa-file"></i>Kritik dan Saran</a></li>
+
         </ul>
       </li>
       <li class="treeview">
@@ -48,12 +49,19 @@ $menu_news  = ['news', 'faq'];
           <li <?php echo $menu=='faq' ? 'class="active"' : '' ?>><a href="<?php echo site_url('news/FAQ') ?>"><i class="fa  fa-question"></i>FAQ</a></li>
         </ul>
       </li>
-      <li <?php echo $menu=='loket' ? 'class="active"' : '' ?>>
+
+      <li class="header" style="color:red"><strong>MENU KHUSUS</strong></li>
+      <li style="margin-top: -1em">
+        <a href="<?php echo site_url('khusus') ?>" style="color:red"><i class="fa fa-info-circle"></i>Rekap Khusus</a>
+      </li>
+
+
+<!--      <li <?php echo $menu=='loket' ? 'class="active"' : '' ?>>
         <a href="<?php echo site_url('loket') ?>">
           <i class="fa fa-user-circle fa-black"></i>
           <span>Loket</span>
         </a>
-      </li>
+      </li>-->
       <?php if ($menu == 'Dashboard'): ?>
         <li>
           <a href="#" id="cetak_laporan_akhir">
@@ -62,7 +70,6 @@ $menu_news  = ['news', 'faq'];
           </a>
         </li>
       <?php endif ?>
-      
     </section>
     <!-- /.sidebar -->
   </aside>

@@ -13,8 +13,15 @@
             <?php endif ?>
             <form action="<?php echo site_url('survey/cek_user') ?>" method="post">
              <h1>MPP <span>Kabupaten Jepara</span></h1>
-             <div class="form-group">
-              <input type="text" class="form-control" name="noreg" id="noreg" placeholder="NOMOR REGISTRASI"/>
+             <div class="form-row">
+               <div class="form-group col-md-6">
+                <!-- <input type="text" class="form-control" name="noreg" id="noreg" placeholder="NOMOR REGISTRASI"/> -->
+                <input required type="text" class="form-control" name="no_antri" id="noreg" placeholder="NOMOR ANTRIAN"/>
+              </div>
+               <div class="form-group col-md-6">
+                <!-- <input type="text" class="form-control" name="noreg" id="noreg" placeholder="NOMOR REGISTRASI"/> -->
+                <input required type="date" class="form-control" name="tgl_antri" id="noreg" placeholder="TANGGAL ANTRIAN" value="<?php echo date('Y-m-d') ?>" />
+              </div>
             </div>
             <h2>Bantu kami memperbaiki pelayanan kami</h2>
             <div class="text-center text-lg-left">
