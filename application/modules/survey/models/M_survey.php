@@ -48,6 +48,37 @@ class M_survey extends CI_Model {
 		return $this->db->query('select * from (SELECT DISTINCT id_responden as a FROM tb_hasil where published = 2) as a  , tb_detil_responden  b where  a = b.id_responden and b.'.$kolom.' = "'.$param.'"');
 	}
 
+	function post_detil_responden()
+	{
+		$id_detil = uniqid(12);
+		$data = [
+			'id'			=> $id_detil,
+			'id_responden'	=> $this->input->post('id_responden'),
+			'nama'			=> $this->input->post('nama'),
+			'umur'			=> $this->input->post('umur'),
+			'jk'			=> $this->input->post('jk'),
+			'pekerjaan'		=> $this->input->post('pekerjaan'),
+			'pendidikan'	=> $this->input->post('pendidikan'),
+			'loket'			=> $this->input->post('loket')
+		];
+		$cek = $this->db->insert('tb_detil_responden', $data);
+		if ($cek) {
+			$res = [
+				'kode'			=> 'success',
+				'id_responden'	=>  $this->input->post('id_responden'),
+				'id_detil'		=> $id_detil
+			];
+		}
+		else
+		{
+			$res = [
+				'kode'			=> 'error',
+				'id_responden'	=>  ''
+			];
+		}
+		return $res;
+	}
+
 
 	/*admin*/
 	function auth($where)

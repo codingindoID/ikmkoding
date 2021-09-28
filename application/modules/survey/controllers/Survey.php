@@ -67,7 +67,7 @@ class Survey extends MY_Controller {
 
 	function userToken()
 	{
-		$base = "https://atompp.jepara.go.id/";
+		$base = "http://atompp.jepara.go.id/";
 		$arrContextOptions = array(
 			"ssl" => array(
 				"verify_peer" => false,
@@ -153,20 +153,9 @@ class Survey extends MY_Controller {
 
 	function post_detil_responden()
 	{
-		$id_detil = uniqid(12);
-		$data = [
-			'id'			=> $id_detil,
-			'id_responden'	=> $this->input->post('id_responden'),
-			'nama'			=> $this->input->post('nama'),
-			'umur'			=> $this->input->post('umur'),
-			'jk'			=> $this->input->post('jk'),
-			'pekerjaan'		=> $this->input->post('pekerjaan'),
-			'pendidikan'	=> $this->input->post('pendidikan'),
-			'loket'			=> $this->input->post('loket')
-		];
-		$input = $this->M_master->input('tb_detil_responden',$data);
-		if (!$input) {
-			redirect('survey/pertanyaan/'.$this->input->post('id_responden').'/'.$id_detil,'refresh');
+		$cek = $this->M_survey->post_detil_responden();
+		if ($cek['kode'] == 'success') {
+			redirect('survey/pertanyaan/'.$this->input->post('id_responden').'/'.$cek['id_detil'],'refresh');
 		}
 		else
 		{
@@ -196,6 +185,7 @@ class Survey extends MY_Controller {
 		
 	}
 
+	
 	function get_soal($param)
 	{
 		$data	= $this->M_survey->getSoal()->result();
@@ -221,7 +211,7 @@ class Survey extends MY_Controller {
 		$cek_soal = $this->M_master->getWhere('jawaban_sementara',['id_soal' => $this->input->post('id_soal')])->num_rows();
 		if ($cek_soal>0) {
 			$cek 	= $this->M_master->update('jawaban_sementara',['id_soal' => $this->input->post('id_soal')],$data);
-			if($cek){
+			if(!$cek){
 				echo json_encode(array(
 					'hasil' => 'berhasil'
 				));
@@ -235,7 +225,7 @@ class Survey extends MY_Controller {
 		else
 		{
 			$cek 	= $this->M_survey->save('jawaban_sementara',$data);
-			if($cek){
+			if(!$cek){
 				echo json_encode(array(
 					'hasil' => 'berhasil'
 				));

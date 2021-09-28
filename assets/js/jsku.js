@@ -1,5 +1,5 @@
 var base = document.getElementById('base').value;
-var nsoal = document.getElementById('n_soal').value;
+var nsoal = document.getElementById('n_soal').value;	
 
 /*button*/
 var lanjut = document.getElementById('lanjut');
@@ -23,11 +23,17 @@ var r_c 			= document.getElementById('row_c');
 var r_d 			= document.getElementById('row_d');
 
 /*event klik save / lanjut*/
-var no = 1;
+var no = 0;
 lanjut.addEventListener('click', function(){
-	jawaban();
-	soal();
-	
+	if (no < (nsoal - 1) ) {
+		jawaban();
+		soal(no);
+	}
+	else
+	{
+		location.href = base+"survey/saran/"+idreg.value;
+	}
+	no++
 }, false);
 
 reset.addEventListener('click', function(){
@@ -39,9 +45,9 @@ reset.addEventListener('click', function(){
 
 
 /*menampilkan soal*/
-function soal(){
+function soal(no){
 	$.ajax({
-		url: base+"tes2/get_soal/"+ no++,
+		url: base+"tes2/get_soal/"+ no,
 		type: 'get',
 		dataType: 'json'
 	})
@@ -58,13 +64,9 @@ function soal(){
 		["c1", "c2", "c3", "c4"].forEach(function(id) {
 			document.getElementById(id).checked = false;
 		});
-	})
-	.fail(function(data) {
-		location.href = base+"survey/saran/"+idreg.value;
 	});
 }
 
-/*upload saran*/
 
 
 /*post jawaban*/
