@@ -50,6 +50,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] 	= 'survey';
+$route['formulir'] 				= 'survey/userToken';
 $route['404_override'] 			= 'survey/errorpage';
 $route['satpam'] 				= 'survey/admin';
 $route['pawang'] 				= 'admin/index';
