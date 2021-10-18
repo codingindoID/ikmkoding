@@ -271,8 +271,10 @@ class Admin extends MY_Controller {
 		foreach ($responden as $h) {
 			$hasil[$no]	= [
 				'id_responden'	=> $h->id_responden,
+				'nama_responden'=> $this->db->get_where('tb_detil_responden', ['id_responden' => $h->id_responden])->row()->nama,
 				'rata'			=> $this->_get_rataan_2($h->id_responden),
 				'tanggal'		=> $this->M_admin->get_tanggal_responden($h->id_responden),
+				'jam_isi'		=> $this->M_admin->get_jam_responden($h->id_responden),
 			];
 			$no++;
 		}
@@ -284,7 +286,7 @@ class Admin extends MY_Controller {
 			'rekap'			=> $hasil,
 			'menu'			=> 'publish'
 		];
-		//echo json_encode($responden);
+		//echo json_encode($data);
 		$this->template->load('tema/index','publish',$data);
 	}
 

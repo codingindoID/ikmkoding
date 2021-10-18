@@ -153,7 +153,14 @@ class M_admin extends CI_Model {
 	{
 		$data = $this->db->get_where('tb_hasil',['id_responden' => $id_responden])->row();
 
-		return $data->created_date;
+		return $this->indo->konversi($data->created_date);
+	}
+
+	function get_jam_responden($id_responden)
+	{
+		$data = $this->db->get_where('tb_hasil',['id_responden' => $id_responden])->row();
+
+		return date('H:i:s', strtotime($data->created_date));
 	}
 
 }

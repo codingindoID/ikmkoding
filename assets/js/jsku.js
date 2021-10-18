@@ -23,16 +23,24 @@ var r_c 			= document.getElementById('row_c');
 var r_d 			= document.getElementById('row_d');
 
 /*event klik save / lanjut*/
-var no = 0;
+var no = 1;
 lanjut.addEventListener('click', function(){
-	if (no < (nsoal - 1) ) {
-		jawaban();
-		soal(no);
+	if (no <= nsoal ) {
+		if (no==nsoal) {
+			jawaban();
+			soal(no);
+			location.href = base+"survey/saran/"+idreg.value;
+		}
+		else
+		{
+			jawaban();
+			soal(no);
+		}
 	}
-	else
+	/*else
 	{
 		location.href = base+"survey/saran/"+idreg.value;
-	}
+	}*/
 	no++
 }, false);
 
