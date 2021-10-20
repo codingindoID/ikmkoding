@@ -27,20 +27,14 @@ var no = 1;
 lanjut.addEventListener('click', function(){
 	if (no <= nsoal ) {
 		if (no==nsoal) {
-			jawaban();
-			soal(no);
+			jawaban(no);
 			location.href = base+"survey/saran/"+idreg.value;
 		}
 		else
 		{
-			jawaban();
-			soal(no);
+			jawaban(no);
 		}
 	}
-	/*else
-	{
-		location.href = base+"survey/saran/"+idreg.value;
-	}*/
 	no++
 }, false);
 
@@ -75,10 +69,8 @@ function soal(no){
 	});
 }
 
-
-
 /*post jawaban*/
-function jawaban(){
+function jawaban(no){
 	var jawaban = document.querySelector('input[type=radio][name=pilihan]:checked').value;
 	var data = {
 		"id_soal"		: id_soal.value,
@@ -93,7 +85,7 @@ function jawaban(){
 		data: data,
 	})
 	.done(function(data) {
-		console.log(data);
+		soal(no);
 	})
 	.fail(function(data) {
 		console.log(data);
