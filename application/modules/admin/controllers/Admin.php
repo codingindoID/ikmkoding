@@ -18,13 +18,13 @@ class Admin extends MY_Controller {
 	}
 
 	/*FILTER*/
-	function index($bulan = 'setahun',$tahun = false)
+	function index($bulan = 'setahun',$tahun = null)
 	{
 		if ($this->session->userdata('ses_user') == null) {
 			redirect('satpam','refresh');
 		}
 
-		if ($bulan == 'setahun') {
+		if ($bulan == 'setahun' && $tahun == null) {
 			$tahun = date('Y');
 		}
 
