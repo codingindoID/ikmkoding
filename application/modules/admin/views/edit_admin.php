@@ -1,8 +1,8 @@
 <section class="content">
 	<input type="hidden" id="base" value="<?php echo site_url() ?>">
 	<div class="row">
-		<div class="panel">
-			<div class="panel-body">
+			<div class="panel">
+				<div class="panel-body">
 				<table width="80%" >
 					<form action="<?php echo site_url('admin/update_admin') ?>" method="post" accept-charset="utf-8">
 						<tr>

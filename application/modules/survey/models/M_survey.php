@@ -31,9 +31,9 @@ class M_survey extends CI_Model {
 
 	function get_responden()
 	{
-		$this->db->distinct();
-		$this->db->select('id_responden');
-		return $this->db->get_where('tb_hasil',['published' => '2'])->num_rows();
+		$this->db->where('published', '2');
+		$this->db->group_by('id_responden');
+		return $this->db->get_where('tb_hasil')->num_rows();
 	}
 
 	function get_responden_1()

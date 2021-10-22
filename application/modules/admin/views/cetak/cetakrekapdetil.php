@@ -39,7 +39,10 @@
 	<table border="1px">
 		<thead>
 			<tr>
+				<th rowspan="2" width="10%" height="60px">NO</th>
 				<th rowspan="2" width="10%" height="60px">No.Responden</th>
+				<th rowspan="2" width="10%" height="60px">Nama</th>
+				<th rowspan="2" width="10%" height="60px">Tanggal Input</th>
 				<th colspan="9">Nilai Unsur Pelayanan</th>
 			</tr>
 			<tr>
@@ -49,9 +52,14 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach ($rekap as $rekap): ?>	
+			<?php 
+			$no = 1;
+			foreach ($rekap as $rekap): ?>	
 				<tr>
+					<td><?php echo $no++ ?></td>
 					<td><?php echo $rekap['id_responden'] ?></td>
+					<td><?php echo $rekap['nama'] ?></td>
+					<td><?php echo $rekap['tanggal'] ?></td>
 					<?php foreach ($rekap['jawaban'] as $j): ?>
 						<td><?php echo $j[0] ?></td>
 					<?php endforeach ?>
