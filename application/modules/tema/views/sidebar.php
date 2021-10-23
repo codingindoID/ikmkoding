@@ -56,12 +56,12 @@ $menu_news  = ['news', 'faq'];
       </li>
     -->
 
-<!--      <li <?php echo $menu=='loket' ? 'class="active"' : '' ?>>
+      <li <?php echo $menu=='loket' ? 'class="active"' : '' ?>>
         <a href="<?php echo site_url('loket') ?>">
           <i class="fa fa-user-circle fa-black"></i>
           <span>Loket</span>
         </a>
-      </li>-->
+      </li>
       <?php if ($menu == 'Dashboard'): ?>
         <li>
           <a href="#" id="cetak_laporan_akhir">

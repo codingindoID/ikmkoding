@@ -106,6 +106,23 @@ class M_master extends CI_Model {
 		return $bulan;
 	}
 
+	function apiLoket()
+	{
+		$base = "http://atompp.jepara.go.id/";
+		//$base = "http://localhost/";
+		$arrContextOptions = array(
+			"ssl" => array(
+				"verify_peer" 		=> false,
+				"verify_peer_name" 	=> false,
+			),
+		);
+
+		$path 	= $base."api/loket";
+		$loket 	= file_get_contents($path, false, stream_context_create($arrContextOptions));
+		$loket 	= json_decode($loket);
+		return $loket;
+	}
+
 
 }
 
