@@ -53,3 +53,22 @@ $('#btn_filter_loket').click(function(event) {
 		location.href = base+'loket/index/'+bulan+'/'+tahun
 	}
 });
+
+$('#btnCetakLaporanLoket').click(function(event) {
+	var base = $('#base').val()
+	var bulan = $('#bulan_loket').val()
+	var tahun = $('#tahun_loket').val()
+
+	if (bulan == '' || tahun == '') {
+		Swal.fire({
+			icon: 'error',
+			title: 'Oops...',
+			text: 'Parameter Belum Diisi!',
+			footer: 'silahkan isi kolom bulan dan tahun',
+		})
+	}
+	else
+	{
+		location.href = base+'loket/index/'+bulan+'/'+tahun+'/cetak'
+	}
+});

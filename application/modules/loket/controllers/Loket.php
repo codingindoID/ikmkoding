@@ -8,7 +8,7 @@ class Loket extends MY_Controller {
 		$this->load->model('M_master');
 		$this->load->model('M_loket');
 	}
-	public function index($bulan='setahun', $tahun=false)
+	public function index($bulan='setahun', $tahun=false, $cetak = null)
 	{
 		if ($this->session->userdata('ses_user') == null) {
 			redirect('satpam','refresh');
@@ -18,19 +18,27 @@ class Loket extends MY_Controller {
 			$tahun = date('Y');
 		}
 
+		$loket 		= $this->M_master->apiLoket();
 		$data = [
-			'title'			=> 'Monitoring Kepuasan',
-			'sub'			=> 'Loket Pelayanan',
-			'icon'			=> 'fa-user-circle',
-			'loket'			=> $this->_get_loket($bulan,$tahun),
-			'menu'			=> 'loket',
-			'f_bulan'		=> $bulan,
-			'f_tahun'		=> $tahun,
-			'bulan'			=> $this->M_master->getall('bulan')->result(),
-			'tahun'			=> $this->M_master->getall('tahun')->result(),
+			'title'				=> 'Monitoring Kepuasan',
+			'sub'				=> 'Loket Pelayanan',
+			'icon'				=> 'fa-user-circle',
+			'loket'				=> $this->M_loket->detil_loket($loket,$tahun, $bulan),
+			'total_responden' 	=> $this->M_loket->responden($loket,$tahun, $bulan),
+			'menu'				=> 'loket',
+			'f_bulan'			=> $bulan,
+			'f_tahun'			=> $tahun,
+			'bulan'				=> $this->M_master->getall('bulan')->result(),
+			'tahun'				=> $this->M_master->getall('tahun')->result(),
 		];
-
-		$this->template->load('tema/index','loket',$data);
+		//echo json_encode($data);
+		if ($cetak != null) {
+			$this->load->view('cetakLaporan', $data);
+		}
+		else
+		{
+			$this->template->load('tema/index','loket',$data);
+		}
 	}
 
 	function detil_loket($id)

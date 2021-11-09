@@ -1,5 +1,5 @@
 var base = document.getElementById('base').value;
-var nsoal = document.getElementById('n_soal').value;
+var nsoal = document.getElementById('n_soal').value;	
 
 /*button*/
 var lanjut = document.getElementById('lanjut');
@@ -25,9 +25,17 @@ var r_d 			= document.getElementById('row_d');
 /*event klik save / lanjut*/
 var no = 1;
 lanjut.addEventListener('click', function(){
-	jawaban();
-	soal();
-	
+	if (no <= nsoal ) {
+		if (no==nsoal) {
+			jawaban(no);
+			location.href = base+"survey/saran/"+idreg.value;
+		}
+		else
+		{
+			jawaban(no);
+		}
+	}
+	no++
 }, false);
 
 reset.addEventListener('click', function(){
@@ -39,9 +47,9 @@ reset.addEventListener('click', function(){
 
 
 /*menampilkan soal*/
-function soal(){
+function soal(no){
 	$.ajax({
-		url: base+"tes2/get_soal/"+ no++,
+		url: base+"tes2/get_soal/"+ no,
 		type: 'get',
 		dataType: 'json'
 	})
@@ -58,17 +66,11 @@ function soal(){
 		["c1", "c2", "c3", "c4"].forEach(function(id) {
 			document.getElementById(id).checked = false;
 		});
-	})
-	.fail(function(data) {
-		location.href = base+"survey/saran/"+idreg.value;
 	});
 }
 
-/*upload saran*/
-
-
 /*post jawaban*/
-function jawaban(){
+function jawaban(no){
 	var jawaban = document.querySelector('input[type=radio][name=pilihan]:checked').value;
 	var data = {
 		"id_soal"		: id_soal.value,
@@ -83,7 +85,7 @@ function jawaban(){
 		data: data,
 	})
 	.done(function(data) {
-		console.log(data);
+		soal(no);
 	})
 	.fail(function(data) {
 		console.log(data);

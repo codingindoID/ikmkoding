@@ -6,7 +6,6 @@ class M_import extends CI_Model {
 	function detil_responden()
 	{
 		$query = "
-
 		INSERT INTO `tb_detil_responden` 
 		VALUES ('125ff3e3324e', '33200302890004', 'arif', 40, 'Laki-laki', 'SMA', 'Lainnya', '2021-01-05 03:55:30', '1', '');
 		('125ff3e8345d', '3320060302890004', 'arif ahmad ', 31, 'Laki-laki', 'S2 Keatas', 'Lainnya', '2021-01-05 04:16:52', '1', '');

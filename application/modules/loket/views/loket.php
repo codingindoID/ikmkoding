@@ -4,7 +4,8 @@
 			<div class="panel-header" style="padding: 0.8em">
 				<div class="row" style="margin-right: 1em">
 					<div class="col-md-7">
-						<a  href="#modal_add" class="btn-sm btn-success" data-toggle="modal"><i class="fa fa-user-circle"></i> Tambah Loket</a>
+						<!-- <a  href="#modal_add" class="btn-sm btn-success" data-toggle="modal"><i class="fa fa-user-circle"></i> Tambah Loket</a> -->
+						<a href="#" id="btnCetakLaporanLoket" class="btn-sm btn-success"><i class="fa fa-print"></i> export Excel</a>
 					</div>
 					<div class="col-md-2 col-xs-12 text-right" style="margin-top: 0.4em">
 						<select id="bulan_loket" name="bulan" class="form-control" required>
@@ -30,7 +31,7 @@
 			</div>
 			<div class="panel-body">
 				<div class="table-responsive">
-					<table class="table table-hover" style="font-size: 1.4rem;">
+					<table class="table table-hover" id="responden" style="font-size: 1.4rem;">
 						<thead>
 							<tr>
 								<th class="text-center" width="10%">#</th>
@@ -42,12 +43,12 @@
 						<tbody>
 							<?php 
 							$no = 1;
-							foreach ($loket as $loket): ?>
+							foreach ($loket as $l): ?>
 								<tr>
 									<td class="text-center"><?php echo $no++ ?></td>
-									<td ><a title="Edit Data" class="modal_edit" href="#modal_edit" data-toggle="modal" data-id="<?php echo $loket['id_loket'] ?>" style="color: black;"><?php echo $loket['nama_loket'] ?></a></td>
-									<td class="text-center"><?php echo $loket['responden'] != 0 ? $loket['responden'] : '-' ?></td>
-									<td class="text-center" style="font-weight: bold;"><?php echo $loket['nilai'] != null ? number_format($loket['nilai'],2)."%" : '-' ?> </td>
+									<td ><a title="Edit Data" class="modal_edit" href="#modal_edit" data-toggle="modal" data-id="<?php echo $l['id_loket'] ?>" style="color: black;"><?php echo $l['jenis_layanan'] ?></a></td>
+									<td class="text-center"><?php echo $l['jumlah_responden'] != 0 ? '<b class="text-danger text-bold">'.$l['jumlah_responden'].'</b> orang ( <b class="text-danger text-bold">'.number_format($l['persen'],2).'</b> %)' : '-' ?></td>
+									<td class="text-center" style="font-weight: bold;"><?php echo $l['kepuasan'] != 0 ? number_format($l['kepuasan'],2)."%" : '-' ?> </td>
 								</tr>
 							<?php endforeach ?>
 						</tbody>

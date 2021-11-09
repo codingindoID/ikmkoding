@@ -31,9 +31,9 @@ class M_survey extends CI_Model {
 
 	function get_responden()
 	{
-		$this->db->distinct();
-		$this->db->select('id_responden');
-		return $this->db->get_where('tb_hasil',['published' => '2'])->num_rows();
+		$this->db->where('published', '2');
+		$this->db->group_by('id_responden');
+		return $this->db->get_where('tb_hasil')->num_rows();
 	}
 
 	function get_responden_1()
@@ -48,11 +48,57 @@ class M_survey extends CI_Model {
 		return $this->db->query('select * from (SELECT DISTINCT id_responden as a FROM tb_hasil where published = 2) as a  , tb_detil_responden  b where  a = b.id_responden and b.'.$kolom.' = "'.$param.'"');
 	}
 
+	function post_detil_responden()
+	{
+		$id_detil = uniqid(12);
+		$data = [
+			'id'			=> $id_detil,
+			'id_responden'	=> $this->input->post('id_responden'),
+			'nama'			=> $this->input->post('nama'),
+			'umur'			=> $this->input->post('umur'),
+			'jk'			=> $this->input->post('jk'),
+			'pekerjaan'		=> $this->input->post('pekerjaan'),
+			'pendidikan'	=> $this->input->post('pendidikan'),
+			'loket'			=> $this->input->post('loket')
+		];
+		$cek = $this->db->insert('tb_detil_responden', $data);
+		if ($cek) {
+			$res = [
+				'kode'			=> 'success',
+				'id_responden'	=>  $this->input->post('id_responden'),
+				'id_detil'		=> $id_detil
+			];
+		}
+		else
+		{
+			$res = [
+				'kode'			=> 'error',
+				'id_responden'	=>  ''
+			];
+		}
+		return $res;
+	}
+
 
 	/*admin*/
 	function auth($where)
 	{
 		return $this->db->get_where('admin', $where);
+	}
+
+	/*visitor*/
+	function visitor()
+	{
+		$ip 		= $this->input->ip_address();
+		$where = [
+			'ip_address'		=> $ip,
+			'tanggal'			=> date('Y-m-d')
+		];
+
+		$cek = $this->db->get_where('visitor', $where)->row();
+		if (!$cek) {
+			$this->db->insert('visitor', $where);
+		}
 	}
 
 }

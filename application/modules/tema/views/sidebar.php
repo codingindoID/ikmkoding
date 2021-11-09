@@ -54,19 +54,27 @@ $menu_news  = ['news', 'faq'];
       <li style="margin-top: -1em">
         <a href="<?php echo site_url('khusus') ?>" style="color:red"><i class="fa fa-info-circle"></i>Rekap Khusus</a>
       </li>
- -->
+    -->
 
-<!--      <li <?php echo $menu=='loket' ? 'class="active"' : '' ?>>
+      <li <?php echo $menu=='loket' ? 'class="active"' : '' ?>>
         <a href="<?php echo site_url('loket') ?>">
           <i class="fa fa-user-circle fa-black"></i>
           <span>Loket</span>
         </a>
-      </li>-->
+      </li>
       <?php if ($menu == 'Dashboard'): ?>
         <li>
           <a href="#" id="cetak_laporan_akhir">
             <i class="fa fa-print fa-black"></i>
             <span>Cetak Laporan</span>
+          </a>
+        </li>
+      <?php endif ?>
+      <?php if ($this->session->userdata('ses_user') == 'super'): ?>
+        <li>
+          <a href="<?php echo site_url().'admin/import' ?>">
+            <i class="fa fa-upload fa-black"></i>
+            <span>Import</span>
           </a>
         </li>
       <?php endif ?>

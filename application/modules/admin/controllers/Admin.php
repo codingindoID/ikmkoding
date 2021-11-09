@@ -18,13 +18,13 @@ class Admin extends MY_Controller {
 	}
 
 	/*FILTER*/
-	function index($bulan = 'setahun',$tahun = false)
+	function index($bulan = 'setahun',$tahun = null)
 	{
 		if ($this->session->userdata('ses_user') == null) {
 			redirect('satpam','refresh');
 		}
 
-		if ($bulan == 'setahun') {
+		if ($bulan == 'setahun' && $tahun == null) {
 			$tahun = date('Y');
 		}
 
@@ -271,8 +271,10 @@ class Admin extends MY_Controller {
 		foreach ($responden as $h) {
 			$hasil[$no]	= [
 				'id_responden'	=> $h->id_responden,
+				'nama_responden'=> $this->db->get_where('tb_detil_responden', ['id_responden' => $h->id_responden])->row()->nama,
 				'rata'			=> $this->_get_rataan_2($h->id_responden),
 				'tanggal'		=> $this->M_admin->get_tanggal_responden($h->id_responden),
+				'jam_isi'		=> $this->M_admin->get_jam_responden($h->id_responden),
 			];
 			$no++;
 		}
@@ -284,7 +286,7 @@ class Admin extends MY_Controller {
 			'rekap'			=> $hasil,
 			'menu'			=> 'publish'
 		];
-		//echo json_encode($responden);
+		//echo json_encode($data);
 		$this->template->load('tema/index','publish',$data);
 	}
 
@@ -499,14 +501,17 @@ class Admin extends MY_Controller {
 			redirect('satpam','refresh');
 		}
 		
-		$res = $this->M_admin->get_responden_1($bulan,$tahun)->result();
+		$res = $this->M_admin->get_responden_publish()->result();
 		$data['soal'] = $this->M_master->getall('tb_pertanyaan')->result();
 		$hasil =array();
 		$jawaban = array();
 		$no= 1;
 		foreach ($res as $key) {
+			$tgl = $this->db->get_where('tb_hasil', ['id_responden' => $key->id_responden])->row()->created_date;
 			$hasil[$no]= [
 				'id_responden'	=> $key->id_responden,
+				'nama'			=> $this->db->get_where('tb_detil_responden', ['id_responden' => $key->id_responden])->row()->nama,
+				'tanggal'		=> $this->indo->konversi($tgl),
 				'jawaban' 		=> $this->_get_jawaban($key->id_responden)
 			];
 			$no++;
@@ -766,6 +771,44 @@ class Admin extends MY_Controller {
 		return $data;
 	}
 
+
+	//import
+	function import()
+	{
+		if ($this->session->userdata('ses_user') != 'super') {
+			redirect('satpam','refresh');
+		}
+
+		$data = [
+			'title'			=> 'Import',
+			'sub'			=> '',
+			'menu'			=> 'import',
+			'icon'			=> 'upload',
+		];
+
+		$this->template->load('tema/index','import',$data);
+	}
+
+	function importAction()
+	{
+		if ($this->session->userdata('ses_user') != 'super') {
+			redirect('satpam','refresh');
+		}
+		$cek = $this->M_admin->importAction();
+		$this->session->set_flashdata($cek['kode'], $cek['msg']);
+		redirect('admin/import','refresh');
+	}
+
+	function importResponden()
+	{
+		if ($this->session->userdata('ses_user') != 'super') {
+			redirect('satpam','refresh');
+		}
+		$cek = $this->M_admin->importResponden();
+		$this->session->set_flashdata($cek['kode'], $cek['msg']);
+		redirect('admin/import','refresh');
+		//echo json_encode($cek);
+	}
 }
 
 /* End of file Admin.php */

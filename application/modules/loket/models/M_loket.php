@@ -80,6 +80,114 @@ class M_loket extends CI_Model {
 		return $this->db->get('tb_loket');
 	}	
 
+	function detil_loket($data,$tahun, $bulan)
+	{
+		$hasil 	= [];
+		$no 	= 1;
+		if ($data) 
+		{
+			foreach ($data as $dat) {
+				$hasil[$no++] = [
+					'id_loket'				=> $dat->id_loket,
+					'jenis_layanan'			=> $dat->jenis_layanan,
+					'jumlah_responden'		=> $this->_jumlahResponden($dat->id_loket,$tahun, $bulan),
+					'persen'				=> $this->_persen($dat->id_loket,$tahun, $bulan),
+					'kepuasan'				=> $this->_getKepuasan($dat->id_loket,$tahun, $bulan),
+				];
+			}
+		}
+		return $hasil;
+	}
+
+	function responden($data,$tahun, $bulan)
+	{
+		if ($bulan != 'setahun') {
+			$this->db->where('MONTH(tb_hasil.created_date)', $bulan);
+		}
+		$this->db->where('YEAR(tb_hasil.created_date)', $tahun);
+		$this->db->where('published', '2');
+		$this->db->join('tb_hasil', 'tb_hasil.id_responden = tb_detil_responden.id_responden');
+		$this->db->group_by('tb_hasil.id_responden');
+		return $this->db->get('tb_detil_responden')->num_rows();
+	}
+
+	function _jumlahResponden($id_loket,$tahun, $bulan)
+	{
+		$this->db->where('loket', $id_loket);
+		if ($bulan != 'setahun') {
+			$this->db->where('MONTH(tb_hasil.created_date)', $bulan);
+		}
+		$this->db->where('YEAR(tb_hasil.created_date)', $tahun);
+		$this->db->where('published', '2');
+		$this->db->join('tb_hasil', 'tb_hasil.id_responden = tb_detil_responden.id_responden');
+		$this->db->group_by('tb_hasil.id_responden');
+		return $this->db->get('tb_detil_responden')->num_rows();
+	}
+
+	function _persen($id_loket,$tahun, $bulan)
+	{
+		if ($bulan != 'setahun') {
+			$this->db->where('MONTH(tb_hasil.created_date)', $bulan);
+		}
+		$this->db->where('YEAR(tb_hasil.created_date)', $tahun);
+		$this->db->where('published', '2');
+		$this->db->join('tb_hasil', 'tb_hasil.id_responden = tb_detil_responden.id_responden');
+		$this->db->group_by('tb_hasil.id_responden');
+		$total =  $this->db->get('tb_detil_responden')->num_rows();
+
+		$this->db->where('loket', $id_loket);
+		if ($bulan != 'setahun') {
+			$this->db->where('MONTH(tb_hasil.created_date)', $bulan);
+		}
+		$this->db->where('YEAR(tb_hasil.created_date)', $tahun);
+		$this->db->where('published', '2');
+		$this->db->join('tb_hasil', 'tb_hasil.id_responden = tb_detil_responden.id_responden');
+		$this->db->group_by('tb_hasil.id_responden');
+		$total_perloket =  $this->db->get('tb_detil_responden')->num_rows();
+
+		$persen  = ($total_perloket / $total) * 100;
+		return $persen;
+	}
+
+	function _getKepuasan($id_loket,$tahun, $bulan)
+	{
+		$nilai = 0;
+		$hasil = [];
+		$no = 1;
+		$this->db->join('tb_detil_responden', 'tb_hasil.id_responden = tb_detil_responden.id_responden');
+		if ($bulan != 'setahun') {
+			$this->db->where('MONTH(tb_hasil.created_date)', $bulan);
+		}
+		$this->db->where('YEAR(tb_hasil.created_date)', $tahun);
+		$this->db->where('loket', $id_loket);
+		$data =  $this->db->get('tb_hasil');
+		
+		$a = $this->_nilai($data->result(), 'a');
+		$b = $this->_nilai($data->result(), 'b');
+		$c = $this->_nilai($data->result(), 'c');
+		$d = $this->_nilai($data->result(), 'd');
+		
+		if ($data->num_rows() != 0) {
+			$nilai = (($a*1) + ($b*2) + ($c*3) + ($d * 4))/ ($data->num_rows() * 4);
+		}
+		return $nilai*100;
+	}
+
+	function _nilai($data, $pilihan)
+	{
+		$no = 1;
+		$total = 0;
+		$has = [];
+		foreach ($data as $j) {
+			if ($j->jawaban == $pilihan) {
+				$has[$no++]	=[
+					'jumlah'	=> $j->jawaban
+				];
+			}
+		}
+		return count($has);
+	}
+
 }
 
 /* End of file M_loket.php */
