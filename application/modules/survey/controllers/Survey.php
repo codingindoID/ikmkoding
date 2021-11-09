@@ -22,6 +22,7 @@ class Survey extends MY_Controller {
 			'news1'			=> $this->M_master->getWhere('news',['id'=>1])->row(),
 			'news2'			=> $this->M_master->getWhere('news',['id'=>2])->row(),
 			'faq'			=> $this->M_master->getall('faq')->result(),
+			'visitor'		=> $this->M_survey->visitor()
 		];
 		//menentukan tingkat kepuasan
 		$kepuasan = $data['kepuasan'];
@@ -450,6 +451,15 @@ class Survey extends MY_Controller {
 	function errorpage()
 	{
 		$this->load->view('404');
+	}
+
+	function visitor()
+	{
+		$data = [
+			'now'		=> $this->db->get_where('visitor', ['tanggal'	=> date('Y-m-d')])->num_rows(),
+			'all'		=> $this->db->get('visitor')->num_rows(),
+		];
+		echo json_encode($data);
 	}
 
 }

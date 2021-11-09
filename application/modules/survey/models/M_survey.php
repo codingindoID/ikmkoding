@@ -86,6 +86,21 @@ class M_survey extends CI_Model {
 		return $this->db->get_where('admin', $where);
 	}
 
+	/*visitor*/
+	function visitor()
+	{
+		$ip 		= $this->input->ip_address();
+		$where = [
+			'ip_address'		=> $ip,
+			'tanggal'			=> date('Y-m-d')
+		];
+
+		$cek = $this->db->get_where('visitor', $where)->row();
+		if (!$cek) {
+			$this->db->insert('visitor', $where);
+		}
+	}
+
 }
 
 /* End of file M_survey.php */

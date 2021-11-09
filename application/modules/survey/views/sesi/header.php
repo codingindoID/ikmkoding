@@ -28,4 +28,5 @@
   <link href="<?php echo base_url().'assets/bot/'?>css/style.css" rel="stylesheet">
   <script src="<?php echo base_url().'assets/js/'?>jquery-3.1.1.min.js"></script>
   <script src="<?php echo base_url().'assets/'?>apexcharts.js"></script>
+  <div id="base_url" data-id="<?php echo site_url() ?>"></div>
 </head>
