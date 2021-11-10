@@ -53,7 +53,7 @@ class Survey extends MY_Controller {
 				'p'			=> $this->_get_rataan($v->id_soal,'c'),
 				'tp'		=> $this->_get_rataan($v->id_soal,'b'),
 				'kec'		=> $this->_get_rataan($v->id_soal,'a'),
-				'kepuasan'	=> $this->_get_nilai($v->id_soal)
+				'kepuasan'	=> $this->_get_nilai($v->id_soal),
 			];
 
 			$rata[$no] = [
@@ -84,7 +84,8 @@ class Survey extends MY_Controller {
 			'id_responden' 	=> uniqid(),
 			'pekerjaan'		=> $this->M_master->getall('tb_pekerjaan')->result(),
 			'pendidikan'	=> $this->M_master->getall('tb_pendidikan')->result(),
-			'loket'			=> $loket
+			'loket'			=> $loket,
+			'visitor'		=> $this->M_survey->visitor()
 		];
 		$this->load->view('detil_responden', $data);
 	}
@@ -138,7 +139,8 @@ class Survey extends MY_Controller {
 					'id_responden' 	=> $no_antri.$tgl,
 					'pekerjaan'		=> $this->M_master->getall('tb_pekerjaan')->result(),
 					'pendidikan'	=> $this->M_master->getall('tb_pendidikan')->result(),
-					'loket'			=> $loket
+					'loket'			=> $loket,
+					'visitor'		=> $this->M_survey->visitor()
 					//'loket'			=> $this->M_master->getall('tb_loket')->result(),
 				];
 				$this->load->view('detil_responden', $data);
