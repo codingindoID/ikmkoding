@@ -61,7 +61,6 @@ class Survey extends MY_Controller
 			$no++;
 		}
 		$data['rekap'] = $hasil;
-		//echo json_encode($data['hasil']);
 		$this->load->view('index', $data);
 	}
 
@@ -174,7 +173,7 @@ class Survey extends MY_Controller
 			$data['noreg'] 		= $responden;
 			$data['id_detil']	= $id_detil;
 
-			//echo json_encode($data);
+			// echo json_encode($data);
 			$this->load->view('quest', $data);
 		}
 	}
@@ -182,6 +181,8 @@ class Survey extends MY_Controller
 	function kirimJawaban()
 	{
 		$cek = $this->M_survey->kirimJawaban();
+		$this->session->set_flashdata($cek['kode'], $cek['msg']);
+		redirect('survey', 'refresh');
 	}
 
 

@@ -20,12 +20,15 @@ class Loket extends MY_Controller
 			// $tahun = date('Y');
 		}
 
-		$loket 		= $this->M_master->apiLoket();
+		// $loket 		= $this->M_master->apiLoket();
+		$this->db->order_by('nama_loket', 'asc');
+		$loket = $this->db->get('tb_loket')->result();
 		$data = [
 			'title'				=> 'Monitoring Kepuasan',
 			'sub'				=> 'Loket Pelayanan',
 			'icon'				=> 'fa-user-circle',
 			'loket'				=> $this->M_loket->detil_loket($loket, $tahun, $bulan),
+			'loket_lainnya'		=> $this->M_loket->loket_lainnya($tahun, $bulan),
 			'total_responden' 	=> $this->M_loket->responden($loket, $tahun, $bulan),
 			'menu'				=> 'loket',
 			'f_bulan'			=> $bulan,
@@ -33,7 +36,7 @@ class Loket extends MY_Controller
 			'bulan'				=> $this->M_master->getall('bulan')->result(),
 			'tahun'				=> $this->M_master->getall('tahun')->result(),
 		];
-		// echo json_encode($data);
+		// echo json_encode($data['loket_lainnya']);
 		if ($cetak != null) {
 			$this->load->view('cetakLaporan', $data);
 		} else {

@@ -104,6 +104,61 @@ class M_survey extends CI_Model
 			$this->db->insert('visitor', $where);
 		}
 	}
+
+	/* NEW METHOD */
+	function kirimJawaban()
+	{
+		$no = 0;
+		$jawaban = $this->input->post('jawaban');
+		$id_soal = $this->input->post('id_soal');
+		$id_responden = $this->input->post('id_responden');
+		$hasil = [];
+
+		foreach ($jawaban as $j) {
+			switch ($j) {
+				case "4":
+					$nilai = "d";
+					break;
+				case "3":
+					$nilai = "c";
+					break;
+				case "2":
+					$nilai = "b";
+					break;
+				case "1":
+					$nilai = "a";
+					break;
+			}
+
+			$hasil[$no] = [
+				'id_kuis'			=> uniqid(),
+				'jawaban'			=> $nilai,
+				'id_soal'			=> $id_soal[$no],
+				'id_responden'		=> $id_responden,
+				'created_date'		=> date('Y-m-d H:i:s'),
+				'published'			=> '1'
+			];
+			$no++;
+		}
+		$cek = $this->db->insert_batch('tb_hasil', $hasil);
+		if ($cek) {
+			$saran = [
+				'id_responden'			=> $id_responden,
+				'saran'					=> $this->input->post('saran'),
+				'created_date'			=> date('Y-m-d H:i:s'),
+				'status'				=> "1"
+			];
+			$this->db->insert('tb_saran', $saran);
+			return  [
+				'kode'		=> 'success',
+				'msg'		=> 'atas partisipasi anda,. Salam Jepara Smart.. '
+			];
+		}
+		return  [
+			'kode'		=> 'error',
+			'msg'		=> 'ada yang salah'
+		];
+	}
 }
 
 /* End of file M_survey.php */

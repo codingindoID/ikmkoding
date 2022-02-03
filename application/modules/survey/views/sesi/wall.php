@@ -3,52 +3,59 @@
       <div class="row">
         <div class="col-lg-7 pt-5 pt-lg-0 order-2 order-lg-1 d-flex align-items-center">
           <div data-aos="zoom-out">
-            <?php if ($this->session->flashdata('error')): ?>
+            <?php if ($this->session->flashdata('error')) : ?>
               <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>OPPPS!</strong>  <?php echo $this->session->flashdata('error') ?>
+                <strong>OPPPS!</strong> <?php echo $this->session->flashdata('error') ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            <?php elseif ($this->session->flashdata('success')) : ?>
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Terimakasih!</strong> <?php echo $this->session->flashdata('success') ?>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
             <?php endif ?>
             <form action="<?php echo site_url('survey/cek_user') ?>" method="post">
-             <h1>MPP <span>Kabupaten Jepara</span></h1>
-             <div class="form-row">
-               <div class="form-group col-md-6">
-                <!-- <input type="text" class="form-control" name="noreg" id="noreg" placeholder="NOMOR REGISTRASI"/> -->
-                <input required type="text" class="form-control" name="no_antri" id="noreg" placeholder="NOMOR ANTRIAN"/>
+              <h1>MPP <span>Kabupaten Jepara</span></h1>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <!-- <input type="text" class="form-control" name="noreg" id="noreg" placeholder="NOMOR REGISTRASI"/> -->
+                  <input required type="text" class="form-control" name="no_antri" id="noreg" placeholder="NOMOR ANTRIAN" />
+                </div>
+                <div class="form-group col-md-6">
+                  <!-- <input type="text" class="form-control" name="noreg" id="noreg" placeholder="NOMOR REGISTRASI"/> -->
+                  <input required type="date" class="form-control" name="tgl_antri" id="noreg" placeholder="TANGGAL ANTRIAN" value="<?php echo date('Y-m-d') ?>" />
+                </div>
               </div>
-               <div class="form-group col-md-6">
-                <!-- <input type="text" class="form-control" name="noreg" id="noreg" placeholder="NOMOR REGISTRASI"/> -->
-                <input required type="date" class="form-control" name="tgl_antri" id="noreg" placeholder="TANGGAL ANTRIAN" value="<?php echo date('Y-m-d') ?>" />
+              <h2>Bantu kami memperbaiki pelayanan kami</h2>
+              <div class="text-center text-lg-left">
+                <button type="submit" id="ikut" class="btn-get-started">Ikuti Survey</button>
               </div>
-            </div>
-            <h2>Bantu kami memperbaiki pelayanan kami</h2>
-            <div class="text-center text-lg-left">
-              <button type="submit" id="ikut" class="btn-get-started">Ikuti Survey</button>
-            </div>
-          </form>
+            </form>
+          </div>
+        </div>
+        <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="300">
+          <img src="<?php echo base_url() . 'assets/bot/' ?>img/new-hero.png" class="img-fluid animated" alt="">
         </div>
       </div>
-      <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="300">
-        <img src="<?php echo base_url().'assets/bot/'?>img/new-hero.png" class="img-fluid animated" alt="">
-      </div>
     </div>
-  </div>
-  <input type="hidden" id="base" value="<?php echo site_url() ?>" />
-  <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
-    <defs>
-      <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z">
+    <input type="hidden" id="base" value="<?php echo site_url() ?>" />
+    <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
+      <defs>
+        <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z">
       </defs>
       <g class="wave1">
         <use xlink:href="#wave-path" x="50" y="3" fill="rgba(255,255,255, .1)">
-        </g>
-        <g class="wave2">
-          <use xlink:href="#wave-path" x="50" y="0" fill="rgba(255,255,255, .2)">
-          </g>
-          <g class="wave3">
-            <use xlink:href="#wave-path" x="50" y="9" fill="#fff">
-            </g>
-          </svg>
+      </g>
+      <g class="wave2">
+        <use xlink:href="#wave-path" x="50" y="0" fill="rgba(255,255,255, .2)">
+      </g>
+      <g class="wave3">
+        <use xlink:href="#wave-path" x="50" y="9" fill="#fff">
+      </g>
+    </svg>
 
-        </section>
+  </section>

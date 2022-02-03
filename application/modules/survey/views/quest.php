@@ -30,7 +30,8 @@
                 </div>
                 <div class="row mb-1">
                   <div class="col text-right">
-                    <input style="border: none; background-color: white; text-align: right;" type="text" name="jawaban_<?= $baris ?>" id="jawaban_<?= $var->id_soal ?>" required value="" placeholder="Rating Belum Diisi">
+                    <input type="hidden" name="id_soal[<?= $baris ?>]" value="<?= $var->id_soal ?>">
+                    <input style="border: none; background-color: white; text-align: right;" type="text" name="jawaban[<?= $baris ?>]" id="jawaban_<?= $var->id_soal ?>" required value="" placeholder="Rating Belum Diisi">
                     <div class="widget-star">
 
                       <input type="radio" id="pilihan_a_<?= $var->id_soal ?>" value="a">
@@ -55,6 +56,7 @@
                 <div class="col">
                   <p>SARAN/MASUKAN : </p>
                   <textarea name="saran" rows="4 " class="form-control"></textarea>
+                  <input type="hidden" name="id_responden" value="<?= $noreg ?>">
                 </div>
               </div>
             </div>

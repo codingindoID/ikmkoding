@@ -81,7 +81,7 @@ class M_loket extends CI_Model
 			foreach ($data as $dat) {
 				$hasil[$no++] = [
 					'id_loket'				=> $dat->id_loket,
-					'jenis_layanan'			=> $dat->jenis_layanan,
+					'jenis_layanan'			=> $dat->nama_loket,
 					'jumlah_responden'		=> $this->_jumlahResponden($dat->id_loket, $tahun, $bulan),
 					'persen'				=> $this->_persen($dat->id_loket, $tahun, $bulan),
 					'kepuasan'				=> $this->_getKepuasan($dat->id_loket, $tahun, $bulan),
@@ -181,6 +181,36 @@ class M_loket extends CI_Model
 			}
 		}
 		return count($has);
+	}
+
+	//loket lainnya
+	function loket_lainnya($tahun, $bulan)
+	{
+		$this->db->select('id_responden');
+		$this->db->group_by('id_responden');
+		$loket =  $this->db->get('tb_hasil')->result();
+		$loket = array_column($loket, 'id_responden');
+		// $loket =  implode(",", $loket);
+
+		// return $loket = $this->db->get('tb_hasil');
+		// return $this->get_nilai_loket_lainnya($loket, $tahun, $bulan);
+		return $loket;
+	}
+
+	function get_nilai_loket_lainnya($loket, $tahun, $bulan)
+	{
+		if ($bulan == 'setahun') {
+			$query = 'MONTH(tb_hasil.created_date) BETWEEN "01" and "' . date('m') . '" and YEAR(tb_hasil.created_date) = "' . $tahun . '"';
+		} else {
+			$query = 'MONTH(tb_hasil.created_date) = "' . $bulan . '" and YEAR(tb_hasil.created_date) = "' . $tahun . '"';
+		}
+
+		$this->db->join('tb_detil_responden', 'tb_detil_responden.id_responden = tb_hasil.id_responden');
+		$this->db->join('tb_loket', 'tb_detil_responden.loket = tb_loket.id_loket');
+		$this->db->where_not_in('tb_loket.id_loket', $loket);
+		$this->db->where($query);
+		$this->db->where('tb_hasil.published', '2');
+		return $this->db->get('tb_hasil')->result();
 	}
 }
 
