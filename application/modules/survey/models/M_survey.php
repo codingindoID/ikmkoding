@@ -1,7 +1,13 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class M_survey extends CI_Model {
+class M_survey extends CI_Model
+{
+	function loket()
+	{
+		$this->db->order_by('nama_loket', 'asc');
+		return $this->db->get('tb_loket')->result();
+	}
 
 	function getSoal()
 	{
@@ -18,12 +24,12 @@ class M_survey extends CI_Model {
 		return $this->db->get_where('tb_hasil', $where);
 	}
 
-	function save($table,$data)
+	function save($table, $data)
 	{
-		$this->db->insert($table,$data);
+		$this->db->insert($table, $data);
 	}
 
-	function update($table,$where,$data)
+	function update($table, $where, $data)
 	{
 		$this->db->where($where);
 		$this->db->update($table, $data);
@@ -40,12 +46,12 @@ class M_survey extends CI_Model {
 	{
 		$this->db->distinct();
 		$this->db->select('id_responden');
-		return $this->db->get_where('tb_hasil',['published' => '1']);
+		return $this->db->get_where('tb_hasil', ['published' => '1']);
 	}
 
-	function join_get_responden_2($kolom,$param)
+	function join_get_responden_2($kolom, $param)
 	{
-		return $this->db->query('select * from (SELECT DISTINCT id_responden as a FROM tb_hasil where published = 2) as a  , tb_detil_responden  b where  a = b.id_responden and b.'.$kolom.' = "'.$param.'"');
+		return $this->db->query('select * from (SELECT DISTINCT id_responden as a FROM tb_hasil where published = 2) as a  , tb_detil_responden  b where  a = b.id_responden and b.' . $kolom . ' = "' . $param . '"');
 	}
 
 	function post_detil_responden()
@@ -68,9 +74,7 @@ class M_survey extends CI_Model {
 				'id_responden'	=>  $this->input->post('id_responden'),
 				'id_detil'		=> $id_detil
 			];
-		}
-		else
-		{
+		} else {
 			$res = [
 				'kode'			=> 'error',
 				'id_responden'	=>  ''
@@ -100,7 +104,6 @@ class M_survey extends CI_Model {
 			$this->db->insert('visitor', $where);
 		}
 	}
-
 }
 
 /* End of file M_survey.php */

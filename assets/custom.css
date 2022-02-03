@@ -1,0 +1,50 @@
+  .select2 {
+      width: 100% !important;
+  }
+
+  .select2-selection {
+      -webkit-box-shadow: 0;
+      box-shadow: 0;
+      background-color: #fff;
+      border: 0;
+      border-radius: 0;
+      color: #555555;
+      font-size: 14px;
+      outline: 0;
+      min-height: 40px;
+      text-align: left;
+  }
+
+  .select2-selection__rendered {
+      margin: 8px;
+  }
+
+  .select2-selection__arrow {
+      margin: 8px;
+  }
+
+  .border-light {
+      border: 0.5px solid lightslategrey !important;
+  }
+
+  .border-0 {
+      border-radius: 0 !important;
+  }
+
+
+  /* rating */
+  .widget-star>input {
+      display: none;
+  }
+
+  .widget-star>label {
+      margin-top: 0 !important;
+      font-size: 30px;
+      color: grey;
+  }
+
+  .separator {
+      height: 1px;
+      background-color: springgreen;
+      margin-bottom: 2em;
+  }

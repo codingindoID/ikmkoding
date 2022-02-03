@@ -1,15 +1,14 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class M_loket extends CI_Model {
-	function get_nilai_loket($id,$bulan,$tahun)
+class M_loket extends CI_Model
+{
+	function get_nilai_loket($id, $bulan, $tahun)
 	{
-		if ($bulan=='setahun') {
-			$query = 'MONTH(tb_hasil.created_date) BETWEEN "01" and "'.date('m').'" and YEAR(tb_hasil.created_date) = "'.$tahun.'"';
-		}
-		else
-		{
-			$query = 'MONTH(tb_hasil.created_date) = "'.$bulan.'" and YEAR(tb_hasil.created_date) = "'.$tahun.'"';
+		if ($bulan == 'setahun') {
+			$query = 'MONTH(tb_hasil.created_date) BETWEEN "01" and "' . date('m') . '" and YEAR(tb_hasil.created_date) = "' . $tahun . '"';
+		} else {
+			$query = 'MONTH(tb_hasil.created_date) = "' . $bulan . '" and YEAR(tb_hasil.created_date) = "' . $tahun . '"';
 		}
 
 		$this->db->join('tb_detil_responden', 'tb_detil_responden.id_responden = tb_hasil.id_responden');
@@ -20,14 +19,12 @@ class M_loket extends CI_Model {
 		return $this->db->get('tb_hasil');
 	}
 
-	function get_responden_by_loket($id,$bulan,$tahun)
+	function get_responden_by_loket($id, $bulan, $tahun)
 	{
 		if ($bulan == 'setahun') {
-			$query = 'MONTH(tb_hasil.created_date) BETWEEN "01" and "'.date('m').'" and YEAR(tb_hasil.created_date) = "'.$tahun.'"';
-		}
-		else
-		{
-			$query = 'MONTH(tb_hasil.created_date) = "'.$bulan.'" and YEAR(tb_hasil.created_date) = "'.$tahun.'"';
+			$query = 'MONTH(tb_hasil.created_date) BETWEEN "01" and "' . date('m') . '" and YEAR(tb_hasil.created_date) = "' . $tahun . '"';
+		} else {
+			$query = 'MONTH(tb_hasil.created_date) = "' . $bulan . '" and YEAR(tb_hasil.created_date) = "' . $tahun . '"';
 		}
 
 		$this->db->distinct();
@@ -38,16 +35,14 @@ class M_loket extends CI_Model {
 		$this->db->where($query);
 		$this->db->where('tb_hasil.published', '2');
 		return $this->db->get('tb_hasil');
-	}	
+	}
 
-	function get_pilihan($id,$bulan,$tahun,$pilihan)
+	function get_pilihan($id, $bulan, $tahun, $pilihan)
 	{
 		if ($bulan == 'setahun') {
-			$query = 'MONTH(tb_hasil.created_date) BETWEEN "01" and "'.date('m').'" and YEAR(tb_hasil.created_date) = "'.$tahun.'"';
-		}
-		else
-		{
-			$query = 'MONTH(tb_hasil.created_date) = "'.$bulan.'" and YEAR(tb_hasil.created_date) = "'.$tahun.'"';
+			$query = 'MONTH(tb_hasil.created_date) BETWEEN "01" and "' . date('m') . '" and YEAR(tb_hasil.created_date) = "' . $tahun . '"';
+		} else {
+			$query = 'MONTH(tb_hasil.created_date) = "' . $bulan . '" and YEAR(tb_hasil.created_date) = "' . $tahun . '"';
 		}
 
 		$this->db->join('tb_detil_responden', 'tb_loket.id_loket = tb_detil_responden.loket');
@@ -58,16 +53,14 @@ class M_loket extends CI_Model {
 		$this->db->order_by('tb_hasil.created_date', 'desc');
 		$this->db->group_by('tb_loket.id_loket');
 		return $this->db->get('tb_loket');
-	}	
+	}
 
-	function get_hasil_pilihan($id,$bulan,$tahun,$pilihan,$loket)
+	function get_hasil_pilihan($id, $bulan, $tahun, $pilihan, $loket)
 	{
 		if ($bulan == 'setahun') {
-			$query = 'MONTH(tb_hasil.created_date) BETWEEN "01" and "'.date('m').'" and YEAR(tb_hasil.created_date) = "'.$tahun.'"';
-		}
-		else
-		{
-			$query = 'MONTH(tb_hasil.created_date) = "'.$bulan.'" and YEAR(tb_hasil.created_date) = "'.$tahun.'"';
+			$query = 'MONTH(tb_hasil.created_date) BETWEEN "01" and "' . date('m') . '" and YEAR(tb_hasil.created_date) = "' . $tahun . '"';
+		} else {
+			$query = 'MONTH(tb_hasil.created_date) = "' . $bulan . '" and YEAR(tb_hasil.created_date) = "' . $tahun . '"';
 		}
 
 		$this->db->join('tb_detil_responden', 'tb_loket.id_loket = tb_detil_responden.loket');
@@ -78,28 +71,27 @@ class M_loket extends CI_Model {
 		$this->db->where($query);
 		$this->db->order_by('tb_hasil.created_date', 'desc');
 		return $this->db->get('tb_loket');
-	}	
+	}
 
-	function detil_loket($data,$tahun, $bulan)
+	function detil_loket($data, $tahun, $bulan)
 	{
 		$hasil 	= [];
 		$no 	= 1;
-		if ($data) 
-		{
+		if ($data) {
 			foreach ($data as $dat) {
 				$hasil[$no++] = [
 					'id_loket'				=> $dat->id_loket,
 					'jenis_layanan'			=> $dat->jenis_layanan,
-					'jumlah_responden'		=> $this->_jumlahResponden($dat->id_loket,$tahun, $bulan),
-					'persen'				=> $this->_persen($dat->id_loket,$tahun, $bulan),
-					'kepuasan'				=> $this->_getKepuasan($dat->id_loket,$tahun, $bulan),
+					'jumlah_responden'		=> $this->_jumlahResponden($dat->id_loket, $tahun, $bulan),
+					'persen'				=> $this->_persen($dat->id_loket, $tahun, $bulan),
+					'kepuasan'				=> $this->_getKepuasan($dat->id_loket, $tahun, $bulan),
 				];
 			}
 		}
 		return $hasil;
 	}
 
-	function responden($data,$tahun, $bulan)
+	function responden($data, $tahun, $bulan)
 	{
 		if ($bulan != 'setahun') {
 			$this->db->where('MONTH(tb_hasil.created_date)', $bulan);
@@ -111,7 +103,7 @@ class M_loket extends CI_Model {
 		return $this->db->get('tb_detil_responden')->num_rows();
 	}
 
-	function _jumlahResponden($id_loket,$tahun, $bulan)
+	function _jumlahResponden($id_loket, $tahun, $bulan)
 	{
 		$this->db->where('loket', $id_loket);
 		if ($bulan != 'setahun') {
@@ -124,7 +116,7 @@ class M_loket extends CI_Model {
 		return $this->db->get('tb_detil_responden')->num_rows();
 	}
 
-	function _persen($id_loket,$tahun, $bulan)
+	function _persen($id_loket, $tahun, $bulan)
 	{
 		if ($bulan != 'setahun') {
 			$this->db->where('MONTH(tb_hasil.created_date)', $bulan);
@@ -145,11 +137,13 @@ class M_loket extends CI_Model {
 		$this->db->group_by('tb_hasil.id_responden');
 		$total_perloket =  $this->db->get('tb_detil_responden')->num_rows();
 
-		$persen  = ($total_perloket / $total) * 100;
-		return $persen;
+		if ($total != null) {
+			return ($total_perloket / $total) * 100;
+		}
+		return 0;
 	}
 
-	function _getKepuasan($id_loket,$tahun, $bulan)
+	function _getKepuasan($id_loket, $tahun, $bulan)
 	{
 		$nilai = 0;
 		$hasil = [];
@@ -158,19 +152,20 @@ class M_loket extends CI_Model {
 		if ($bulan != 'setahun') {
 			$this->db->where('MONTH(tb_hasil.created_date)', $bulan);
 		}
+		$this->db->where('published', '2');
 		$this->db->where('YEAR(tb_hasil.created_date)', $tahun);
 		$this->db->where('loket', $id_loket);
 		$data =  $this->db->get('tb_hasil');
-		
+
 		$a = $this->_nilai($data->result(), 'a');
 		$b = $this->_nilai($data->result(), 'b');
 		$c = $this->_nilai($data->result(), 'c');
 		$d = $this->_nilai($data->result(), 'd');
-		
+
 		if ($data->num_rows() != 0) {
-			$nilai = (($a*1) + ($b*2) + ($c*3) + ($d * 4))/ ($data->num_rows() * 4);
+			$nilai = (($a * 1) + ($b * 2) + ($c * 3) + ($d * 4)) / ($data->num_rows() * 4);
 		}
-		return $nilai*100;
+		return $nilai * 100;
 	}
 
 	function _nilai($data, $pilihan)
@@ -180,14 +175,13 @@ class M_loket extends CI_Model {
 		$has = [];
 		foreach ($data as $j) {
 			if ($j->jawaban == $pilihan) {
-				$has[$no++]	=[
+				$has[$no++]	= [
 					'jumlah'	=> $j->jawaban
 				];
 			}
 		}
 		return count($has);
 	}
-
 }
 
 /* End of file M_loket.php */
