@@ -77,8 +77,10 @@
       </div>
     </section>
     <input type="hidden" id="base" value="<?php echo site_url() ?>">
+
   </main>
   <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+  <audio src="<?= base_url('assets/sound/mohon_isi_data_diri.mp3') ?>" id="my_audio"></audio>
   <div id="preloader"></div>
 
   <?= $this->load->view('sesi/script') ?>
@@ -86,6 +88,7 @@
   <script src="<?php echo base_url('assets/') ?>plugins/select2/js/select2.full.min.js"></script>
   <script>
     $(document).ready(function() {
+      $("#my_audio").get(0).play()
       $('#loket').select2()
     });
   </script>

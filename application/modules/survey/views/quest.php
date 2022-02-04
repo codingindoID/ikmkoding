@@ -67,11 +67,16 @@
         </form>
       </div>
     </section>
+    <audio src="<?= base_url('assets/sound/beri_bintang.mp3') ?>" id="my_audio" autoplay="autoplay"></audio>
   </main>
   <div id="preloader"></div>
 
   <?= $this->load->view('sesi/script') ?>
   <script>
+    $(document).ready(function() {
+      $("#my_audio").get(0).play()
+    });
+
     function pilihan(data) {
       var id = $(data).data('id')
       var soal = $(data).data('soal')

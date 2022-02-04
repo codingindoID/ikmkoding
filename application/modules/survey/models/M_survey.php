@@ -109,10 +109,13 @@ class M_survey extends CI_Model
 	function kirimJawaban()
 	{
 		$no = 0;
+		$star = [];
+		$totalStar = 0;
 		$jawaban = $this->input->post('jawaban');
 		$id_soal = $this->input->post('id_soal');
 		$id_responden = $this->input->post('id_responden');
 		$hasil = [];
+		$totalsoal = count($jawaban);
 
 		foreach ($jawaban as $j) {
 			switch ($j) {
@@ -138,8 +141,17 @@ class M_survey extends CI_Model
 				'created_date'		=> date('Y-m-d H:i:s'),
 				'published'			=> '1'
 			];
+
+			$star[$no]  = [
+				'jawaban'		=> $j
+			];
+			$totalStar += $star[$no]['jawaban'];
 			$no++;
 		}
+
+		$totalStar 	= $totalStar / $totalsoal;
+		$persenStar = ($totalStar / 4) * 100;
+
 		$cek = $this->db->insert_batch('tb_hasil', $hasil);
 		if ($cek) {
 			$saran = [
@@ -151,11 +163,15 @@ class M_survey extends CI_Model
 			$this->db->insert('tb_saran', $saran);
 			return  [
 				'kode'		=> 'success',
+				'star'		=> $totalStar,
+				'persen'	=> $persenStar,
 				'msg'		=> 'atas partisipasi anda,. Salam Jepara Smart.. '
 			];
 		}
 		return  [
 			'kode'		=> 'error',
+			'star'		=> 0,
+			'persen'	=> 0,
 			'msg'		=> 'ada yang salah'
 		];
 	}

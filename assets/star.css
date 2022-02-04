@@ -1,4 +1,15 @@
 /* new */
+.total_rating {
+    font-size: 45px;
+    width: 130px;
+    margin: auto;
+    padding: 10px;
+    border: 0.5px solid gold;
+    border-radius: 50%;
+    color: gold;
+    margin-bottom: -0.2em;
+}
+
 .halaman {
     border: 0.5px solid silver;
     border-radius: 25px;
@@ -9,7 +20,7 @@
 .star-ratings {
     unicode-bidi: bidi-override;
     color: lightgray;
-    font-size: 80px;
+    font-size: 70px;
     position: relative;
     margin: auto;
     padding: 0;

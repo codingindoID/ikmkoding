@@ -182,7 +182,7 @@ class Survey extends MY_Controller
 	{
 		$cek = $this->M_survey->kirimJawaban();
 		$this->session->set_flashdata($cek['kode'], $cek['msg']);
-		redirect('survey', 'refresh');
+		redirect('survey/end_survey/' . urlencode($cek['star']) . '/' . urlencode($cek['persen']), 'refresh');
 	}
 
 
@@ -450,9 +450,13 @@ class Survey extends MY_Controller
 		echo json_encode($data);
 	}
 
-	function end_survey()
+	function end_survey($star, $persen)
 	{
-		$this->load->view('end_survey');
+		$data = [
+			'star'		=> urldecode($star),
+			'persen'	=> urldecode($persen)
+		];
+		$this->load->view('end_survey', $data);
 	}
 }
 
