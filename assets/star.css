@@ -1,43 +1,22 @@
-.con {
-    background-color: aliceblue !important;
-    padding: 2em;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    width: 400px;
-    display: flex;
-}
-
-.rating input {
-    display: none;
-}
-
-.rating label {
-    color: darkgrey !important;
-    float: right;
-}
-
-.rating input:not(:checked)~label:hover,
-.rating input:not(:checked)~label:hover~label {
-    color: gold !important;
-}
-
-input:checked~label {
-    color: gold !important;
-}
-
 /* new */
+.halaman {
+    border: 0.5px solid silver;
+    border-radius: 25px;
+    padding-top: 3em;
+    padding-bottom: 3em;
+}
+
 .star-ratings {
     unicode-bidi: bidi-override;
     color: lightgray;
     font-size: 80px;
     position: relative;
-    margin: 0;
+    margin: auto;
     padding: 0;
 }
 
 .star-ratings>.fill-ratings {
-    color: #e7711b;
+    color: gold;
     padding: 0;
     position: absolute;
     z-index: 1;

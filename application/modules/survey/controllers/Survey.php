@@ -449,6 +449,11 @@ class Survey extends MY_Controller
 		];
 		echo json_encode($data);
 	}
+
+	function end_survey()
+	{
+		$this->load->view('end_survey');
+	}
 }
 
 /* End of file Tema.php */
