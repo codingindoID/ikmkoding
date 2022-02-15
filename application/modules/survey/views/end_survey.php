@@ -11,7 +11,7 @@
             <div class="container text-center halaman" style="margin-top:1%; ">
                 <!-- <img src="<?= base_url('assets/img/terimakasih.jpg') ?>" style="max-width: 100px; width: 100%;" alt=""> -->
                 <div class="total_rating font-weight-bold">
-                    <?= number_format($star, 1) ?>
+                    <span><?= number_format($star, 1) ?></span>
                 </div>
                 <div class="star-ratings">
                     <div class="fill-ratings" style="width: <?= $persen ?>%;">
@@ -23,7 +23,7 @@
                 </div>
                 <h5 class="font-weight-bold text-info">TERIMAKASIH ATAS PENILAIAN LAYANAN KAMI</h5>
                 <h6 class="font-weight-bold text-info">-- SALAM JEPARA INVESTEAM --</h6>
-                <a href="<?= site_url('') ?>" class="btn btn-success mt-5"><i class="icofont-home"></i> Kembali Ke Beranda</a>
+                <a href="<?= site_url('survey/userToken') ?>" class="btn btn-success mt-5"><i class="icofont-home"></i> Kembali Ke Beranda</a>
             </div>
         </section>
         <audio src="<?= base_url('assets/sound/terimakasih_atas_penilaian.mp3') ?>" id="my_audio" autoplay="autoplay"></audio>
