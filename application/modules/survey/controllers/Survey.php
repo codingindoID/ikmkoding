@@ -88,6 +88,30 @@ class Survey extends MY_Controller
 		$this->load->view('detil_responden', $data);
 	}
 
+	function adminToken()
+	{
+		// $base = "http://atompp.jepara.go.id/";
+		// $arrContextOptions = array(
+		// 	"ssl" => array(
+		// 		"verify_peer" 		=> false,
+		// 		"verify_peer_name" 	=> false,
+		// 	),
+		// );
+
+		// $path 	= $base."api/loket";
+		// $loket 	= file_get_contents($path, false, stream_context_create($arrContextOptions));
+		// $loket 	= json_decode($loket);
+
+		$data = [
+			'id_responden' 	=> uniqid(),
+			'pekerjaan'		=> $this->M_master->getall('tb_pekerjaan')->result(),
+			'pendidikan'	=> $this->M_master->getall('tb_pendidikan')->result(),
+			'loket'			=> $this->M_survey->loket(),
+			'visitor'		=> $this->M_survey->visitor()
+		];
+		$this->load->view('detil_respondenAdmin', $data);
+	}
+
 
 	public function cek_user()
 	{
@@ -149,9 +173,10 @@ class Survey extends MY_Controller
 
 	function post_detil_responden()
 	{
+		$tgl = $this->input->post('tanggal');
 		$cek = $this->M_survey->post_detil_responden();
 		if ($cek['kode'] == 'success') {
-			redirect('survey/pertanyaan/' . $this->input->post('id_responden') . '/' . $cek['id_detil'], 'refresh');
+			redirect('survey/pertanyaan/' . $this->input->post('id_responden') . '/' . $cek['id_detil'] . '/' . $tgl, 'refresh');
 		} else {
 			$this->session->set_flashdata('error', 'terjadi Kesalahan');
 			redirect('survey', 'refresh');
@@ -159,9 +184,10 @@ class Survey extends MY_Controller
 	}
 
 
-	public function pertanyaan($responden, $id_detil)
+	public function pertanyaan($responden, $id_detil, $tgl = null)
 	{
 		//$responden		= $this->input->post('noreg');
+		$tgl 			= ($tgl == null) ? date('Y-m-d H:i:s') : date('Y-m-d', strtotime($tgl));
 		$cek 			= $this->M_survey->cekResponden(['id_responden' => $responden])->row();
 
 		if ($cek) {
@@ -172,6 +198,7 @@ class Survey extends MY_Controller
 			$data['soal']		= $this->M_survey->getSoal()->result();
 			$data['noreg'] 		= $responden;
 			$data['id_detil']	= $id_detil;
+			$data['tanggal']	= $tgl;
 
 			// echo json_encode($data);
 			$this->load->view('quest', $data);
