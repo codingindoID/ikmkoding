@@ -19,7 +19,12 @@ class M_admin extends CI_Model
 		// return $this->db->get('tb_hasil');
 		$no = 1;
 		$hasil = [];
-		$query = "select * from tb_hasil a, tb_detil_responden b where a.id_responden = b.id_responden and id_soal = 'U1' and published = '2' and MONTH(a.created_date) = '$bulan' and YEAR(a.created_date) = '$tahun' GROUP BY a.id_responden";
+		if ($bulan == 'setahun') {
+			$query = "select * from tb_hasil a, tb_detil_responden b where a.id_responden = b.id_responden and id_soal = 'U1' and published = '2' and YEAR(a.created_date) = '$tahun' GROUP BY a.id_responden";
+		} else {
+			$query = "select * from tb_hasil a, tb_detil_responden b where a.id_responden = b.id_responden and id_soal = 'U1' and published = '2' and MONTH(a.created_date) = '$bulan' and YEAR(a.created_date) = '$tahun' GROUP BY a.id_responden";
+		}
+
 		$data =  $this->db->query($query)->result();
 		foreach ($data as $d) {
 			$dat = $this->_olahPublish($d->id_responden);
@@ -38,7 +43,7 @@ class M_admin extends CI_Model
 	function get_blm_publish($bulan, $tahun)
 	{
 		if ($bulan == 'setahun') {
-			$query = 'MONTH(created_date) BETWEEN "01" and "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '"';
+			$query = "YEAR(created_date) = '$tahun'";
 		} else {
 			$query = 'MONTH(created_date) = "' . $bulan . '" and YEAR(created_date) = "' . $tahun . '"';
 		}

@@ -25,10 +25,12 @@ class Admin extends MY_Controller
 			redirect('satpam', 'refresh');
 		}
 
-		if ($bulan == 'setahun' && $tahun == null) {
-			$tahun = date('Y');
-		}
+		// if ($bulan == 'setahun' && $tahun == null) {
+		// 	$tahun = date('Y');
+		// }
 
+		$bulan = ($bulan == null) ? date('m') : $bulan;
+		$tahun = ($tahun == null) ? date('Y') : $tahun;
 		$data = [
 			'title'			=> 'Dashboard',
 			'sub'			=> '',
@@ -771,7 +773,7 @@ class Admin extends MY_Controller
 	private function _get_rataan_filter($id_soal, $jawaban, $bulan, $tahun)
 	{
 		if ($bulan == 'setahun') {
-			$where = 'MONTH(created_date) BETWEEN "01" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '" and id_soal = "' . $id_soal . '" and jawaban = "' . $jawaban . '" and published="2"';
+			$where = 'YEAR(created_date) = "' . $tahun . '" and id_soal = "' . $id_soal . '" and jawaban = "' . $jawaban . '" and published="2"';
 		} else {
 			$where = 'MONTH(created_date) = "' . $bulan . '" and YEAR(created_date) = "' . $tahun . '" and id_soal = "' . $id_soal . '" and jawaban = "' . $jawaban . '" and published="2"';
 		}
