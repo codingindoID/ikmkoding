@@ -246,31 +246,21 @@ class Admin extends MY_Controller
 
 
 	/*publish*/
-	function publish()
+	function publish($bulan = null, $tahun = null)
 	{
 		if ($this->session->userdata('ses_user') == null) {
 			redirect('satpam', 'refresh');
 		}
-		$responden = $this->M_admin->get_responden_1()->result();
-		$hasil = array();
-		$no = 1;
-		foreach ($responden as $h) {
-			$nama = $this->db->get_where('tb_detil_responden', ['id_responden' => $h->id_responden])->row();
-			$hasil[$no]	= [
-				'id_responden'		=> $h->id_responden,
-				'nama_responden' 	=> ($nama) ? $nama->nama : '',
-				'rata'				=> $this->_get_rataan_2($h->id_responden),
-				'tanggal'			=> $this->M_admin->get_tanggal_responden($h->id_responden),
-				'jam_isi'			=> $this->M_admin->get_jam_responden($h->id_responden),
-			];
-			$no++;
-		}
-
+		$bulan = ($bulan == null) ? date('m') : $bulan;
+		$tahun = ($tahun == null) ? date('Y') : $tahun;
+		$responden = $this->M_admin->getRespondenBelumPublish($tahun, $bulan);
 		$data = [
 			'title'			=> 'Survey',
-			'sub'			=> 'pre publish',
+			'sub'			=> 'Belum Di Publish',
 			'icon'			=> 'fa-share',
-			'rekap'			=> $hasil,
+			'rekap'			=> $responden,
+			'bulan'			=> $bulan,
+			'tahun' 		=> $tahun,
 			'menu'			=> 'publish'
 		];
 		// echo json_encode($data);
@@ -293,17 +283,56 @@ class Admin extends MY_Controller
 		$this->template->load('tema/index', 'detil', $data);
 		//echo json_encode($data);
 	}
+	function detil2($id_responden)
+	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam', 'refresh');
+		}
+
+		$data = [
+			'title'			=> 'Survey',
+			'sub'			=> 'pre publish',
+			'icon'			=> 'fa-share',
+			'id_responden'	=> $id_responden,
+			'rekap'			=> $this->M_admin->getdetil($id_responden),
+			'menu'			=> 'publish'
+		];
+		$this->load->view('detilFrame', $data);
+	}
 
 	function aksipublish($id)
 	{
 		if ($this->session->userdata('ses_user') == null) {
 			redirect('satpam', 'refresh');
 		}
-
 		$where = ['id_responden' => $id];
 		$this->db->where($where);
-		$this->db->update('tb_hasil', ['published' => '2']);
-		redirect('admin', 'refresh');
+		$cek = $this->db->update('tb_hasil', ['published' => '2']);
+		if ($cek) {
+			echo json_encode('ok');
+		}
+		// redirect('admin', 'refresh');
+	}
+
+	function hapusUnPublish($id)
+	{
+		if ($this->session->userdata('ses_user') == null) {
+			redirect('satpam', 'refresh');
+		}
+
+		$where = [
+			'id_responden'		=> $id
+		];
+
+		$this->db->where($where);
+		$cek = $this->db->delete('tb_detil_responden');
+		if ($cek) {
+			$this->db->where($where);
+			$cek = $this->db->delete('tb_hasil');
+			if ($cek) {
+				echo json_encode('ok');
+			}
+		}
 	}
 
 	/*SARAN*/
