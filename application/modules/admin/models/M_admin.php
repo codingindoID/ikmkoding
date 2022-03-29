@@ -12,18 +12,27 @@ class M_admin extends CI_Model
 		return $this->db->get('tb_pertanyaan');
 	}
 
-	function get_responden_publish()
+	function get_responden_publish($bulan, $tahun)
 	{
-		$this->db->where('published', '2');
-		$this->db->group_by('id_responden');
-		return $this->db->get('tb_hasil');
-	}
-
-	function get_responden_1()
-	{
-		$this->db->distinct();
-		$this->db->select('id_responden');
-		return $this->db->get_where('tb_hasil', ['published' => '1']);
+		// $this->db->where('published', '2');
+		// $this->db->group_by('id_responden');
+		// return $this->db->get('tb_hasil');
+		$no = 1;
+		$hasil = [];
+		$query = "select * from tb_hasil a, tb_detil_responden b where a.id_responden = b.id_responden and id_soal = 'U1' and published = '2' and MONTH(a.created_date) = '$bulan' and YEAR(a.created_date) = '$tahun' GROUP BY a.id_responden";
+		$data =  $this->db->query($query)->result();
+		foreach ($data as $d) {
+			$dat = $this->_olahPublish($d->id_responden);
+			$array = [
+				'id_responden'		=> $d->id_responden,
+				'nama_responden'	=> $d->nama,
+				'tanggal'			=> date('d F Y', strtotime($d->created_date)),
+				'jam_isi'			=> date('H:i:s', strtotime($d->created_date)),
+				'rata'				=> $dat,
+			];
+			array_push($hasil, $array);
+		}
+		return $hasil;
 	}
 
 	function get_blm_publish($bulan, $tahun)

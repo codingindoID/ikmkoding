@@ -506,32 +506,46 @@ class Admin extends MY_Controller
 		$this->load->view('cetak/cetak1', $data);
 	}
 
-	function cetakrekapdetil($bulan, $tahun)
+	// function cetakrekapdetil($bulan, $tahun)
+	// {
+	// 	if ($this->session->userdata('ses_user') == null) {
+	// 		redirect('satpam', 'refresh');
+	// 	}
+
+	// 	$res = $this->M_admin->get_responden_publish()->result();
+	// 	$data['soal'] = $this->M_master->getall('tb_pertanyaan')->result();
+	// 	$hasil = array();
+	// 	$no = 1;
+	// 	foreach ($res as $key) {
+	// 		$tgl = $this->db->get_where('tb_hasil', ['id_responden' => $key->id_responden])->row()->created_date;
+	// 		$hasil[$no] = [
+	// 			'id_responden'	=> $key->id_responden,
+	// 			'nama'			=> $this->db->get_where('tb_detil_responden', ['id_responden' => $key->id_responden])->row()->nama,
+	// 			'tanggal'		=> $this->indo->konversi($tgl),
+	// 			'jawaban' 		=> $this->_get_jawaban($key->id_responden)
+	// 		];
+	// 		$no++;
+	// 	}
+	// 	$data['rekap'] = $hasil;
+	// 	$data['bulan']	= $this->M_master->tglindo($bulan);
+	// 	$data['tahun']	= $tahun;
+	// 	//echo json_encode($data);
+	// 	$this->load->view('cetak/cetakrekapdetil', $data);
+	// }
+
+	function cetakrekapdetil($bulan = null, $tahun = null)
 	{
 		if ($this->session->userdata('ses_user') == null) {
 			redirect('satpam', 'refresh');
 		}
 
-		$res = $this->M_admin->get_responden_publish()->result();
-		$data['soal'] = $this->M_master->getall('tb_pertanyaan')->result();
-		$hasil = array();
-		$jawaban = array();
-		$no = 1;
-		foreach ($res as $key) {
-			$tgl = $this->db->get_where('tb_hasil', ['id_responden' => $key->id_responden])->row()->created_date;
-			$hasil[$no] = [
-				'id_responden'	=> $key->id_responden,
-				'nama'			=> $this->db->get_where('tb_detil_responden', ['id_responden' => $key->id_responden])->row()->nama,
-				'tanggal'		=> $this->indo->konversi($tgl),
-				'jawaban' 		=> $this->_get_jawaban($key->id_responden)
-			];
-			$no++;
-		}
-		$data['rekap'] = $hasil;
-		$data['bulan']	= $this->M_master->tglindo($bulan);
-		$data['tahun']	= $tahun;
-		//echo json_encode($data);
-		$this->load->view('cetak/cetakrekapdetil', $data);
+		$bulan = ($bulan == null) ? date('m') : $bulan;
+		$tahun = ($tahun == null) ? date('Y') : $tahun;
+		$data['bulan'] = $bulan;
+		$data['tahun'] = $tahun;
+		$data['rekap'] = $this->M_admin->get_responden_publish($bulan, $tahun);
+		// echo json_encode($data);
+		$this->load->view('cetak/cetak_rataan_publish', $data);
 	}
 
 
