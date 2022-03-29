@@ -631,11 +631,11 @@ class Admin extends MY_Controller
 	private function _get_kepuasan_filter($bulan, $tahun)
 	{
 		if ($bulan == 'setahun') {
-			$where = 'MONTH(created_date) BETWEEN "01" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '" and published = "2"';
-			$where_a = 'published = "2" and jawaban = "a" and MONTH(created_date) BETWEEN "01" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '"';
-			$where_b = 'published = "2" and jawaban = "b" and MONTH(created_date) BETWEEN "01" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '"';
-			$where_c = 'published = "2" and jawaban = "c" and MONTH(created_date) BETWEEN "01" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '"';
-			$where_d = 'published = "2" and jawaban = "d" and MONTH(created_date) BETWEEN "01" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '"';
+			$where = 'YEAR(created_date) = "' . $tahun . '" and published = "2"';
+			$where_a = 'published = "2" and jawaban = "a" and YEAR(created_date) = "' . $tahun . '"';
+			$where_b = 'published = "2" and jawaban = "b" and YEAR(created_date) = "' . $tahun . '"';
+			$where_c = 'published = "2" and jawaban = "c" and YEAR(created_date) = "' . $tahun . '"';
+			$where_d = 'published = "2" and jawaban = "d" and YEAR(created_date) = "' . $tahun . '"';
 		} else {
 			$where = 'MONTH(created_date) = "' . $bulan . '" and YEAR(created_date) = "' . $tahun . '" and published = "2"';
 			$where_a = 'published = "2" and jawaban = "a" and MONTH(created_date) = "' . $bulan . '"  and YEAR(created_date) = "' . $tahun . '"';
@@ -690,10 +690,10 @@ class Admin extends MY_Controller
 	private function _get_hasil_filter($bulan, $tahun)
 	{
 		if ($bulan == 'setahun') {
-			$where_a = 'published = "2" and jawaban = "a" and MONTH(created_date) BETWEEN "01" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '"';
-			$where_b = 'published = "2" and jawaban = "b" and MONTH(created_date) BETWEEN "01" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '"';
-			$where_c = 'published = "2" and jawaban = "c" and MONTH(created_date) BETWEEN "01" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '"';
-			$where_d = 'published = "2" and jawaban = "d" and MONTH(created_date) BETWEEN "01" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '"';
+			$where_a = 'published = "2" and jawaban = "a" and YEAR(created_date) = "' . $tahun . '"';
+			$where_b = 'published = "2" and jawaban = "b" and YEAR(created_date) = "' . $tahun . '"';
+			$where_c = 'published = "2" and jawaban = "c" and YEAR(created_date) = "' . $tahun . '"';
+			$where_d = 'published = "2" and jawaban = "d" and YEAR(created_date) = "' . $tahun . '"';
 		} else {
 			$where_a = 'published = "2" and jawaban = "a" and MONTH(created_date) = "' . $bulan . '"  and YEAR(created_date) = "' . $tahun . '"';
 			$where_b = 'published = "2" and jawaban = "b" and MONTH(created_date) = "' . $bulan . '"  and YEAR(created_date) = "' . $tahun . '"';
@@ -741,11 +741,11 @@ class Admin extends MY_Controller
 	{
 		if ($bulan == 'setahun') {
 			$awal = date('m', strtotime('2020-01-01'));
-			$where = 'id_soal = "' . $id . '" and MONTH(created_date) BETWEEN "' . $awal . '" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '" and published="2"';
-			$where_a = 'id_soal = "' . $id . '" and published = "2" and jawaban = "a" and MONTH(created_date) BETWEEN "' . $awal . '" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '"';
-			$where_b = 'id_soal = "' . $id . '" and published = "2" and jawaban = "b" and MONTH(created_date) BETWEEN "' . $awal . '" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '" ';
-			$where_c = 'id_soal = "' . $id . '" and published = "2" and jawaban = "c" and MONTH(created_date) BETWEEN "' . $awal . '" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '"';
-			$where_d = 'id_soal = "' . $id . '" and published = "2" and jawaban = "d" and MONTH(created_date) BETWEEN "' . $awal . '" AND "' . date('m') . '" and YEAR(created_date) = "' . $tahun . '"';
+			$where = 'id_soal = "' . $id . '"and YEAR(created_date) = "' . $tahun . '" and published="2"';
+			$where_a = 'id_soal = "' . $id . '" and published = "2" and jawaban = "a" and YEAR(created_date) = "' . $tahun . '"';
+			$where_b = 'id_soal = "' . $id . '" and published = "2" and jawaban = "b" and YEAR(created_date) = "' . $tahun . '" ';
+			$where_c = 'id_soal = "' . $id . '" and published = "2" and jawaban = "c" and YEAR(created_date) = "' . $tahun . '"';
+			$where_d = 'id_soal = "' . $id . '" and published = "2" and jawaban = "d" and YEAR(created_date) = "' . $tahun . '"';
 		} else {
 			$where = 'MONTH(created_date) = "' . $bulan . '" and YEAR(created_date) = "' . $tahun . '" and id_soal = "' . $id . '" and published="2"';
 			$where_a = 'published = "2" and jawaban = "a" and MONTH(created_date) = "' . $bulan . '"  and YEAR(created_date) = "' . $tahun . '" and id_soal = "' . $id . '"';
