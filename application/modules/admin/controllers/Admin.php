@@ -9,9 +9,6 @@ class Admin extends MY_Controller
 		parent::__construct();
 		$this->load->model('M_master');
 		$this->load->model('M_admin');
-
-		date_default_timezone_set("Asia/Bangkok");
-
 		//cek session
 		if ($this->session->userdata('ses_id') == null) {
 			redirect('survey/admin', 'refresh');
@@ -19,15 +16,10 @@ class Admin extends MY_Controller
 	}
 
 	/*FILTER*/
-	function index($bulan = 'setahun', $tahun = null)
+	function index($bulan = null, $tahun = null)
 	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam', 'refresh');
-		}
-
-		if ($bulan == 'setahun' && $tahun == null) {
-			$tahun = date('Y');
-		}
+		$bulan = $bulan ? $bulan : date('m');
+		$tahun = $tahun ? $tahun : date('Y');
 
 		$data = [
 			'title'			=> 'Dashboard',
@@ -151,9 +143,6 @@ class Admin extends MY_Controller
 	/*PERTANYAAN*/
 	function pertanyaan()
 	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam', 'refresh');
-		}
 
 		$data = [
 			'title'		=> 'Dashboard',
@@ -173,9 +162,6 @@ class Admin extends MY_Controller
 
 	function addpertanyaan()
 	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam', 'refresh');
-		}
 
 		$data = [
 			'soal'		=> $this->input->post('pertanyaan'),
@@ -205,9 +191,6 @@ class Admin extends MY_Controller
 
 	function updatepertanyaan()
 	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam', 'refresh');
-		}
 
 		$where = ['id_soal' => $this->input->post('id_soal')];
 		$data = [
@@ -230,9 +213,6 @@ class Admin extends MY_Controller
 
 	function hapuspertanyaan($id)
 	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam', 'refresh');
-		}
 
 		$cek = $this->M_master->delete('tb_pertanyaan', ['id_soal' => $id]);
 		if (!$cek) {
@@ -248,9 +228,6 @@ class Admin extends MY_Controller
 	/*publish*/
 	function publish()
 	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam', 'refresh');
-		}
 		$responden = $this->M_admin->get_responden_1()->result();
 		$hasil = array();
 		$no = 1;
@@ -279,9 +256,6 @@ class Admin extends MY_Controller
 
 	function detil($id_responden)
 	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam', 'refresh');
-		}
 
 		$data = [
 			'title'			=> 'Survey',
@@ -296,9 +270,6 @@ class Admin extends MY_Controller
 
 	function aksipublish($id)
 	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam', 'refresh');
-		}
 
 		$where = ['id_responden' => $id];
 		$this->db->where($where);
@@ -309,9 +280,6 @@ class Admin extends MY_Controller
 	/*SARAN*/
 	function saran()
 	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam', 'refresh');
-		}
 
 		$data = [
 			'title'			=> 'Kritik Dan Saran',
@@ -325,9 +293,6 @@ class Admin extends MY_Controller
 
 	function tanggapisaran($id)
 	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam', 'refresh');
-		}
 
 		$cek = $this->M_master->update('tb_saran', ['id_responden' => $id], ['status' => '2']);
 		if (!$cek) {
@@ -446,9 +411,6 @@ class Admin extends MY_Controller
 
 	function cetakrekap($bulan, $tahun)
 	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam', 'refresh');
-		}
 
 		//hasilnya untuk index kepuasan per soal
 		$soal = $this->M_master->getall('tb_pertanyaan')->result();
@@ -479,9 +441,6 @@ class Admin extends MY_Controller
 
 	function cetakrekapdetil($bulan, $tahun)
 	{
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam', 'refresh');
-		}
 
 		$res = $this->M_admin->get_responden_publish()->result();
 		$data['soal'] = $this->M_master->getall('tb_pertanyaan')->result();
