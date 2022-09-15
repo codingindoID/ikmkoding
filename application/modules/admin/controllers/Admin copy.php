@@ -18,9 +18,11 @@ class Admin extends MY_Controller
 	/*FILTER*/
 	function index($bulan = null, $tahun = null)
 	{
-		$bulan = ($bulan == null) ? date('m') : $bulan;
-		$tahun = ($tahun == null) ? date('Y') : $tahun;
-		$pengunjung = $this->M_master->get_responden_filter($bulan, $tahun);
+		$bulan = $bulan ? $bulan : date('m');
+		$tahun = $tahun ? $tahun : date('Y');
+		$responden = $this->M_master->get_responden_filter($bulan, $tahun);
+		// $responden = 123;
+
 		$data = [
 			'title'			=> 'Dashboard',
 			'sub'			=> '',
@@ -30,12 +32,12 @@ class Admin extends MY_Controller
 			'f_bulan'		=> $bulan,
 			'f_tahun'		=> $tahun,
 			'soal'			=> $this->M_admin->getSoal()->result(),
-			'kepuasan' 		=> $this->_get_kepuasan_filter($bulan, $tahun, $pengunjung->num_rows()),
-			'pendidikan'	=> $this->M_admin->_get_pendidikan_filter($bulan, $tahun),
-			'pekerjaan'		=> $this->M_admin->_get_pekerjaan_filter($bulan, $tahun),
-			'pengunjung' 	=> $pengunjung->num_rows(),
+			'kepuasan' 		=> $this->M_admin->_get_kepuasan_filter($bulan, $tahun),
+			'pendidikan'	=> $this->M_admin->_get_pendidikan_filter($responden),
+			'pekerjaan'		=> $this->M_admin->_get_pekerjaan_filter($responden),
+			'pengunjung' 	=> $responden->num_rows(),
 			'hasil'			=> $this->_get_hasil_filter($bulan, $tahun),
-			'responden'		=> $pengunjung->num_rows(),
+			'responden'		=> $responden->num_rows(),
 			's_publish'		=> $this->M_master->getall('tb_loket')->num_rows(),
 			'b_publish'		=> $this->M_admin->get_blm_publish($bulan, $tahun)->num_rows(),
 			'menu'			=> 'Dashboard'
@@ -63,7 +65,7 @@ class Admin extends MY_Controller
 		$data['mutu'] 				= $mutu;
 
 		//hasilnya untuk index kepuasan per soal
-		$soal = $this->db->get('tb_pertanyaan')->result();
+		$soal = $this->M_master->getall('tb_pertanyaan')->result();
 		$hasil = array();
 		$no = 1;
 		foreach ($soal as $v) {
@@ -84,7 +86,7 @@ class Admin extends MY_Controller
 		$data_short = $this->_get_prioritas($hasil);
 		sort($data_short);
 		$data['rekap'] 	= $data_short;
-		//echo json_encode($data['kepuasan']);
+		// echo json_encode($data);
 		$this->template->load('tema/index', 'index', $data);
 	}
 
@@ -303,11 +305,6 @@ class Admin extends MY_Controller
 			redirect('admin/saran', 'refresh');
 		}
 	}
-	function cetaksaran()
-	{
-		$data['rekap']	= $this->M_admin->getSaran()->result();
-		$this->load->view('cetak/cetak_saran', $data);
-	}
 
 	function log_out()
 	{
@@ -387,7 +384,7 @@ class Admin extends MY_Controller
 		$data['max']	= max($hasil);
 
 		//Index Kepuasan
-		$kepuasan = $this->_get_kepuasan_filter($bulan, $tahun);
+		$kepuasan = $this->M_admin->_get_kepuasan_filter($bulan, $tahun);
 		if ($kepuasan > 88.31) {
 			$mutu = 'A';
 			$index = "Sangat Baik";
@@ -407,7 +404,7 @@ class Admin extends MY_Controller
 		$data['tingkat_kepuasan'] = [
 			'index'			=> $index,
 			'mutu'			=> $mutu,
-			'presentase'	=> $this->_get_kepuasan_filter($bulan, $tahun)
+			'presentase'	=> $this->M_admin->_get_kepuasan_filter($bulan, $tahun)
 		];
 		// echo json_encode($data);
 		$this->load->view('cetak/cetak_laporan', $data);
@@ -419,6 +416,12 @@ class Admin extends MY_Controller
 			return $a['kepuasan'] <=> $b['kepuasan'];
 		});
 		return $hasil;
+	}
+
+	function cetaksaran()
+	{
+		$data['rekap']	= $this->M_admin->getSaran()->result();
+		$this->load->view('cetak/cetak_saran', $data);
 	}
 
 	function cetakrekap($bulan, $tahun)
@@ -533,6 +536,11 @@ class Admin extends MY_Controller
 		return $hasil;
 	}
 
+	private function _get_rataan($id_soal, $jawaban)
+	{
+		$data = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => $jawaban, 'id_soal' => $id_soal])->num_rows();
+		return $data;
+	}
 
 	private function _get_rataan_2($id_responden)
 	{
@@ -600,24 +608,36 @@ class Admin extends MY_Controller
 	private function _get_nilai_filter($id, $bulan, $tahun)
 	{
 		if ($bulan == 'setahun') {
-			$where_a = 'id_soal = "' . $id . '" and published = "2" and jawaban = "a" and YEAR(created_date) = "' . $tahun . '"';
-			$where_b = 'id_soal = "' . $id . '" and published = "2" and jawaban = "b" and YEAR(created_date) = "' . $tahun . '" ';
-			$where_c = 'id_soal = "' . $id . '" and published = "2" and jawaban = "c" and YEAR(created_date) = "' . $tahun . '"';
-			$where_d = 'id_soal = "' . $id . '" and published = "2" and jawaban = "d" and YEAR(created_date) = "' . $tahun . '"';
+			$where = [
+				'id_soal'			=> $id,
+				'published'			=> '2',
+				'YEAR(created_date)' => $tahun
+			];
 		} else {
-			$where_a = 'published = "2" and jawaban = "a" and MONTH(created_date) = "' . $bulan . '"  and YEAR(created_date) = "' . $tahun . '" and id_soal = "' . $id . '"';
-			$where_b = 'published = "2" and jawaban = "b" and MONTH(created_date) = "' . $bulan . '"  and YEAR(created_date) = "' . $tahun . '" and id_soal = "' . $id . '"';
-			$where_c = 'published = "2" and jawaban = "c" and MONTH(created_date) = "' . $bulan . '"  and YEAR(created_date) = "' . $tahun . '" and id_soal = "' . $id . '"';
-			$where_d = 'published = "2" and jawaban = "d" and MONTH(created_date) = "' . $bulan . '"  and YEAR(created_date) = "' . $tahun . '" and id_soal = "' . $id . '"';
+			$where = [
+				'id_soal'		=> $id,
+				'YEAR(created_date)' => $tahun,
+				'MONTH(created_date)' => $bulan,
+				'published'		=> '2'
+			];
 		}
+		$this->db->where($where);
+		$this->db->where('jawaban', 'a');
+		$a = $this->db->get('tb_hasil')->num_rows();
 
-		//$total = $this->M_master->getWhere('tb_hasil',$where)->num_rows();
+		$this->db->where($where);
+		$this->db->where('jawaban', 'b');
+		$b = $this->db->get('tb_hasil')->num_rows();
+
+		$this->db->where($where);
+		$this->db->where('jawaban', 'c');
+		$c = $this->db->get('tb_hasil')->num_rows();
+
+		$this->db->where($where);
+		$this->db->where('jawaban', 'd');
+		$d = $this->db->get('tb_hasil')->num_rows();
 		$total_responden = $this->M_master->get_responden_filter($bulan, $tahun)->num_rows();
 
-		$a = $this->M_master->getWhere('tb_hasil', $where_a)->num_rows();
-		$b = $this->M_master->getWhere('tb_hasil', $where_b)->num_rows();
-		$c = $this->M_master->getWhere('tb_hasil', $where_c)->num_rows();
-		$d = $this->M_master->getWhere('tb_hasil', $where_d)->num_rows();
 
 		if ($total_responden != 0) {
 			$kepuasan = (($d * 4) + ($c * 3) + ($b * 2) + ($a * 1)) / ($total_responden * 4);
@@ -637,36 +657,6 @@ class Admin extends MY_Controller
 		return $data;
 	}
 
-	/*PRIVATE FUNCTION FILTER*/
-	function _get_kepuasan_filter($bulan, $tahun, $total_responden = null)
-	{
-		if ($bulan == 'setahun') {
-			$where = 'YEAR(created_date) = "' . $tahun . '" and published = "2"';
-			$where_a = 'published = "2" and jawaban = "a" and YEAR(created_date) = "' . $tahun . '"';
-			$where_b = 'published = "2" and jawaban = "b" and YEAR(created_date) = "' . $tahun . '"';
-			$where_c = 'published = "2" and jawaban = "c" and YEAR(created_date) = "' . $tahun . '"';
-			$where_d = 'published = "2" and jawaban = "d" and YEAR(created_date) = "' . $tahun . '"';
-		} else {
-			$where = 'MONTH(created_date) = "' . $bulan . '" and YEAR(created_date) = "' . $tahun . '" and published = "2"';
-			$where_a = 'published = "2" and jawaban = "a" and MONTH(created_date) = "' . $bulan . '"  and YEAR(created_date) = "' . $tahun . '"';
-			$where_b = 'published = "2" and jawaban = "b" and MONTH(created_date) = "' . $bulan . '"  and YEAR(created_date) = "' . $tahun . '"';
-			$where_c = 'published = "2" and jawaban = "c" and MONTH(created_date) = "' . $bulan . '"  and YEAR(created_date) = "' . $tahun . '"';
-			$where_d = 'published = "2" and jawaban = "d" and MONTH(created_date) = "' . $bulan . '"  and YEAR(created_date) = "' . $tahun . '"';
-		}
-
-		$soal = $this->M_master->getall('tb_pertanyaan')->num_rows();
-		$total_responden = ($total_responden) ? $total_responden : $this->M_master->get_responden_filter($bulan, $tahun)->num_rows();
-		$a = $this->M_master->getWhere('tb_hasil', $where_a)->num_rows();
-		$b = $this->M_master->getWhere('tb_hasil', $where_b)->num_rows();
-		$c = $this->M_master->getWhere('tb_hasil', $where_c)->num_rows();
-		$d = $this->M_master->getWhere('tb_hasil', $where_d)->num_rows();
-
-		if ($total_responden != 0) {
-			$kepuasan = (($d * 4) + ($c * 3) + ($b * 2) + ($a * 1)) / ($total_responden * 4 * $soal);
-			return number_format(($kepuasan * 100), 2);
-		}
-		return 0;
-	}
 
 	//import
 	function import()

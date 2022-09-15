@@ -37,6 +37,7 @@
         </div>
         <div class="col-sm-3 col-xs-12" style="margin-top: 0.3em">
           <button id="btn_filter_index" type="submit" class="btn bg-purple"><i class="fa fa-filter"></i> Filter</button>
+          <button id="cetak_laporan_akhir" type="submit" class="btn btn-success"><i class="fa fa-print"></i> Cetak Laporan</button>
         </div>
       </div>
     </div>
@@ -74,20 +75,7 @@
       </a>
     </div>
     <!-- ./col -->
-    <!--  <div class="col-lg-3 col-xs-6">
-    <a href="<?php echo site_url('loket') ?>" title="">
-      <div class="small-box bg-yellow">
-        <div class="inner">
-          <h3><?php echo $s_publish ?></h3>
 
-          <p>Loket <strong>Pelayanan</strong></p>
-        </div>
-        <div class="icon">
-          <i class="fa fa-ticket"></i>
-        </div>
-      </div>
-    </a>
-  </div>-->
     <!-- ./col -->
     <div class="col-lg-4 col-xs-12">
       <!-- small box -->
