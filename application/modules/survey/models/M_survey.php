@@ -56,6 +56,8 @@ class M_survey extends CI_Model
 
 	function post_detil_responden()
 	{
+		$tgl = $this->input->post('tanggal');
+		$tanggal = ($tgl == null) ? date('Y-m-d H:i:s') : date('Y-m-d H:i:s', strtotime($tgl));
 		$id_detil = uniqid(12);
 		$data = [
 			'id'			=> $id_detil,
@@ -65,7 +67,8 @@ class M_survey extends CI_Model
 			'jk'			=> $this->input->post('jk'),
 			'pekerjaan'		=> $this->input->post('pekerjaan'),
 			'pendidikan'	=> $this->input->post('pendidikan'),
-			'loket'			=> $this->input->post('loket')
+			'loket'			=> $this->input->post('loket'),
+			'created_date'	=> $tanggal
 		];
 		$cek = $this->db->insert('tb_detil_responden', $data);
 		if ($cek) {
@@ -116,6 +119,7 @@ class M_survey extends CI_Model
 		$id_responden = $this->input->post('id_responden');
 		$hasil = [];
 		$totalsoal = count($jawaban);
+		$tgl = $this->input->post('tanggal');
 
 		foreach ($jawaban as $j) {
 			switch ($j) {
@@ -138,8 +142,8 @@ class M_survey extends CI_Model
 				'jawaban'			=> $nilai,
 				'id_soal'			=> $id_soal[$no],
 				'id_responden'		=> $id_responden,
-				'created_date'		=> date('Y-m-d H:i:s'),
-				'published'			=> '1'
+				'created_date'		=> ($tgl == null) ? date('Y-m-d H:i:s') : date('Y-m-d H:i:s', strtotime($tgl)),
+				'published'			=> '1',
 			];
 
 			$star[$no]  = [
@@ -157,7 +161,7 @@ class M_survey extends CI_Model
 			$saran = [
 				'id_responden'			=> $id_responden,
 				'saran'					=> $this->input->post('saran'),
-				'created_date'			=> date('Y-m-d H:i:s'),
+				'created_date' 			=> ($tgl == null) ? date('Y-m-d H:i:s') : date('Y-m-d H:i:s', strtotime($tgl)),
 				'status'				=> "1"
 			];
 			$this->db->insert('tb_saran', $saran);

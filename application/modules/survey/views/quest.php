@@ -13,7 +13,10 @@
         <form action="<?= site_url('survey/kirimJawaban') ?>" method="post" id="myform">
           <div class="card">
             <div class=" card-header bg-white pl-2 pb-0 font-weight-bold font-italic 0">
-              <p class="text-primary">Pertanyaan :</p>
+              <?php if ($tanggal) : ?>
+                <input type="hidden" class="form-control" value="<?= $tanggal ?>" name="tanggal">
+              <?php endif ?>
+              <p class="text-primary mt-2">Pertanyaan :</p>
             </div>
             <div class="card-body body-quest">
               <?php
