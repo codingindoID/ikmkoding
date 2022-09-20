@@ -40,7 +40,6 @@ class Survey extends MY_Controller
 		}
 
 		$data['tingkat_kepuasan'] = $index;
-		//hasilnya untuk index kepuasan per soal
 		$soal = $this->M_master->getall('tb_pertanyaan')->result();
 		$hasil = array();
 		$rata  = array();
@@ -66,18 +65,6 @@ class Survey extends MY_Controller
 
 	function userToken()
 	{
-		// $base = "http://atompp.jepara.go.id/";
-		// $arrContextOptions = array(
-		// 	"ssl" => array(
-		// 		"verify_peer" 		=> false,
-		// 		"verify_peer_name" 	=> false,
-		// 	),
-		// );
-
-		// $path 	= $base."api/loket";
-		// $loket 	= file_get_contents($path, false, stream_context_create($arrContextOptions));
-		// $loket 	= json_decode($loket);
-
 		$data = [
 			'id_responden' 	=> uniqid(),
 			'pekerjaan'		=> $this->M_master->getall('tb_pekerjaan')->result(),
@@ -90,18 +77,6 @@ class Survey extends MY_Controller
 
 	function adminToken()
 	{
-		// $base = "http://atompp.jepara.go.id/";
-		// $arrContextOptions = array(
-		// 	"ssl" => array(
-		// 		"verify_peer" 		=> false,
-		// 		"verify_peer_name" 	=> false,
-		// 	),
-		// );
-
-		// $path 	= $base."api/loket";
-		// $loket 	= file_get_contents($path, false, stream_context_create($arrContextOptions));
-		// $loket 	= json_decode($loket);
-
 		$data = [
 			'id_responden' 	=> uniqid(),
 			'pekerjaan'		=> $this->M_master->getall('tb_pekerjaan')->result(),
@@ -129,7 +104,6 @@ class Survey extends MY_Controller
 			),
 		);
 
-		//$base = "http://localhost/loket_dpmptsp/";
 		$base = "https://atompp.jepara.go.id/";
 		$path = $base . "api/cekAntri/" . $no_antri . '/' . $tgl_antri;
 		$data = file_get_contents($path, false, stream_context_create($arrContextOptions));
@@ -161,7 +135,6 @@ class Survey extends MY_Controller
 					'pendidikan'	=> $this->M_master->getall('tb_pendidikan')->result(),
 					'loket'			=> $loket,
 					'visitor'		=> $this->M_survey->visitor()
-					//'loket'			=> $this->M_master->getall('tb_loket')->result(),
 				];
 				$this->load->view('detil_responden', $data);
 			}
@@ -183,10 +156,8 @@ class Survey extends MY_Controller
 		}
 	}
 
-
 	public function pertanyaan($responden, $id_detil, $tgl = null)
 	{
-		//$responden		= $this->input->post('noreg');
 		$tgl 			= ($tgl == null) ? date('Y-m-d H:i:s') : date('Y-m-d', strtotime($tgl));
 		$cek 			= $this->M_survey->cekResponden(['id_responden' => $responden])->row();
 
@@ -199,8 +170,6 @@ class Survey extends MY_Controller
 			$data['noreg'] 		= $responden;
 			$data['id_detil']	= $id_detil;
 			$data['tanggal']	= $tgl;
-
-			// echo json_encode($data);
 			$this->load->view('quest', $data);
 		}
 	}
@@ -212,11 +181,9 @@ class Survey extends MY_Controller
 		redirect('survey/end_survey/' . urlencode($cek['star']) . '/' . urlencode($cek['persen']), 'refresh');
 	}
 
-
 	function get_soal($param)
 	{
 		$data	= $this->M_survey->getSoal()->result();
-
 		echo json_encode($data[$param]);
 	}
 
@@ -296,7 +263,6 @@ class Survey extends MY_Controller
 	function publish_jawaban($id_responden)
 	{
 		$where = ['published' => '1', 'id_responden' => $id_responden];
-		$jawaban = $this->M_master->getWhere('tb_hasil', $where)->result();
 
 		$publish 	= $this->M_survey->update('tb_hasil', $where, ['published' => '2']);
 		if (!$publish) {
@@ -315,7 +281,6 @@ class Survey extends MY_Controller
 		redirect('survey', 'refresh');
 	}
 
-	//private function
 	private function _get_hasil()
 	{
 		$sangat_puas 	= $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'd'])->num_rows();
@@ -329,25 +294,21 @@ class Survey extends MY_Controller
 			$data = [
 				[
 					'name' 	=> 'sangat_puas',
-					/*'y'		=> floatval(number_format(($sangat_puas/$all)*100,2)),*/
 					'y'		=> $sangat_puas,
 					'color' => '#00FF00'
 				],
 				[
 					'name' 	=> 'puas',
-					/*'y'		=> floatval(number_format(($puas/$all)*100,2)),*/
 					'y'		=> $puas,
 					'color' => 'blue'
 				],
 				[
 					'name' 	=> 'tidak_puas',
-					/*'y'		=> floatval(number_format(($tidak_puas/$all)*100,2)),*/
 					'y'		=> $tidak_puas,
 					'color' => 'purple'
 				],
 				[
 					'name' 	=> 'kecewa',
-					/*'y'		=> floatval(number_format(($kecewa/$all)*100,2)),*/
 					'y'		=> $kecewa,
 					'color' => 'red'
 				]
@@ -360,7 +321,6 @@ class Survey extends MY_Controller
 
 	private function _get_kepuasan()
 	{
-		$total = $this->M_master->getall('tb_hasil')->num_rows();
 		$soal = $this->M_master->getall('tb_pertanyaan')->num_rows();
 		$total_responden = $this->M_survey->get_responden();
 		$a = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'a'])->num_rows();
@@ -377,8 +337,6 @@ class Survey extends MY_Controller
 
 	private function _get_nilai($id)
 	{
-		$total = $this->M_master->getall('tb_hasil')->num_rows();
-		$soal = $this->M_master->getall('tb_pertanyaan')->num_rows();
 		$total_responden = $this->M_survey->get_responden();
 		$a = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'a', 'id_soal' => $id])->num_rows();
 		$b = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'b', 'id_soal' => $id])->num_rows();
@@ -394,7 +352,6 @@ class Survey extends MY_Controller
 
 	private function _get_rataan($id_soal, $jawaban)
 	{
-		$total_responden = $this->M_survey->get_responden();
 		$data = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => $jawaban, 'id_soal' => $id_soal])->num_rows();
 		return $data;
 	}
@@ -450,7 +407,6 @@ class Survey extends MY_Controller
 		];
 
 		$cek = $this->M_survey->auth($data)->num_rows();
-		//echo json_encode($cek);
 		if ($cek >= 1) {
 			$user = $this->M_survey->auth($data)->row();
 			$this->session->set_userdata('ses_user', $user->username);

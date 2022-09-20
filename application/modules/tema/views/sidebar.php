@@ -53,27 +53,12 @@ $menu_news  = ['news', 'faq'];
           <li <?php echo $menu == 'faq' ? 'class="active"' : '' ?>><a href="<?php echo site_url('news/FAQ') ?>"><i class="fa  fa-question"></i>FAQ</a></li>
         </ul>
       </li>
-      <!-- 
-      <li class="header" style="color:red"><strong>MENU KHUSUS</strong></li>
-      <li style="margin-top: -1em">
-        <a href="<?php echo site_url('khusus') ?>" style="color:red"><i class="fa fa-info-circle"></i>Rekap Khusus</a>
-      </li>
-    -->
-
       <li <?php echo $menu == 'loket' ? 'class="active"' : '' ?>>
         <a href="<?php echo site_url('loket') ?>">
           <i class="fa fa-user-circle fa-black"></i>
           <span>Loket</span>
         </a>
       </li>
-      <!-- <?php if ($menu == 'Dashboard') : ?>
-        <li>
-          <a href="#" id="cetak_laporan_akhir">
-            <i class="fa fa-print fa-black"></i>
-            <span>Cetak Laporan</span>
-          </a>
-        </li>
-      <?php endif ?> -->
       <?php if ($this->session->userdata('ses_user') == 'super') : ?>
         <li>
           <a href="<?php echo site_url() . 'admin/import' ?>">

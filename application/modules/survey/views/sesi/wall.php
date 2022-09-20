@@ -18,23 +18,11 @@
                 </button>
               </div>
             <?php endif ?>
-            <form action="<?php echo site_url('survey/cek_user') ?>" method="post">
-              <h1>MPP <span>Kabupaten Jepara</span></h1>
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <!-- <input type="text" class="form-control" name="noreg" id="noreg" placeholder="NOMOR REGISTRASI"/> -->
-                  <input required type="text" class="form-control" name="no_antri" id="noreg" placeholder="NOMOR ANTRIAN" />
-                </div>
-                <div class="form-group col-md-6">
-                  <!-- <input type="text" class="form-control" name="noreg" id="noreg" placeholder="NOMOR REGISTRASI"/> -->
-                  <input required type="date" class="form-control" name="tgl_antri" id="noreg" placeholder="TANGGAL ANTRIAN" value="<?php echo date('Y-m-d') ?>" />
-                </div>
-              </div>
-              <h2>Bantu kami memperbaiki pelayanan kami</h2>
-              <div class="text-center text-lg-left">
-                <button type="submit" id="ikut" class="btn-get-started">Ikuti Survey</button>
-              </div>
-            </form>
+            <h1>MPP <span>Kabupaten Jepara</span></h1>
+            <h2>Bantu kami memperbaiki pelayanan kami</h2>
+            <div class="text-center text-lg-left">
+              <a type="button" href="<?= site_url('survey/userToken') ?>" class="btn btn-success"><i class="icofont-checked"></i> Ikuti Survey</a>
+            </div>
           </div>
         </div>
         <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="300">
