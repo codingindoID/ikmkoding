@@ -335,10 +335,6 @@ class Admin extends MY_Controller
 	//import
 	function import()
 	{
-		if ($this->session->userdata('ses_user') != 'super') {
-			redirect('satpam', 'refresh');
-		}
-
 		$data = [
 			'title'			=> 'Import',
 			'sub'			=> '',
@@ -349,25 +345,13 @@ class Admin extends MY_Controller
 		$this->template->load('tema/index', 'import', $data);
 	}
 
-	function importAction()
+	function importData()
 	{
-		if ($this->session->userdata('ses_user') != 'super') {
-			redirect('satpam', 'refresh');
-		}
-		$cek = $this->M_admin->importAction();
+		$cek = $this->M_admin->importData();
+		// echo json_encode($cek);
+		// die();
 		$this->session->set_flashdata($cek['kode'], $cek['msg']);
-		redirect('admin/import', 'refresh');
-	}
-
-	function importResponden()
-	{
-		if ($this->session->userdata('ses_user') != 'super') {
-			redirect('satpam', 'refresh');
-		}
-		$cek = $this->M_admin->importResponden();
-		$this->session->set_flashdata($cek['kode'], $cek['msg']);
-		redirect('admin/import', 'refresh');
-		//echo json_encode($cek);
+		redirect('admin', 'refresh');
 	}
 }
 

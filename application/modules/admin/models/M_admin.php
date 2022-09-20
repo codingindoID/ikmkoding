@@ -433,7 +433,7 @@ class M_admin extends CI_Model
 	}
 
 	/*IMPORT*/
-	function importAction()
+	function importData()
 	{
 		$nama = uniqid() . '.xlsx';
 		$config['upload_path']          = './assets/excel/';
@@ -441,102 +441,76 @@ class M_admin extends CI_Model
 		$config['file_name']           	= $nama;
 		$this->load->library('upload', $config);
 		$this->upload->overwrite = true;
-
 		if (!$this->upload->do_upload('file')) {
 			$response = $this->upload->display_errors();
-			$res = [
+			return [
 				'kode'		=> 'error',
 				'msg'		=> $response
 			];
 		} else {
-			//proses import
 			$spreadsheet 	= \PhpOffice\PhpSpreadsheet\IOFactory::load($config['upload_path'] . $config['file_name']);
 			$worksheet 		= $spreadsheet->getActiveSheet()->toArray();
 
-			$data_import  =	[];
-			$no = 0;
+			$dataResponden = [];
+			$dataJawaban = [];
 			for ($i = 1; $i < count($worksheet); $i++) {
-				$data[$no] = [
-					'id_kuis'		=> uniqid(),
-					'id_responden' 	=> $worksheet[$i][0],
-					'id_soal' 		=> strtoupper($worksheet[$i][1]),
-					'jawaban'		=> $worksheet[$i][2],
-					'created_date'	=> date('Y-m-d H:i:s', strtotime($worksheet[$i][3])),
-					'published'		=> $worksheet[$i][4],
-				];
-				$no++;
+				if ($worksheet[$i][0] != "") {
+					$id_responden = uniqid();
+					$dat = [
+						'id' 			=> uniqid(),
+						'id_responden' 	=> $id_responden,
+						'created_date'	=> date('Y-m-d H:i:s', strtotime($worksheet[$i][0])),
+						'loket' 		=> $worksheet[$i][1],
+						'nama'			=> $worksheet[$i][2],
+						'umur'			=> $worksheet[$i][3],
+						'jk'			=> $worksheet[$i][4],
+						'pekerjaan'		=> $worksheet[$i][5],
+						'pendidikan'	=> $worksheet[$i][6],
+					];
+					array_push($dataResponden, $dat);
+
+					for ($colom = 1; $colom < 10; $colom++) {
+						$index = 6 + $colom;
+						switch ($worksheet[$i][$index]) {
+							case '4':
+								$jawaban = 'd';
+								break;
+							case '3':
+								$jawaban = 'c';
+								break;
+							case '2':
+								$jawaban = 'b';
+								break;
+
+							default:
+								$jawaban = 'a';
+								break;
+						}
+
+						$dat2 = [
+							'id_kuis' 		=> uniqid(),
+							'id_responden' 	=> $id_responden,
+							'id_soal'		=> "U" . $colom,
+							'jawaban'		=> $jawaban,
+							'created_date'	=> date('Y-m-d H:i:s', strtotime($worksheet[$i][0])),
+							'published'		=> '2'
+						];
+						array_push($dataJawaban, $dat2);
+					}
+				}
 			}
 
-			$cek = $this->db->insert_batch('tb_hasil', $data);
-			if ($cek) {
-				$res = [
-					'kode'		=> 'success',
-					'msg'		=> 'import success'
-				];
-			} else {
-				$res = [
-					'kode'		=> 'error',
-					'msg'		=> 'import gagal'
-				];
-			}
-			unlink('./assets/excel/' . $nama);
-		}
-		return $res;
-	}
+			$this->db->insert_batch('tb_detil_responden', $dataResponden);
+			$this->db->insert_batch('tb_hasil', $dataJawaban);
+			unlink("./assets/excel/$nama");
 
-	function importResponden()
-	{
-		$nama = uniqid() . '.xlsx';
-		$config['upload_path']          = './assets/excel/';
-		$config['allowed_types']        = 'xls|xlsx';
-		$config['file_name']           	= $nama;
-		$this->load->library('upload', $config);
-		$this->upload->overwrite = true;
-
-		if (!$this->upload->do_upload('file')) {
-			$response = $this->upload->display_errors();
-			$res = [
-				'kode'		=> 'error',
-				'msg'		=> $response
+			return [
+				'hasil'		=> $dataJawaban,
+				'resp'		=> $dataResponden,
+				'kode'		=> 'success',
+				'msg'		=> 'success'
 			];
-		} else {
-			//proses import
-			$spreadsheet 	= \PhpOffice\PhpSpreadsheet\IOFactory::load($config['upload_path'] . $config['file_name']);
-			$worksheet 		= $spreadsheet->getActiveSheet()->toArray();
-
-			$data_import  =	[];
-			$no = 0;
-			for ($i = 1; $i < count($worksheet); $i++) {
-				$data[$no] = [
-					'id'			=> uniqid(),
-					'id_responden' 	=> $worksheet[$i][0],
-					'nama' 			=> strtoupper($worksheet[$i][1]),
-					'umur'			=> $worksheet[$i][2],
-					'jk'			=> $worksheet[$i][3],
-					'pendidikan'	=> $worksheet[$i][4],
-					'pekerjaan'		=> $worksheet[$i][5],
-					'loket'			=> $worksheet[$i][6],
-					'created_date'	=> date('Y-m-d H:i:s', strtotime($worksheet[$i][7])),
-					'status'		=> '1',
-				];
-				$no++;
-			}
-
-			$cek = $this->db->insert_batch('tb_detil_responden', $data);
-			if ($cek) {
-				$res = [
-					'kode'		=> 'success',
-					'msg'		=> 'import success'
-				];
-			} else {
-				$res = [
-					'kode'		=> 'error',
-					'msg'		=> 'import gagal'
-				];
-			}
-			unlink('./assets/excel/' . $nama);
 		}
-		return $res;
 	}
 }
 

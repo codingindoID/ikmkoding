@@ -31,8 +31,8 @@
 
 <body>
 	<?php
-	header("Content-type: application/vnd-ms-excel");
-	header("Content-Disposition: attachment; filename= SURVEY_KEPUASAN_MASYARAKAT_PER_RESPONDEN_" . $bulan . "_" . $tahun . ".xls");
+	// header("Content-type: application/vnd-ms-excel");
+	// header("Content-Disposition: attachment; filename= SURVEY_KEPUASAN_MASYARAKAT_PER_RESPONDEN_" . $bulan . "_" . $tahun . ".xls");
 	?>
 
 	<center>
