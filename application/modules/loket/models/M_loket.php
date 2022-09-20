@@ -3,77 +3,98 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class M_loket extends CI_Model
 {
-	function total_responden($data)
+	function _arrayResponden($array)
 	{
-		$array = [];
-		foreach ($data as $a) {
-			if (!in_array($a->id_responden, $array, true)) {
-				array_push($array, $a->id_responden);
+		$total = [];
+		if ($array) {
+			$responden = [];
+			for ($i = 0; $i < count($array); $i++) {
+				if (!in_array($array[$i]->id_responden, $responden, true)) {
+					array_push($responden, $array[$i]->id_responden);
+				}
 			}
+			$total = $responden;
 		}
-		return count($array);
+		return $total;
 	}
 
-	function repondenLoket($data, $totalResponden)
+	function dataPerloket($hasil)
 	{
-		$this->db->order_by('nama_loket', 'asc');
-		$loket = $this->db->get('tb_loket')->result();
+		$array = [];
 		$response = [];
+		$id_responden = $this->_arrayResponden($hasil);
 
-		foreach ($loket as $lok) {
-			$respondenLoket = $this->_respondenLoket($data, $lok->id_loket);
-			$groupRespondenLoket = $this->total_responden($respondenLoket);
+		if ($id_responden) {
+			$this->db->where_in('id_responden', $id_responden);
+			$array =  $this->db->get('tb_detil_responden')->result();
+		}
+
+		$loket = $this->db->get('tb_loket')->result();
+		foreach ($loket as $dat) {
+			$respondenLoket = $this->_hitungJumlahRespondenLoket($array, $dat->id_loket);
 			$res = [
-				'id_loket'				=> $lok->id_loket,
-				'jenis_layanan'			=> $lok->nama_loket,
-				'jumlah_responden'		=> $groupRespondenLoket,
-				'total_semua'			=> $totalResponden,
-				'persen'				=> ($totalResponden > 0) ? ($groupRespondenLoket / $totalResponden) * 100 : 0,
-				'kepuasan'				=> $this->_kepuasanLoket($respondenLoket, $groupRespondenLoket)
+				'id_loket'				=> $dat->id_loket,
+				'jenis_layanan'			=> $dat->nama_loket,
+				'jumlah_responden'		=> count($respondenLoket),
+				'total_semua'			=> count($id_responden),
+				'persen'				=> (count($id_responden) > 0) ? (count($respondenLoket) / count($id_responden)) * 100 : 0,
+				'kepuasan'				=> $this->_getKepuasanLoket($hasil, $respondenLoket)
 			];
 			array_push($response, $res);
 		}
 		return $response;
 	}
 
-	function _respondenLoket($data, $id_loket)
+	function _hitungJumlahRespondenLoket($array, $id_loket)
 	{
-		$a = 0;
-		$arrayLoket = [];
-		while ($a < count($data)) {
-			if ($data[$a]->loket == $id_loket) {
-				array_push($arrayLoket, $data[$a]);
+		$total = [];
+		if ($array) {
+			$responden = [];
+			foreach ($array as $ar) {
+				if ($ar->loket == $id_loket) {
+					array_push($responden, $ar->id_responden);
+				}
 			}
-			$a++;
+			$total = $responden;
 		}
-		return $arrayLoket;
+		return $total;
 	}
 
-	function _kepuasanLoket($data, $totalResponden)
+	function _getKepuasanLoket($hasil, $array_responden)
 	{
+		$kepuasan = 0;
 		$total_soal = $this->db->get('tb_pertanyaan')->num_rows();
-		$nilai = 0;
-		$a = $this->_nilai($data, 'a');
-		$b = $this->_nilai($data, 'b');
-		$c = $this->_nilai($data, 'c');
-		$d = $this->_nilai($data, 'd');
+		if ($hasil) {
+			$array = [];
+			for ($i = 0; $i < count($hasil); $i++) {
+				if (in_array($hasil[$i]->id_responden, $array_responden, true)) {
+					array_push($array, $hasil[$i]);
+				}
+			}
 
-		if ($totalResponden > 0) {
-			$nilai = (($a * 1) + ($b * 2) + ($c * 3) + ($d * 4)) / ($totalResponden * 4 * $total_soal);
-		}
-		return $nilai * 100;
-	}
+			$jawaban_a = $this->_hitungJawaban($array, 'a');
+			$jawaban_b = $this->_hitungJawaban($array, 'b');
+			$jawaban_c = $this->_hitungJawaban($array, 'c');
+			$jawaban_d = $this->_hitungJawaban($array, 'd');
 
-	function _nilai($data, $pilihan)
-	{
-		$no = 1;
-		$count = 0;
-		foreach ($data as $j) {
-			if ($j->jawaban == $pilihan) {
-				$count++;
+			if (count($array_responden) > 0) {
+				$kepuasan = (($jawaban_a * 1) + ($jawaban_b * 2) + ($jawaban_c * 3) + ($jawaban_d * 4)) / ($total_soal * count($array_responden) * 4);
 			}
 		}
-		return $count;
+		return $kepuasan * 100;
+	}
+
+	function _hitungJawaban($array, $jawaban)
+	{
+		$total = 0;
+		if ($array) {
+			for ($i = 0; $i < count($array); $i++) {
+				if ($array[$i]->jawaban == $jawaban) {
+					$total++;
+				}
+			}
+		}
+		return $total;
 	}
 }
 

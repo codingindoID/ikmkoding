@@ -139,21 +139,21 @@
 				<tr>
 					<td><strong><?php echo $h['id_soal'] ?></strong></td>
 					<td><?php echo $h['kategori'] ?></td>
-					<td><?php echo $h['kepuasan'] ?></td>
+					<td><?php echo number_format($h['kepuasan'], 2) ?></td>
 				</tr>
 			<?php endforeach ?>
 		</tbody>
 	</table>
 	</p>
 	<p>
-		Dari nilai rata-rata yang ada maka dapat ditarik kesimpulan nilai SKM yang diperoleh adalah <?php echo $tingkat_kepuasan['presentase'] ?> <br>
+		Dari nilai rata-rata yang ada maka dapat ditarik kesimpulan nilai SKM yang diperoleh adalah <?php echo number_format($tingkat_kepuasan['presentase']['kepuasan'], 2) ?> <br>
 		Sehingga dapat diperoleh hasil sebagai berikut : <br>
 		Mutu pelayanan <strong><?php echo $tingkat_kepuasan['index'] ?></strong> <br>
 		Kinerja unit pelayanan <strong><?php echo $tingkat_kepuasan['mutu'] ?></strong>
 	</p>
-	<p>
 	<h4>Analisis</h4>
-	Dari tabel dapat dilihat bahwa dengan nilai SKM <?php echo $tingkat_kepuasan['presentase'] ?> disimpulkan bahwa Kategorisasi Mutu Pelayanan "<?php echo $tingkat_kepuasan['mutu'] ?>" dan Kinerja Unit Pelayanan adalah Sangat Baik. Jika dilihat dari Nilai Rata-Rata (NRR) unsur pelayanan, unsur yang memiliki nilai tertinggi adalah unsur "<?php echo $max['kategori'] ?>" (NRR <?php echo $max['kepuasan'] ?>), sedangkan unsur dengan Nilai Rata-Rata terendah adalah unsur "<?php echo $min['kategori'] ?>" (NRR <?php echo $min['kepuasan'] ?>). Angka ini menunjukkan bahwa tingkat pelayanan paling tinggi diperoleh dari <strong><?php echo $max['kategori'] ?></strong>, sedangkan tingkat kepuasan paling rendah berada pada unsur <strong><?php echo $min['kategori'] ?></strong>.
+	<p>
+		Dari tabel dapat dilihat bahwa dengan nilai SKM <?php echo number_format($tingkat_kepuasan['presentase']['kepuasan'], 2) ?> disimpulkan bahwa Kategorisasi Mutu Pelayanan "<?php echo $tingkat_kepuasan['mutu'] ?>" dan Kinerja Unit Pelayanan adalah Sangat Baik. Jika dilihat dari Nilai Rata-Rata (NRR) unsur pelayanan, unsur yang memiliki nilai tertinggi adalah unsur "<?php echo $max['kategori'] ?>" (NRR <?php echo number_format($max['kepuasan'], 2) ?>), sedangkan unsur dengan Nilai Rata-Rata terendah adalah unsur "<?php echo $min['kategori'] ?>" (NRR <?php echo number_format($min['kepuasan'], 2) ?>). Angka ini menunjukkan bahwa tingkat pelayanan paling tinggi diperoleh dari <strong><?php echo $max['kategori'] ?></strong>, sedangkan tingkat kepuasan paling rendah berada pada unsur <strong><?php echo $min['kategori'] ?></strong>.
 	</p>
 	<p>Secara umum capaian di DINAS PENANAMAN MODAL & PELAYANAN TERPADU SATU PINTU (DPMPTSP) Jepara ditingkatkan sebagai berikut:</p>
 	<p>
@@ -172,7 +172,7 @@
 				<tr>
 					<td><strong><?php echo $x++ ?></strong></td>
 					<td><?php echo $h['kategori'] ?></td>
-					<td><?php echo $h['kepuasan'] ?></td>
+					<td><?php echo number_format($h['kepuasan'], 2) ?></td>
 				</tr>
 			<?php endforeach ?>
 		</tbody>

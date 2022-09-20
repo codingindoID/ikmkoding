@@ -49,7 +49,7 @@
       <a href="" title="">
         <div class="small-box bg-aqua">
           <div class="inner">
-            <h3><?php echo $kepuasan ?><sup>%</sup></h3>
+            <h3><?php echo number_format($kepuasan['kepuasan'], 2) ?><sup>%</sup></h3>
             <p>Index Kepuasan</p>
             <p style="font-weight: bold; font-size: 20px;"><?php echo strtoupper($tingkat_kepuasan) . " " ?><strong>(<?php echo $mutu ?>)</strong></p>
           </div>
@@ -65,7 +65,7 @@
       <a href="" title="">
         <div class="small-box bg-green">
           <div class="inner">
-            <h3><?php echo $responden ?></h3>
+            <h3><?php echo $kepuasan['total_responden'] ?></h3>
             <p>Total Responden</p>
           </div>
           <div class="icon">
@@ -154,7 +154,7 @@
                     <td class="text-center" style="cursor: pointer" onclick="puas('<?php echo $data['id_soal'] ?>')"><?php echo $data['p'] != null ? '<strong>' . $data['p'] . '</strong>' : '-' ?></td>
                     <td class="text-center" style="cursor: pointer" onclick="kurang('<?php echo $data['id_soal'] ?>')"><?php echo $data['tp'] != null ? '<strong>' . $data['tp'] . '</strong>' : '-' ?></td>
                     <td class="text-center" style="cursor: pointer" onclick="kecewa('<?php echo $data['id_soal'] ?>')"><?php echo $data['kec'] != null ? '<strong>' . $data['kec'] . '</strong>' : '-' ?></td>
-                    <td class="text-center" style="font-weight: bold;"><?php echo $data['kepuasan'] ?></td>
+                    <td class="text-center" style="font-weight: bold;"><?php echo number_format($data['kepuasan'], 2) ?></td>
                     <td class="text-center" style="font-weight: bold;"><?php echo $index ?></td>
                     <td class="text-center" style="font-weight: bold;"><?php echo $data['prioritas'] ?></td>
                   </tr>

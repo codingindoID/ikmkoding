@@ -1,5 +1,5 @@
 <style>
-	table{
+	table {
 		font-size: 15px;
 	}
 </style>
@@ -11,7 +11,6 @@
 				<tr>
 					<th class="text-center">No</th>
 					<th class="text-center">id responden</th>
-					<th class="text-center">Nama</th>
 					<th class="text-center">Tanggal Mengisi</th>
 					<th class="text-center">TimeStamp</th>
 					<th class="text-center">Score Rata-rata</th>
@@ -19,18 +18,18 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php $no=1; foreach ($rekap as $data): ?>
-				<tr>
-					<td class="text-center"><?php echo $no++; ?></td>
-					<td><strong><?php echo $data['id_responden'] ?></strong></td>
-					<td><strong><?php echo $data['nama_responden'] ?></strong></td>
-					<td class="text-center"><?php echo $data['tanggal'] ?></td>
-					<td class="text-center"><?php echo $data['jam_isi'] ?></td>
-					<td class="text-center"><?php echo $data['rata'] ?></td>
-					<td class="text-center"><a href="<?php echo site_url('admin/detil/').$data['id_responden'] ?>" class="btn-sm btn-warning"  title="detil"><i class="fa fa-eye"></i></a></td>
-				</tr>
-			<?php endforeach ?>
-		</tbody>
-	</table>
-</div>
+				<?php $no = 1;
+				foreach ($rekap as $data) : ?>
+					<tr>
+						<td class="text-center"><?php echo $no++; ?></td>
+						<td><strong><?php echo $data['id_responden'] ?></strong></td>
+						<td class="text-center"><?php echo $data['tanggal'] ?></td>
+						<td class="text-center"><?php echo $data['jam_isi'] ?></td>
+						<td class="text-center"><?php echo number_format($data['rata'], 2) ?></td>
+						<td class="text-center"><a target="__blank" href="<?php echo site_url('admin/detil/') . $data['id_responden'] ?>" class="btn-sm btn-warning" title="detil"><i class="fa fa-eye"></i></a></td>
+					</tr>
+				<?php endforeach ?>
+			</tbody>
+		</table>
+	</div>
 </div>

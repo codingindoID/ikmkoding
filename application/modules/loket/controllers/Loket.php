@@ -12,37 +12,38 @@ class Loket extends MY_Controller
 			redirect('satpam', 'refresh');
 		}
 	}
+
 	function index($bulan = null, $tahun = null, $cetak = null)
 	{
 		$bulan = $bulan ? $bulan : date('m');
 		$tahun = $tahun ? $tahun : date('Y');
 
-		// totalResponsen
-		if ($bulan == 'setahun') {
-			$query2 = "SELECT * FROM tb_hasil JOIN tb_detil_responden ON tb_detil_responden.id_responden = tb_hasil.id_responden  WHERE YEAR ( tb_hasil.created_date ) = '$tahun' AND published = '2'";
-		} else {
-			$query2 = "SELECT * FROM tb_hasil JOIN tb_detil_responden ON tb_detil_responden.id_responden = tb_hasil.id_responden  WHERE YEAR ( tb_hasil.created_date ) = '$tahun' and MONTH(tb_hasil.created_date) = '$bulan'  AND published = '2'";
+		//responden
+		if ($bulan != 'setahun') {
+			$this->db->where('MONTH(created_date)', $bulan);
 		}
-		$allResponden = $this->db->query($query2)->result();
-
-		$totalResponden = $this->M_loket->total_responden($allResponden);
-		$repondenLoket 	= $this->M_loket->repondenLoket($allResponden, $totalResponden);
-
-		$totalrepondenLoket = array_column($repondenLoket, 'jumlah_responden');
-
+		$this->db->where('YEAR(created_date)', $tahun);
+		$this->db->where('published', '2');
+		$responden = $this->db->get('tb_hasil')->result();
+		$dataKepuasanLoket = $this->M_loket->dataPerloket($responden);
+		// totalResponsen
 		$data = [
 			'title'				=> 'Monitoring Kepuasan',
 			'sub'				=> 'Loket Pelayanan',
 			'icon'				=> 'fa-user-circle',
 			'menu'				=> 'loket',
-			'total_responden' 	=> $totalResponden,
-			'loket'				=> $repondenLoket,
-			'loket_lainnya'		=> $totalResponden - array_sum($totalrepondenLoket),
-			'f_bulan'			=> $bulan,
-			'f_tahun'			=> $tahun,
 			'bulan'				=> $this->M_master->getall('bulan')->result(),
 			'tahun'				=> $this->M_master->getall('tahun')->result(),
+			'f_bulan'			=> $bulan,
+			'f_tahun'			=> $tahun,
+			'total_responden' 	=> count($this->M_loket->_arrayResponden($responden)),
+			'loket'				=> $dataKepuasanLoket
 		];
+
+		$totalRespondenLoket = array_column($dataKepuasanLoket, 'jumlah_responden');
+		$lain = count($this->M_loket->_arrayResponden($responden)) - array_sum($totalRespondenLoket);
+		$data['loket_lainnya']	= ($lain > 0) ? $lain : 0;
+
 		if ($cetak != null) {
 			$this->load->view('cetakLaporan', $data);
 		} else {
