@@ -27,6 +27,7 @@
 
   <!-- Template Main CSS File -->
   <link href="<?php echo base_url() . 'assets/bot/' ?>css/style.css" rel="stylesheet">
+  <link href="<?php echo base_url() . 'assets/custom.css' ?>" rel="stylesheet">
   <script src="<?php echo base_url() . 'assets/js/' ?>jquery-3.1.1.min.js"></script>
   <script src="<?php echo base_url() . 'assets/' ?>apexcharts.js"></script>
   <script src="<?php echo base_url() . 'assets/js/' ?>sweetalert2@10.js"></script>

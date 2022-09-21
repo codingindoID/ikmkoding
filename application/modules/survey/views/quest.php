@@ -36,18 +36,17 @@
                     <input type="hidden" name="id_soal[<?= $baris ?>]" value="<?= $var->id_soal ?>">
                     <input style="border: none; background-color: white; text-align: right;" type="text" name="jawaban[<?= $baris ?>]" id="jawaban_<?= $var->id_soal ?>" required value="" placeholder="Rating Belum Diisi">
                     <div class="widget-star">
-
                       <input type="radio" id="pilihan_a_<?= $var->id_soal ?>" value="a">
-                      <label for="pilihan_a_<?= $var->id_soal ?>" class="fa fa-star" onclick="pilihan(this)" data-soal="<?= $var->id_soal ?>" data-id="pilihan_a_<?= $var->id_soal ?>" id="label_a_<?= $var->id_soal ?>"></label>
+                      <label for="pilihan_a_<?= $var->id_soal ?>" class="icofont-star" onclick="pilihan(this)" data-soal="<?= $var->id_soal ?>" data-id="pilihan_a_<?= $var->id_soal ?>" id="label_a_<?= $var->id_soal ?>"></label>
 
                       <input type="radio" id="pilihan_b_<?= $var->id_soal ?>" value="b">
-                      <label for="pilihan_b_<?= $var->id_soal ?>" class="fa fa-star" onclick="pilihan(this)" data-soal="<?= $var->id_soal ?>" data-id="pilihan_b_<?= $var->id_soal ?>" id="label_b_<?= $var->id_soal ?>"></label>
+                      <label for="pilihan_b_<?= $var->id_soal ?>" class="icofont-star" onclick="pilihan(this)" data-soal="<?= $var->id_soal ?>" data-id="pilihan_b_<?= $var->id_soal ?>" id="label_b_<?= $var->id_soal ?>"></label>
 
                       <input type="radio" id="pilihan_c_<?= $var->id_soal ?>" value="c">
-                      <label for="pilihan_c_<?= $var->id_soal ?>" class="fa fa-star" onclick="pilihan(this)" data-soal="<?= $var->id_soal ?>" data-id="pilihan_c_<?= $var->id_soal ?>" id="label_c_<?= $var->id_soal ?>"></label>
+                      <label for="pilihan_c_<?= $var->id_soal ?>" class="icofont-star" onclick="pilihan(this)" data-soal="<?= $var->id_soal ?>" data-id="pilihan_c_<?= $var->id_soal ?>" id="label_c_<?= $var->id_soal ?>"></label>
 
                       <input type="radio" id="pilihan_d_<?= $var->id_soal ?>" value="d">
-                      <label for="pilihan_d_<?= $var->id_soal ?>" class="fa fa-star" onclick="pilihan(this)" data-soal="<?= $var->id_soal ?>" data-id="pilihan_d_<?= $var->id_soal ?>" id="label_d_<?= $var->id_soal ?>"></label>
+                      <label for="pilihan_d_<?= $var->id_soal ?>" class="icofont-star" onclick="pilihan(this)" data-soal="<?= $var->id_soal ?>" data-id="pilihan_d_<?= $var->id_soal ?>" id="label_d_<?= $var->id_soal ?>"></label>
                     </div>
                   </div>
                 </div>
