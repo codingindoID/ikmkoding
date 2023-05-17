@@ -23,10 +23,16 @@
                       <?php endforeach ?>
                     </select>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group row">
                     <input type="hidden" name="id_responden" value="<?php echo $id_responden ?>">
-                    <label for="formGroupExampleInput">Nama</label>
-                    <input type="text" class="form-control" name="nama" required placeholder="nama">
+                    <div class="col-md-6">
+                      <label for="formGroupExampleInput">Nama</label>
+                      <input type="text" class="form-control" name="nama" required placeholder="nama">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="formGroupExampleInput">Nama</label>
+                      <input type="number" class="form-control" name="no_hp" required placeholder="08xxxxxx">
+                    </div>
                   </div>
                   <div class="form-group row">
                     <div class="col-md-6">

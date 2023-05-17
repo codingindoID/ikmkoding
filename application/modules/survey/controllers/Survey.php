@@ -8,7 +8,6 @@ class Survey extends MY_Controller
 		parent::__construct();
 		$this->load->model('M_survey');
 		$this->load->model('M_master');
-		date_default_timezone_set('Asia/Jakarta');
 	}
 	public function index()
 	{
@@ -86,7 +85,6 @@ class Survey extends MY_Controller
 		];
 		$this->load->view('detil_respondenAdmin', $data);
 	}
-
 
 	public function cek_user()
 	{

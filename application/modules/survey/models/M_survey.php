@@ -68,6 +68,7 @@ class M_survey extends CI_Model
 			'pekerjaan'		=> $this->input->post('pekerjaan'),
 			'pendidikan'	=> $this->input->post('pendidikan'),
 			'loket'			=> $this->input->post('loket'),
+			'no_hp'			=> $this->input->post('no_hp'),
 			'created_date'	=> $tanggal
 		];
 		$cek = $this->db->insert('tb_detil_responden', $data);
@@ -85,7 +86,6 @@ class M_survey extends CI_Model
 		}
 		return $res;
 	}
-
 
 	/*admin*/
 	function auth($where)

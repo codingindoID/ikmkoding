@@ -17,6 +17,7 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
+  <link href="<?= base_url('assets/plugins/select2/css/select2.min.css') ?>" rel="stylesheet" />
   <link href="<?php echo base_url() . 'assets/bot/' ?>vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="<?php echo base_url() . 'assets/bot/' ?>vendor/icofont/icofont.min.css" rel="stylesheet">
   <link href="<?php echo base_url() . 'assets/bot/' ?>vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
