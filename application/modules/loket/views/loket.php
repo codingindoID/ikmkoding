@@ -3,29 +3,24 @@
 		<div class="panel">
 			<div class="panel-header" style="padding: 0.8em">
 				<div class="row" style="margin-right: 1em">
-					<div class="col-md-7">
-						<!-- <a  href="#modal_add" class="btn-sm btn-success" data-toggle="modal"><i class="fa fa-user-circle"></i> Tambah Loket</a> -->
+					<div class="col-md-6">
 						<a href="#" id="btnCetakLaporanLoket" class="btn-sm btn-success"><i class="fa fa-print"></i> export Excel</a>
 					</div>
-					<div class="col-md-2 col-xs-12 text-right" style="margin-top: 0.4em">
-						<select id="bulan_loket" name="bulan" class="form-control" required>
-							<option value="">Bulan..</option>
-							<option <?php echo $f_bulan == 'setahun' ? 'selected' : '' ?> value="setahun">Setahun</option>
+					<div class="col-md-3 col-xs-12 text-right" style="margin-top: 0.4em">
+						<select id="bulan_loket" name="bulan" class="form-control" required onchange="filterLoket()">
+							<option value="setahun">Setahun</option>
 							<?php foreach ($bulan as $b) : ?>
 								<option <?php echo $f_bulan == $b->id_bulan ? 'selected' : '' ?> value="<?php echo $b->id_bulan ?>"><?php echo $b->bulan ?></option>}
 							<?php endforeach ?>
 						</select>
 					</div>
-					<div class="col-md-2 col-xs-12 text-right" style="margin-top: 0.4em">
-						<select id="tahun_loket" name="bulan" class="form-control" required>
+					<div class="col-md-3 col-xs-12 text-right" style="margin-top: 0.4em">
+						<select id="tahun_loket" name="bulan" class="form-control" required onchange="filterLoket()">
 							<option value="">Tahun..</option>
 							<?php foreach ($tahun as $t) : ?>
 								<option <?php echo $f_tahun == $t->tahun ? 'selected' : '' ?> value="<?php echo $t->tahun ?>"><?php echo $t->tahun ?></option>}
 							<?php endforeach ?>
 						</select>
-					</div>
-					<div class="col-md-1 col-xs-12 text-right" style="margin-top: 0.4em">
-						<button id="btn_filter_loket" class="btn bg-purple"><i class="fa fa-filter"></i> Filter</button>
 					</div>
 				</div>
 			</div>
@@ -74,4 +69,38 @@
 	</div>
 </section>
 
-<script src="<?php echo base_url('assets/js/jsbaru/js_loket.js') ?>" type="text/javascript"></script>
+<script>
+	let base = $("#base").val();
+	/*FILTER LOKET*/
+	function filterLoket() {
+		let bulan = $("#bulan_loket").val();
+		let tahun = $("#tahun_loket").val();
+
+		if (bulan == "" || tahun == "") {
+			Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "Parameter Belum Diisi!",
+				footer: "silahkan isi kolom bulan dan tahun",
+			});
+		} else {
+			location.href = base + "loket/index/" + bulan + "/" + tahun;
+		}
+	}
+
+	$("#btnCetakLaporanLoket").click(function(event) {
+		let bulan = $("#bulan_loket").val();
+		let tahun = $("#tahun_loket").val();
+
+		if (bulan == "" || tahun == "") {
+			Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "Parameter Belum Diisi!",
+				footer: "silahkan isi kolom bulan dan tahun",
+			});
+		} else {
+			location.href = base + "loket/index/" + bulan + "/" + tahun + "/cetak";
+		}
+	});
+</script>

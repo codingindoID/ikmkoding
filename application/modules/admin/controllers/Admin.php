@@ -10,27 +10,15 @@ class Admin extends MY_Controller
 		$this->load->model('M_master');
 		$this->load->model('M_admin');
 		//cek session
-		if ($this->session->userdata('ses_id') == null) {
-			redirect('survey/admin', 'refresh');
+		if ($this->session->userdata('skm_id') == null) {
+			redirect('survey', 'refresh');
 		}
 	}
 
-	/* filter */
-
-	/*FILTER*/
 	function index($bulan = null, $tahun = null)
 	{
 		$bulan = $bulan ? $bulan : date('m');
 		$tahun = $tahun ? $tahun : date('Y');
-
-		//responden
-		if ($bulan != 'setahun') {
-			$this->db->where('MONTH(created_date)', $bulan);
-		}
-		$this->db->where('YEAR(created_date)', $tahun);
-		$this->db->where('published', '2');
-		$responden = $this->db->get('tb_hasil')->result();
-
 		$data = [
 			'title'			=> 'Dashboard',
 			'menu'			=> 'Dashboard',
@@ -40,95 +28,8 @@ class Admin extends MY_Controller
 			'icon'			=> 'clip-home-3',
 			'f_bulan'		=> $bulan,
 			'f_tahun'		=> $tahun,
-			'kepuasan' 		=> $this->M_admin->_get_kepuasan_filter($responden),
-			'b_publish'		=> $this->M_admin->get_blm_publish($bulan, $tahun),
-			'pendidikan'	=> $this->M_admin->_get_pendidikan_filter($responden),
-			'pekerjaan'		=> $this->M_admin->_get_pekerjaan_filter($responden),
-			'hasil'			=> $this->M_admin->grafik($responden)
 		];
-		//menentukan tingkat kepuasan
-		$kepuasan = $data['kepuasan'];
-		if ($kepuasan > 88.31) {
-			$mutu = 'A';
-			$index = "Sangat Baik";
-		} else if ($kepuasan > 76.61) {
-			$mutu = 'B';
-			$index = 'Baik';
-		} else if ($kepuasan > 65.00) {
-			$mutu = 'C';
-			$index = 'Kurang Baik';
-		} else if ($kepuasan > 25.00) {
-			$mutu = 'D';
-			$index = 'Tidak Baik';
-		} else {
-			$mutu = null;
-			$index = null;
-		}
-		$data['tingkat_kepuasan']	= $index;
-		$data['mutu'] 				= $mutu;
-		$data['rekap']				= $this->M_admin->urutkanHasil($this->M_admin->rekapKepuasanPersoal($responden));
-		// echo json_encode($data);
 		$this->template->load('tema/index', 'index', $data);
-	}
-
-	function cetaklaporan($bulan = null, $tahun = null)
-	{
-		$bulan = $bulan ? $bulan : date('m');
-		$tahun = $tahun ? $tahun : date('Y');
-
-		//responden
-		if ($bulan != 'setahun') {
-			$this->db->where('MONTH(created_date)', $bulan);
-		}
-		$this->db->where('YEAR(created_date)', $tahun);
-		$this->db->where('published', '2');
-		$pengunjung = $this->db->get('tb_hasil')->result();
-		$kepuasan = $this->M_admin->rekapKepuasanPersoal($pengunjung);
-
-		$data = [
-			'tgl_indo'		=> $this->M_master->tglindo($bulan),
-			'tahun'			=> $tahun,
-			'pengunjung'	=> count($this->M_admin->_arrayResponden($pengunjung)),
-			'umur'			=> $this->M_admin->arrayUmur($pengunjung),
-			'jk'			=> $this->M_admin->arrayJk($pengunjung),
-			'hasil' 		=> $kepuasan,
-			'min' 			=> min($kepuasan),
-			'max'			=> max($kepuasan),
-			'prioritas'		=> $this->M_admin->urutkanHasil($kepuasan)
-		];
-
-		//Index Kepuasan
-		$kepuasan = $this->M_admin->_get_kepuasan_filter($pengunjung);
-		if ($kepuasan > 88.31) {
-			$mutu = 'A';
-			$index = "Sangat Baik";
-		} else if ($kepuasan > 76.61) {
-			$mutu = 'B';
-			$index = 'Baik';
-		} else if ($kepuasan > 65.00) {
-			$mutu = 'C';
-			$index = 'Kurang Baik';
-		} else if ($kepuasan > 25.00) {
-			$mutu = 'D';
-			$index = 'Tidak Baik';
-		} else {
-			$mutu = null;
-		}
-		$data['tingkat_kepuasan'] = [
-			'index'			=> $index,
-			'mutu'			=> $mutu,
-			'presentase'	=> $kepuasan
-		];
-		// echo json_encode($data);
-		$this->load->view('cetak/cetak_laporan', $data);
-	}
-
-	function prioritas($hasil)
-	{
-		usort($hasil, function ($a, $b) {
-			return $a['kepuasan'] <=> $b['kepuasan'];
-		});
-		return $hasil;
 	}
 
 	/*PERTANYAAN*/
@@ -138,7 +39,8 @@ class Admin extends MY_Controller
 			'title'		=> 'Dashboard',
 			'sub'		=> 'overview',
 			'icon'		=> 'clip-home-3',
-			'soal'		=> $this->db->get('tb_pertanyaan')->result(),
+			'jenis'		=> $this->db->get('jenis_pertanyaan')->result(),
+			'soal'		=> $this->db->join('jenis_pertanyaan', 'jenis_pertanyaan.id_jenispertanyaan=tb_pertanyaan.jenis_pertanyaan')->order_by('jenis_pertanyaan', 'asc')->get('tb_pertanyaan')->result(),
 			'menu'		=> 'pertanyaan'
 		];
 		$this->template->load('tema/index', 'pertanyaan', $data);
@@ -150,79 +52,41 @@ class Admin extends MY_Controller
 		echo json_encode($data);
 	}
 
-	function addpertanyaan()
+	function simpanPertanyaan()
 	{
-
+		$id_soal = $this->input->post('id_soal');
 		$data = [
-			'soal'		=> $this->input->post('pertanyaan'),
-			'kategori'	=> $this->input->post('kategori'),
-			'a'			=> $this->input->post('a'),
-			'b'			=> $this->input->post('b'),
-			'c'			=> $this->input->post('c'),
-			'd'			=> $this->input->post('d'),
-			'id_soal' 	=> $this->input->post('id_soal')
+			'jenis_pertanyaan'	=> $this->input->post('jenis_pertanyaan'),
+			'kategori'			=> $this->input->post('kategori'),
+			'kode_soal'			=> $this->input->post('kode_soal'),
+			'soal'				=> $this->input->post('soal'),
 		];
 
-		$cek = $this->M_master->getWhere('tb_pertanyaan', ['id_soal' => $this->input->post('id_soal')])->num_rows();
-		if ($cek > 0) {
-			$this->session->set_flashdata('error', 'Nomor Pertanyaan Sudah Terdaftar, Silahkan Ganti Nomor atau Edit Nomor Pertanyaan Yang Sudah Ada...');
-			redirect('admin/pertanyaan', 'refresh');
+		if ($id_soal) {
+			$this->db->where(['id_soal'	=> $id_soal]);
+			$this->db->update('tb_pertanyaan', $data);
 		} else {
-			$cek = $this->M_master->input('tb_pertanyaan', $data);
-			if (!$cek) {
-				$this->session->set_flashdata('success', 'Data Updated');
-				redirect('admin/pertanyaan', 'refresh');
-			} else {
-				$this->session->set_flashdata('error', 'Error...');
-				redirect('admin/pertanyaan', 'refresh');
-			}
+			$this->db->insert('tb_pertanyaan', $data);
 		}
-	}
-
-	function updatepertanyaan()
-	{
-
-		$where = ['id_soal' => $this->input->post('id_soal')];
-		$data = [
-			'soal'		=> $this->input->post('pertanyaan'),
-			'kategori'	=> $this->input->post('kategori'),
-			'a'			=> $this->input->post('a'),
-			'b'			=> $this->input->post('b'),
-			'c'			=> $this->input->post('c'),
-			'd'			=> $this->input->post('d')
-		];
-		$cek = $this->M_master->update('tb_pertanyaan', $where, $data);
-		if (!$cek) {
-			$this->session->set_flashdata('success', 'Data inserted');
-			redirect('admin/pertanyaan', 'refresh');
-		} else {
-			$this->session->set_flashdata('error', 'Error...');
-			redirect('admin/pertanyaan', 'refresh');
-		}
+		$this->session->set_flashdata('success', 'Data berhasil disimpan');
+		redirect('admin/pertanyaan', 'refresh');
 	}
 
 	function hapuspertanyaan($id)
 	{
-
-		$cek = $this->M_master->delete('tb_pertanyaan', ['id_soal' => $id]);
-		if (!$cek) {
-			$this->session->set_flashdata('success', 'Data Deleted');
-			redirect('admin/pertanyaan', 'refresh');
-		} else {
-			$this->session->set_flashdata('error', 'Error...');
-			redirect('admin/pertanyaan', 'refresh');
-		}
+		$this->M_master->delete('tb_pertanyaan', ['id_soal' => $id]);
+		$this->session->set_flashdata('success', 'Data berhasil dihapus');
+		redirect('admin/pertanyaan', 'refresh');
 	}
 
 	/*SARAN*/
 	function saran()
 	{
-
 		$data = [
 			'title'			=> 'Kritik Dan Saran',
 			'sub'			=> '',
 			'icon'			=> 'clip-file',
-			'rekap'			=> $this->M_admin->getSaran()->result(),
+			'rekap'			=> $this->db->join('tb_detil_responden', 'tb_detil_responden.id_responden = tb_saran.id_responden')->get_where('tb_saran', ['tb_saran.status' => '1'])->result(),
 			'menu'			=> 'saran'
 		];
 		$this->template->load('tema/index', 'saran', $data);
@@ -242,25 +106,27 @@ class Admin extends MY_Controller
 	}
 
 	/*publish*/
-	function publish()
+	function publish($bulan = null, $tahun = null)
 	{
-		$this->db->where('YEAR(created_date)', date('Y'));
-		$this->db->where('published', '1');
-		$responden = $this->db->get('tb_hasil')->result();
+		$bulan = $bulan ? $bulan : date('m');
+		$tahun = $tahun  ? $tahun : date('Y');
 		$data = [
 			'title'			=> 'Survey',
 			'sub'			=> 'pre publish',
 			'icon'			=> 'fa-share',
-			'rekap'			=> $this->M_admin->belumPublish($responden),
+			'tahun'			=> $this->M_master->getall('tahun')->result(),
+			'bulan'			=> $this->M_master->getall('bulan')->result(),
+			'total_soal'	=> $this->db->get_where('tb_pertanyaan', ['jenis_pertanyaan'	=> KODEPELAYANAN])->num_rows(),
+			'f_bulan'		=> $bulan,
+			'f_tahun'		=> $tahun,
+			'rekap'			=> $this->M_admin->belumPublish($bulan, $tahun),
 			'menu'			=> 'publish'
 		];
-		// echo json_encode($data);
 		$this->template->load('tema/index', 'publish', $data);
 	}
 
 	function detil($id_responden)
 	{
-
 		$data = [
 			'title'			=> 'Survey',
 			'sub'			=> 'pre publish',
@@ -269,67 +135,19 @@ class Admin extends MY_Controller
 			'menu'			=> 'publish'
 		];
 		$this->template->load('tema/index', 'detil', $data);
-		//echo json_encode($data);
 	}
 
-	function aksipublish($id)
+	function aksipublish($id_responden)
 	{
-
-		$where = ['id_responden' => $id];
-		$this->db->where($where);
-		$this->db->update('tb_hasil', ['published' => '2']);
-		redirect('admin', 'refresh');
+		$cek = $this->M_admin->aksipublish($id_responden);
+		$this->session->set_flashdata($cek['kode'], $cek['msg']);
+		redirect('admin/publish', 'refresh');
 	}
 
 	function log_out()
 	{
 		session_destroy();
 		redirect('survey', 'refresh');
-	}
-
-	// cetak
-	function cetakrekap($bulan = null, $tahun = null)
-	{
-		$bulan = $bulan ? $bulan : date('m');
-		$tahun = $tahun ? $tahun : date('Y');
-		//hasilnya untuk index kepuasan per soal
-		//responden
-		if ($bulan != 'setahun') {
-			$this->db->where('MONTH(created_date)', $bulan);
-		}
-		$this->db->where('YEAR(created_date)', $tahun);
-		$this->db->where('published', '2');
-		$this->db->order_by('jawaban', 'asc');
-		$responden = $this->db->get('tb_hasil')->result();
-		$data = [
-			'rekap'		=> $this->M_admin->urutkanHasil($this->M_admin->rekapKepuasanPersoal($responden)),
-			'bulan'		=> $bulan,
-			'tahun'		=> $tahun,
-		];
-		// echo json_encode($data);
-		$this->load->view('cetak/cetak1', $data);
-	}
-
-	function cetakrekapdetil($bulan, $tahun)
-	{
-		$bulan = $bulan ? $bulan : date('m');
-		$tahun = $tahun ? $tahun : date('Y');
-
-		//responden
-		if ($bulan != 'setahun') {
-			$this->db->where('MONTH(created_date)', $bulan);
-		}
-		$this->db->where('YEAR(created_date)', $tahun);
-		$this->db->where('published', '2');
-		$res = $this->db->get('tb_hasil')->result();
-
-		$data = [
-			'soal'		=> $this->db->get('tb_pertanyaan')->result(),
-			'bulan'		=> $this->M_master->tglindo($bulan),
-			'tahun'		=> $tahun,
-			'rekap'		=> $this->M_admin->cetakrekapdetil($res)
-		];
-		$this->load->view('cetak/cetakrekapdetil', $data);
 	}
 
 	//import
@@ -351,6 +169,210 @@ class Admin extends MY_Controller
 		// echo json_encode($cek);
 		// die();
 		$this->session->set_flashdata($cek['kode'], $cek['msg']);
+		redirect('admin', 'refresh');
+	}
+
+	/* UPDATE 2024 */
+	function ajaxCount()
+	{
+		$data = $this->M_admin->ajaxCount();
+		echo json_encode($data);
+	}
+
+	function ajaxTableMutu()
+	{
+		$data = $this->M_admin->ajaxTableMutu();
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode([
+				'data' => $data
+			]));
+	}
+
+	function ajaxPiePekerjaan()
+	{
+		$data = $this->M_admin->ajaxPiePekerjaan();
+		echo json_encode($data);
+	}
+
+	function ajaxPiePendidikan()
+	{
+		$data = $this->M_admin->ajaxPiePendidikan();
+		echo json_encode($data);
+	}
+
+	function ajaxPiePilihan()
+	{
+		$data = $this->M_admin->ajaxPiePilihan();
+		echo json_encode($data);
+	}
+
+	function ajaxColumnPilihan()
+	{
+		$data = $this->M_admin->ajaxColumnPilihan();
+		echo json_encode($data);
+	}
+
+	// cetak
+	function exportData($bulan = null, $tahun = null)
+	{
+		$bulan = $bulan ? $bulan : date('m');
+		$tahun = $tahun ? $tahun : date('Y');
+		$this->M_admin->exportData($bulan, $tahun);
+	}
+
+	function exportDataDetail($bulan, $tahun, $jenis = '1')
+	{
+		$jenis = $jenis ? $jenis : '1';
+		$this->M_admin->exportDataDetail($bulan, $tahun, $jenis);
+	}
+
+	function cetaklaporan($bulan = null, $tahun = null, $jenis = '1')
+	{
+		$bulan = $bulan ? $bulan : date('m');
+		$tahun = $tahun ? $tahun : date('Y');
+		$this->M_admin->cetaklaporan($bulan, $tahun, $jenis);
+	}
+
+	/* HELPER untuk migrasi data */
+	function formAutomate()
+	{
+		$data = [
+			'title'			=> 'Form',
+			'menu'			=> 'automate',
+			'sub'			=> '',
+			'jenis'			=> 'countHasil',
+			'icon'			=> 'clip-home-3',
+			'tahun'			=> $this->M_master->getall('tahun')->result(),
+		];
+		$this->template->load('tema/index', 'form-automate', $data);
+	}
+
+	function helperAuto()
+	{
+		if ($this->session->userdata('skm_level') != LEVELSUPER) {
+			redirect('survey', 'refresh');
+		}
+		$tahun = $this->input->post('tahun');
+		$hasil = [];
+		$arr = ['12', '11', '10', '09', '08', '07', '06', '05', '04', '03', '02', '01'];
+		$pertanyaan = $this->db->get_where('tb_pertanyaan', ['jenis_pertanyaan'	=> KODEPELAYANAN])->result();
+
+		foreach ($arr as $bl) {
+			foreach ($pertanyaan as $id) {
+				$this->db->select('COUNT(id_responden) as total');
+				$this->db->group_by('id_soal');
+				$d = $this->db->get_where('tb_hasil', [
+					'published'				=> '2',
+					'MONTH(created_date)'	=> $bl,
+					'id_soal'				=> $id->id_soal,
+					'jawaban'				=> 4,
+					'YEAR(created_date)'	=> $tahun
+				])->row();
+
+				$this->db->select('COUNT(id_responden) as total');
+				$this->db->group_by('id_soal');
+				$c = $this->db->get_where('tb_hasil', [
+					'published'				=> '2',
+					'MONTH(created_date)'	=> $bl,
+					'id_soal'				=> $id->id_soal,
+					'jawaban'				=> 3,
+					'YEAR(created_date)'	=> $tahun
+				])->row();
+
+				$this->db->select('COUNT(id_responden) as total');
+				$this->db->group_by('id_soal');
+				$b = $this->db->get_where('tb_hasil', [
+					'published'				=> '2',
+					'MONTH(created_date)'	=> $bl,
+					'id_soal'				=> $id->id_soal,
+					'jawaban'				=> 2,
+					'YEAR(created_date)'	=> $tahun
+				])->row();
+
+				$this->db->select('COUNT(id_responden) as total');
+				$this->db->group_by('id_soal');
+				$a = $this->db->get_where('tb_hasil', [
+					'published'				=> '2',
+					'MONTH(created_date)'	=> $bl,
+					'id_soal'				=> $id->id_soal,
+					'jawaban'				=> 1,
+					'YEAR(created_date)'	=> $tahun
+				])->row();
+
+				$hasil[]  = [
+					'id_soal'		=> $id->id_soal,
+					'jumlah_4'		=> $d ? $d->total : null,
+					'jumlah_3'		=> $c ? $c->total : null,
+					'jumlah_2'		=> $b ? $b->total : null,
+					'jumlah_1'		=> $a ? $a->total : null,
+					'tahun_isi'		=> $tahun,
+					'bulan_isi'		=> $bl
+				];
+				$this->db->where([
+					'tahun_isi'		=> $tahun,
+					'bulan_isi'		=> $bl
+				]);
+				$this->db->delete('count_point');
+			}
+		}
+		$this->db->insert_batch('count_point', $hasil);
+
+		$this->session->set_flashdata('success', 'automate count hasil success');
+		redirect('admin', 'refresh');
+	}
+
+	function formAutomateHasil()
+	{
+		$data = [
+			'title'			=> 'Form',
+			'menu'			=> 'automate',
+			'sub'			=> '',
+			'jenis'			=> 'rekapHasil',
+			'icon'			=> 'clip-home-3',
+			'tahun'			=> $this->M_master->getall('tahun')->result(),
+		];
+		$this->template->load('tema/index', 'form-automate', $data);
+	}
+
+	function helperRekapHasil()
+	{
+		if ($this->session->userdata('skm_level') != LEVELSUPER) {
+			redirect('survey', 'refresh');
+		}
+		$tahun = $this->input->post('tahun');
+		/* UPDATE REKAP HASIL JENIS PELAYANAN */
+		$this->db->select('id_responden,jenis_pertanyaan,created_date');
+		$this->db->where('YEAR(created_date)', $tahun);
+		$this->db->where('published', '2');
+		$this->db->order_by('id_responden', 'asc');
+		$this->db->group_by('id_responden');
+		$data = $this->db->get('tb_hasil')->result();
+		$hasil = [];
+		foreach ($data as $d) {
+			/* UPDATE REKAP HASIL JENIS PELAYANAN */
+			$this->db->where('jenis_pertanyaan', $d->jenis_pertanyaan);
+			$this->db->where('id_responden', $d->id_responden);
+			$jawaban = $this->db->get('tb_hasil')->result();
+			$jawabanPelayanan = [];
+			foreach ($jawaban as $h) {
+				array_push($jawabanPelayanan, $h->jawaban);
+			}
+			$hasil[] = [
+				'id_responden'			=> $d->id_responden,
+				'jenis_pertanyaan'		=> $d->jenis_pertanyaan,
+				'created_date'			=> $d->created_date,
+				'jawaban'				=> json_encode($jawabanPelayanan),
+			];
+
+			/* clear data dulu */
+			$this->db->where('id_responden', $d->id_responden);
+			$this->db->where('jenis_pertanyaan', $d->jenis_pertanyaan);
+			$this->db->delete('rekap_hasil');
+		}
+		$this->db->insert_batch('rekap_hasil', $hasil);
+		$this->session->set_flashdata('success', 'automate rekap hasil success');
 		redirect('admin', 'refresh');
 	}
 }

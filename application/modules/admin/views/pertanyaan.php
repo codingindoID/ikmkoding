@@ -23,7 +23,7 @@
 		<div class="box-header" style="cursor: pointer;">
 			<h3 class="box-title"><strong>Daftar Pertanyaan</strong></h3>
 
-			<a href="#modal_add" data-toggle="modal" style="margin-left: 15px;" class="btn-sm btn-success"><i class="fa fa-plus"></i> Tambah Soal</a>
+			<a onclick="modalPertanyaan(this)" data-id="" class="btn-sm btn-success"><i class="fa fa-plus"></i> Tambah Soal</a>
 			<div class="box-tools pull-right">
 				<button type="button" class="btn btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
 				</button>
@@ -34,143 +34,111 @@
 				<thead>
 					<tr class="head">
 						<th class="text-center" width="5%">No</th>
+						<th class="text-center">Jenis Pertanyaan</th>
+						<th class="text-center">Kategori</th>
 						<th class="text-center" width="60%">Pertanyaan</th>
-						<th class="text-center">Jawaban</th>
-						<th class="text-center" width="5%">Point</th>
+						<th class="text-center">Aksi</th>
 					</tr>
 				</thead>
 				<?php
 				foreach ($soal as $soal) : ?>
 					<tr>
-						<td rowspan="4" class="text-center"><?php echo $soal->id_soal ?></td>
-						<td rowspan="4" style="word-wrap: break-word;"><a href="#modal_edit" data-id="<?php echo $soal->id_soal ?>" data-toggle="modal" class="modal-edit"><?php echo $soal->soal ?></a></td>
-						<td><?php echo $soal->a ?></td>
-						<td class="text-center">1</td>
-					</tr>
-					<tr>
-						<td><?php echo $soal->b ?></td>
-						<td class="text-center">2</td>
-					</tr>
-					<tr>
-						<td><?php echo $soal->c ?></td>
-						<td class="text-center">3</td>
-					</tr>
-					<tr>
-						<td><?php echo $soal->d ?></td>
-						<td class="text-center">4</td>
+						<td class="text-center"><?php echo $soal->id_soal ?></td>
+						<td><?php echo $soal->keperluan ?></td>
+						<td><?php echo $soal->kategori ?></td>
+						<td style="word-wrap: break-word;"><?php echo $soal->soal ?></td>
+						<td class="text-center">
+							<span class="btn btn-sm btn-success" onclick="modalPertanyaan(this)" data-id="<?= $soal->id_soal ?>">EDIT</span>
+							<a onclick="return confirm('HAPUS PERTANYAAN?')" class="btn btn-sm btn-danger" href="<?= base_url('admin/hapuspertanyaan/') . $soal->id_soal ?>">HAPUS</a>
+						</td>
 					</tr>
 				<?php endforeach ?>
 
 			</table>
 		</div>
-		<div class="box-footer"></div>
+		<div class=" box-footer">
+		</div>
 	</div>
 	<!-- end box -->
 </div>
 
 <!-- Modal edit -->
-<div class="modal fade" id="modal_edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-	<input type="hidden" id="base" value="<?php echo site_url() ?>">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header bg-blue">
-				<h5 class="modal-title" id="exampleModalLongTitle">Edit <strong>(Pertanyaan)</strong></h5>
-			</div>
-			<div class="modal-body">
-				<form method="post" action="<?php echo site_url('admin/updatepertanyaan') ?>">
+<form method="post" action="<?php echo site_url('admin/simpanPertanyaan') ?>">
+	<div class="modal fade" id="modal_pertanyaan" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<input type="hidden" id="base" value="<?php echo site_url() ?>">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header bg-blue">
+					<h5 class="modal-title" id="exampleModalLongTitle">Edit <strong>(Pertanyaan)</strong></h5>
+				</div>
+				<div class="modal-body">
 					<input type="hidden" name="id_soal" value="">
-					<div class="form-group">
-						<label for="staticEmail" class="col-form-label">Kategori</label>
-						<input id="kategori" name="kategori" rows="3" class="form-control" />
+					<div class="row">
+						<div class="col-md-4">
+							<div class="form-group">
+								<label for="staticEmail" class="col-form-label">Jenis Pertanyaan</label>
+								<select class="form-control" name="jenis_pertanyaan" id="jenis_pertanyaan">
+									<option value=""> -- PILIH -- </option>
+									<?php foreach ($jenis as $var) : ?>
+										<option value="<?= $var->id_jenispertanyaan ?>"> <?= $var->keperluan ?> </option>
+									<?php endforeach ?>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<label for="staticEmail" class="col-form-label">Kode Soal</label>
+								<input id="kode_soal" name="kode_soal" rows="3" class="form-control" />
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<label for="staticEmail" class="col-form-label">Kategori</label>
+								<input id="kategori" name="kategori" rows="3" class="form-control" />
+							</div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="staticEmail" class="col-form-label">Pertanyaan</label>
-						<textarea name="pertanyaan" rows="3" class="form-control"></textarea>
+						<textarea name="soal" id="soal" rows="3" class="form-control"></textarea>
 					</div>
-					<center>
-						<h4>---opsi jawaban---</h4>
-					</center><br>
-					<div class="row">
-						<div class="form-group col-md-3">
-							<label for="staticEmail" class="col-form-label">Opsi A point 1</label>
-							<input type="text" class="form-control" name="a" placeholder="Opsi A point 1">
-						</div>
-						<div class="form-group col-md-3">
-							<label for="staticEmail" class="col-form-label">Opsi B point 2</label>
-							<input type="text" class="form-control" name="b" placeholder="Opsi B point 2">
-						</div>
-						<div class="form-group col-md-3">
-							<label for="staticEmail" class="col-form-label">Opsi C point 3</label>
-							<input type="text" class="form-control" name="c" placeholder="Opsi C Point 3">
-						</div>
-						<div class="form-group col-md-3">
-							<label for="staticEmail" class="col-form-label">Opsi D point 4</label>
-							<input type="text" class="form-control" name="d" placeholder="Opsi D point 4">
-						</div>
-					</div>
-
+				</div>
+				<div class="modal-footer">
+					<a style="float: left" id="btn_hapus" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-close"></i> tutup</a>
+					<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Simpan Perubahan</button>
+				</div>
 			</div>
-			<div class="modal-footer">
-				<a style="float: left" id="btn_hapus" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-close"></i> hapus</a>
-				<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Simpan Perubahan</button>
-			</div>
-			</form>
 		</div>
 	</div>
-</div>
+</form>
 
-<!-- Modal add -->
-<div class="modal fade" id="modal_add" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header bg-blue">
-				<h5 class="modal-title" id="exampleModalLongTitle">Edit <strong>(Pertanyaan)</strong></h5>
-			</div>
-			<div class="modal-body">
-				<form method="post" action="<?php echo site_url('admin/addpertanyaan') ?>">
-					<div class="form-group">
-						<label class="col-form-label">Nomor Pertanyaan</label>
-						<input name="id_soal" class="form-control" />
-					</div>
-					<div class="form-group">
-						<label for="staticEmail" class="col-form-label">Kategori</label>
-						<input id="kategori" name="kategori" rows="3" class="form-control" />
-					</div>
-					<div class="form-group">
-						<label for="staticEmail" class="col-form-label">Pertanyaan</label>
-						<textarea name="pertanyaan" rows="3" class="form-control"></textarea>
-					</div>
-					<center>
-						<h4>---opsi jawaban---</h4>
-					</center><br>
-					<div class="row">
-						<div class="form-group col-md-3">
-							<label for="staticEmail" class="col-form-label">Opsi A point 1</label>
-							<input type="text" class="form-control" name="a" placeholder="Opsi A point 1">
-						</div>
-						<div class="form-group col-md-3">
-							<label for="staticEmail" class="col-form-label">Opsi B point 2</label>
-							<input type="text" class="form-control" name="b" placeholder="Opsi B point 2">
-						</div>
-						<div class="form-group col-md-3">
-							<label for="staticEmail" class="col-form-label">Opsi C point 3</label>
-							<input type="text" class="form-control" name="c" placeholder="Opsi C Point 3">
-						</div>
-						<div class="form-group col-md-3">
-							<label for="staticEmail" class="col-form-label">Opsi D point 4</label>
-							<input type="text" class="form-control" name="d" placeholder="Opsi D point 4">
-						</div>
-					</div>
+<script>
+	function modalPertanyaan(ctx) {
+		var id = $(ctx).data('id')
+		var base = $('#base').val()
+		$('#jenis_pertanyaan').val("")
+		$('#kategori').val("")
+		$('#kode_soal').val("")
+		$('#soal').text("")
 
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
-				<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Simpan Perubahan</button>
-			</div>
-			</form>
-		</div>
-	</div>
-</div>
+		$('input[name="id_soal"]').val(id)
+		if (id != "") {
+			$.ajax({
+					url: base + 'admin/detilpertanyaan/' + id,
+					type: 'get',
+					dataType: 'json',
+				})
+				.done(function(data) {
+					$('#jenis_pertanyaan').val(data.jenis_pertanyaan)
+					$('#kategori').val(data.kategori)
+					$('#kode_soal').val(data.kode_soal)
+					$('#soal').text(data.soal)
+				})
+				.fail(function(data) {
+					console.log("error");
+				});
+		}
+		$('#modal_pertanyaan').modal('show')
 
-
-<script src="<?php echo base_url('assets/js/jsbaru/js_pertanyaan.js') ?>" type="text/javascript"></script>
+	}
+</script>

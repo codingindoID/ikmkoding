@@ -56,3 +56,24 @@ $route['404_override']             = 'survey/errorpage';
 $route['satpam']                 = 'survey/admin';
 $route['pawang']                 = 'admin/index';
 $route['translate_uri_dashes']     = FALSE;
+
+/* custom */
+$route['get-chart-pie']             = 'survey/ajaxPie';
+$route['get-chart-pend']            = 'survey/ajaxPiePend';
+$route['get-chart-pek']             = 'survey/ajaxPiePek';
+$route['get-chart-kategori']        = 'survey/ajaxKategori';
+$route['get-table-mutu']            = 'survey/ajaxMutu';
+
+/* admin */
+$route['ajax-count']                = 'admin/ajaxCount';
+$route['ajax-table-mutu']           = 'admin/ajaxTableMutu';
+$route['ajax-chart-pekerjaan']      = 'admin/ajaxPiePekerjaan';
+$route['ajax-chart-pendidikan']     = 'admin/ajaxPiePendidikan';
+$route['ajax-chart-pilihan']        = 'admin/ajaxPiePilihan';
+$route['ajax-column-pilihan']       = 'admin/ajaxColumnPilihan';
+
+/* CETAK ADMIn */
+$route['export-data/(:any)/(:any)']             = 'admin/exportData/$1/$2';
+$route['export-detail/(:any)/(:any)']           = 'admin/exportDataDetail/$1/$2';
+$route['export-detail/(:any)/(:any)/(:any)']    = 'admin/exportDataDetail/$1/$2/$3';
+$route['laporan-skm/(:any)/(:any)/(:any)']      = 'admin/cetaklaporan/$1/$2/$3';

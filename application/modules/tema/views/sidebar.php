@@ -12,7 +12,7 @@ $menu_news  = ['news', 'faq'];
         <img src="<?php echo base_url() . 'assets/' ?>dist/img/app.jpg" class="img-circle" alt="User Image">
       </div>
       <div class="pull-left info">
-        <p><?php echo $this->session->userdata('ses_disp') ?></p>
+        <p><?php echo $this->session->userdata('skm_disp') ?></p>
         <a href="#"><i class="fa fa-circle text-success"></i>Online</a>
 
       </div>
@@ -59,13 +59,27 @@ $menu_news  = ['news', 'faq'];
           <span>Loket</span>
         </a>
       </li>
-      <?php if ($this->session->userdata('ses_user') == 'super') : ?>
+      <?php if ($this->session->userdata('skm_level') == LEVELSUPER) : ?>
+        <hr>
         <li>
           <a href="<?php echo site_url() . 'admin/import' ?>">
             <i class="fa fa-upload fa-black"></i>
             <span>Import</span>
           </a>
         </li>
+        <li>
+          <a href="<?php echo site_url() . 'admin/formAutomate/' ?>">
+            <i class="fa fa-database"></i>
+            <span>automate count Hasil</span>
+          </a>
+        </li>
+        <li>
+          <a href="<?php echo site_url() . 'admin/formAutomateHasil/' ?>">
+            <i class="fa fa-database"></i>
+            <span>automate Rekap Hasil</span>
+          </a>
+        </li>
+
       <?php endif ?>
   </section>
   <!-- /.sidebar -->

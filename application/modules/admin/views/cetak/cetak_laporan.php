@@ -17,7 +17,7 @@
 	header("Content-Type: application/vnd.msword");
 	header("Expires: 0");
 	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-	header("content-disposition: attachment;filename=Laporan-Kepuasan-$tgl_indo-tahun-$tahun.doc");
+	header("content-disposition: attachment;filename=Laporan-Kepuasan-$tgl_indo-tahun-$tahun-unsur-$unsur.doc");
 	?>
 	<p>
 	<h4>
@@ -34,7 +34,7 @@
 	<h4>Hasil Survey <br> Karakteristik Responden</h4>
 	</p>
 	<p>
-		Dalam Survey Kepuasan Masyarakat di DINAS PENANAMAN MODAL & PELAYANAN TERPADU SATU PINTU (DPMPTSP) Jepara periode Januari s/d <?php echo $tgl_indo . ' ' . date('Y') ?> menggunakan sampel sebanyak <?php echo $pengunjung ?> orang pengunjung / pengguna layanan dan dari <?php echo $pengunjung ?> kuesioner yang disediakan semuanya kembali dengan jawaban lengkap dan layak untuk digunakan analisis.
+		Dalam Survey Kepuasan Masyarakat di DINAS PENANAMAN MODAL & PELAYANAN TERPADU SATU PINTU (DPMPTSP) Jepara periode Januari s/d <?= $tgl_indo . ' ' . date('Y') ?> menggunakan sampel sebanyak <?= $pengunjung ?> orang pengunjung / pengguna layanan dan dari <?= $pengunjung ?> kuesioner yang disediakan semuanya kembali dengan jawaban lengkap dan layak untuk digunakan analisis.
 	</p>
 	<p>
 		Berikut ini dipaparkan karakteristik responden secara umum menurut umur, dan jenis kelamin dan mata pencaharian di DINAS PENANAMAN MODAL & PELAYANAN TERPADU SATU PINTU (DPMPTSP) Jepara
@@ -59,9 +59,9 @@
 				$presentase = 0;
 				foreach ($umur as $um) : ?>
 					<tr>
-						<td><?php echo $um['index'] ?></td>
-						<td><?php echo $um['jumlah'] ?></td>
-						<td><?php echo $um['presentase'] ?> %</td>
+						<td><?= $um['index'] ?></td>
+						<td><?= $um['jumlah'] ?></td>
+						<td><?= $um['presentase'] ?> %</td>
 					</tr>
 
 				<?php
@@ -70,14 +70,14 @@
 				endforeach ?>
 				<tr>
 					<td><strong>Total</strong></td>
-					<td><strong><?php echo $umursum; ?></strong></td>
-					<td><strong><?php echo $presentase; ?> % </strong></td>
+					<td><strong><?= $umursum; ?></strong></td>
+					<td><strong><?= $presentase; ?> % </strong></td>
 				</tr>
 			</tbody>
 		</table>
 		</p>
 		<p>
-			Berdasarkan tabel di atas dapat diketahui kelompok umur dibawah 40 tahun sebanyak <?php echo $umur['up40']['jumlah'] ?> orang (<?php echo $umur['up40']['presentase'] ?>%) dan di atas sama dengan 40 tahun sebanyak <?php echo $umur['min40']['jumlah'] ?> orang (<?php echo $umur['min40']['presentase'] ?>%)
+			Berdasarkan tabel di atas dapat diketahui kelompok umur dibawah 40 tahun sebanyak <?= $umur['up40']['jumlah'] ?> orang (<?= $umur['up40']['presentase'] ?>%) dan di atas sama dengan 40 tahun sebanyak <?= $umur['min40']['jumlah'] ?> orang (<?= $umur['min40']['presentase'] ?>%)
 		</p>
 		<li>Karakteristik Responden Berdasarkan Jenis Kelamin</li>
 		<p>
@@ -99,9 +99,9 @@
 				$presentasejk = 0;
 				foreach ($jk as $j) : ?>
 					<tr>
-						<td><?php echo $j['jk'] ?></td>
-						<td><?php echo $j['jumlah'] ?></td>
-						<td><?php echo $j['presentase'] ?></td>
+						<td><?= $j['jk'] ?></td>
+						<td><?= $j['jumlah'] ?></td>
+						<td><?= $j['presentase'] ?></td>
 					</tr>
 				<?php
 					$sumjk += $j['jumlah'];
@@ -109,14 +109,14 @@
 				endforeach ?>
 				<tr>
 					<td><strong>Total</strong></td>
-					<td><strong><?php echo $sumjk; ?></strong></td>
-					<td><strong><?php echo $presentasejk; ?> % </strong></td>
+					<td><strong><?= $sumjk; ?></strong></td>
+					<td><strong><?= $presentasejk; ?> % </strong></td>
 				</tr>
 			</tbody>
 		</table>
 		</p>
 		<p>
-			Berdasarkan tabel diatas menunjukkan bahwa responden yang berjenis kelamin laki-laki sebanyak <?php echo $jk['laki']['jumlah'] ?> orang (<?php echo $jk['laki']['presentase'] ?>%), dan yang berjenis kelamin perempuan sebanyak <?php echo $jk['pr']['jumlah'] ?> orang ( <?php echo $jk['pr']['presentase'] ?>%)
+			Berdasarkan tabel diatas menunjukkan bahwa responden yang berjenis kelamin laki-laki sebanyak <?= $jk['laki']['jumlah'] ?> orang (<?= $jk['laki']['presentase'] ?>%), dan yang berjenis kelamin perempuan sebanyak <?= $jk['pr']['jumlah'] ?> orang ( <?= $jk['pr']['presentase'] ?>%)
 		</p>
 	</ol>
 	</p>
@@ -125,35 +125,54 @@
 	<h4>Deskripsi Jawaban Responden</h4>
 	</p>
 	<p>Berikut ini disajikan tabel nilai rata-rata unsur pelayanan hasil pengisian kuesioner yang dilakukan oleh responden di DINAS PENANAMAN MODAL & PELAYANAN TERPADU SATU PINTU (DPMPTSP) Jepara.</p>
-	<p>Tabel Nilai Rata-Rata Unsur Pelayanan di DINAS PENANAMAN MODAL & PELAYANAN TERPADU SATU PINTU (DPMPTSP) Jepara Tahun <?php echo date('Y') ?></p>
+	<p>Tabel Nilai Rata-Rata Unsur Pelayanan di DINAS PENANAMAN MODAL & PELAYANAN TERPADU SATU PINTU (DPMPTSP) Jepara Tahun <?= date('Y') ?></p>
 	<p>
 	<table border="1px">
 		<thead>
 			<tr>
 				<th colspan="2">Unsur SKM</th>
-				<th><?php echo date('Y') ?></th>
+				<th><?= date('Y') ?></th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php foreach ($hasil as $h) : ?>
 				<tr>
-					<td><strong><?php echo $h['id_soal'] ?></strong></td>
-					<td><?php echo $h['kategori'] ?></td>
-					<td><?php echo number_format($h['kepuasan'], 2) ?></td>
+					<td><strong><?= $h['kode_soal'] ?></strong></td>
+					<td><?= $h['kategori'] ?></td>
+					<td><?= number_format($h['kepuasan'], 2) ?></td>
 				</tr>
 			<?php endforeach ?>
 		</tbody>
 	</table>
 	</p>
+	<?php
+	if ($kepuasan > 88.31) {
+		$mutu = 'A';
+		$index = "Sangat Baik";
+	} else if ($kepuasan > 76.61) {
+		$mutu = 'B';
+		$index = 'Baik';
+	} else if ($kepuasan > 65.00) {
+		$mutu = 'C';
+		$index = 'Kurang Baik';
+	} else if ($kepuasan > 25.00) {
+		$mutu = 'D';
+		$index = 'Tidak Baik';
+	} else {
+		$mutu = null;
+		$index = null;
+	}
+	?>
+
 	<p>
-		Dari nilai rata-rata yang ada maka dapat ditarik kesimpulan nilai SKM yang diperoleh adalah <?php echo number_format($tingkat_kepuasan['presentase']['kepuasan'], 2) ?> <br>
+		Dari nilai rata-rata yang ada maka dapat ditarik kesimpulan nilai SKM yang diperoleh adalah <b><?= number_format($kepuasan, 2) ?> %</b> <br>
 		Sehingga dapat diperoleh hasil sebagai berikut : <br>
-		Mutu pelayanan <strong><?php echo $tingkat_kepuasan['index'] ?></strong> <br>
-		Kinerja unit pelayanan <strong><?php echo $tingkat_kepuasan['mutu'] ?></strong>
+		Mutu pelayanan <strong><?= $index ?></strong> <br>
+		Kinerja unit pelayanan <strong><?= $mutu ?></strong>
 	</p>
 	<h4>Analisis</h4>
 	<p>
-		Dari tabel dapat dilihat bahwa dengan nilai SKM <?php echo number_format($tingkat_kepuasan['presentase']['kepuasan'], 2) ?> disimpulkan bahwa Kategorisasi Mutu Pelayanan "<?php echo $tingkat_kepuasan['mutu'] ?>" dan Kinerja Unit Pelayanan adalah Sangat Baik. Jika dilihat dari Nilai Rata-Rata (NRR) unsur pelayanan, unsur yang memiliki nilai tertinggi adalah unsur "<?php echo $max['kategori'] ?>" (NRR <?php echo number_format($max['kepuasan'], 2) ?>), sedangkan unsur dengan Nilai Rata-Rata terendah adalah unsur "<?php echo $min['kategori'] ?>" (NRR <?php echo number_format($min['kepuasan'], 2) ?>). Angka ini menunjukkan bahwa tingkat pelayanan paling tinggi diperoleh dari <strong><?php echo $max['kategori'] ?></strong>, sedangkan tingkat kepuasan paling rendah berada pada unsur <strong><?php echo $min['kategori'] ?></strong>.
+		Dari tabel dapat dilihat bahwa dengan nilai SKM <b><?= number_format($kepuasan, 2) ?></b> disimpulkan bahwa Kategorisasi Mutu Pelayanan <b>"<?= $mutu ?>"</b> dan Kinerja Unit Pelayanan adalah <b><?= $index ?></b>. Jika dilihat dari Nilai Rata-Rata (NRR) unsur pelayanan, unsur yang memiliki nilai tertinggi adalah unsur <b>"<?= $max['kategori'] ?>" (NRR <?= number_format($max['kepuasan'], 2) ?>)</b>, sedangkan unsur dengan Nilai Rata-Rata terendah adalah unsur <b>"<?= $min['kategori']  ?>" (NRR <?= number_format($min['kepuasan'], 2) ?>)</b>. Angka ini menunjukkan bahwa tingkat pelayanan paling tinggi diperoleh dari <strong><?= $max['kategori'] ?></strong>, sedangkan tingkat kepuasan paling rendah berada pada unsur <strong><?= $min['kategori'] ?></strong>.
 	</p>
 	<p>Secara umum capaian di DINAS PENANAMAN MODAL & PELAYANAN TERPADU SATU PINTU (DPMPTSP) Jepara ditingkatkan sebagai berikut:</p>
 	<p>
@@ -170,9 +189,9 @@
 			$x = 'a';
 			foreach ($prioritas as $h) : ?>
 				<tr>
-					<td><strong><?php echo $x++ ?></strong></td>
-					<td><?php echo $h['kategori'] ?></td>
-					<td><?php echo number_format($h['kepuasan'], 2) ?></td>
+					<td><strong><?= $x++ ?></strong></td>
+					<td><?= $h['kategori'] ?></td>
+					<td><?= number_format($h['kepuasan'], 4) ?></td>
 				</tr>
 			<?php endforeach ?>
 		</tbody>

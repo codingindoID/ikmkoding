@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class News extends MY_Controller {
+class News extends MY_Controller
+{
 	public function __construct()
 	{
 		parent::__construct();
@@ -11,8 +12,8 @@ class News extends MY_Controller {
 	public function index()
 	{
 		$this->output->delete_cache();
-		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
+		if ($this->session->userdata('skm_user') == null) {
+			redirect('satpam', 'refresh');
 		}
 
 		$data = [
@@ -23,14 +24,14 @@ class News extends MY_Controller {
 			'menu'			=> 'news'
 		];
 
-		
-		$this->template->load('tema/index','news',$data);
+
+		$this->template->load('tema/index', 'news', $data);
 	}
 
 	function editnews($id)
 	{
 		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
+			redirect('satpam', 'refresh');
 		}
 
 		$data = [
@@ -38,27 +39,27 @@ class News extends MY_Controller {
 			'sub'			=> 'edit',
 			'icon'			=> 'fa-rss-square',
 			'menu'          => 'edit-news',
-			'news'			=> $this->M_master->getWhere('news',['id'=>$id])->row()
+			'news'			=> $this->M_master->getWhere('news', ['id' => $id])->row()
 		];
 
 		//echo json_encode($data);
-		$this->template->load('tema/index','editnews',$data);
+		$this->template->load('tema/index', 'editnews', $data);
 	}
 
 	function updatenews($id)
 	{
 		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
+			redirect('satpam', 'refresh');
 		}
 
 		$where = ['id' => $id];
-		
+
 		$config['upload_path']          = './assets/img/';
 		$config['allowed_types']        = 'jpg|jpeg|png';
 		$config['max_size']             = 15000;
 		$config['max_width']            = 16000;
 		$config['max_height']           = 16000;
-		$config['file_name']           	= $id.".jpeg";
+		$config['file_name']           	= $id . ".jpeg";
 		$this->load->library('upload', $config);
 		$this->upload->overwrite = true;
 
@@ -71,33 +72,28 @@ class News extends MY_Controller {
 		//echo json_encode($data);
 
 		if (!empty($_FILES["image"]["name"])) {
-			if ( ! $this->upload->do_upload('image')){
+			if (!$this->upload->do_upload('image')) {
 				$this->output->delete_cache();
-				$this->session->set_flashdata('error',$this->upload->display_errors());
-				redirect('news','refresh');
-			}
-			else
-			{
+				$this->session->set_flashdata('error', $this->upload->display_errors());
+				redirect('news', 'refresh');
+			} else {
 				$this->output->delete_cache();
-				$this->M_master->update('news', $where, $data);			
-				$this->session->set_flashdata('success','News post Success');
-				redirect('news','refresh');
+				$this->M_master->update('news', $where, $data);
+				$this->session->set_flashdata('success', 'News post Success');
+				redirect('news', 'refresh');
 			}
-		} 
-		else 
-		{
-			$this->M_master->update('news', $where, $data);			
-			$this->session->set_flashdata('success','News post Success');
-			redirect('news','refresh');
+		} else {
+			$this->M_master->update('news', $where, $data);
+			$this->session->set_flashdata('success', 'News post Success');
+			redirect('news', 'refresh');
 		}
-		
 	}
 
 	/*FAQ*/
 	function faq()
 	{
 		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
+			redirect('satpam', 'refresh');
 		}
 
 		$data = [
@@ -108,45 +104,43 @@ class News extends MY_Controller {
 			'menu'			=> 'faq'
 		];
 
-		$this->template->load('tema/index','faq',$data);	
+		$this->template->load('tema/index', 'faq', $data);
 	}
 
 	function hapusfaq($id)
 	{
 		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
+			redirect('satpam', 'refresh');
 		}
 
 		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
+			redirect('satpam', 'refresh');
 		}
 
-		$cek = $this->M_master->delete('faq',['id' => $id]);
+		$cek = $this->M_master->delete('faq', ['id' => $id]);
 		if (!$cek) {
 			$this->session->set_flashdata('success', 'FAQ dihapus');
-			redirect('news/faq','refresh');
-		}
-		else
-		{
+			redirect('news/faq', 'refresh');
+		} else {
 			$this->session->set_flashdata('error', 'Gagal');
-			redirect('news/faq','refresh');
+			redirect('news/faq', 'refresh');
 		}
 	}
 
 	function detilfaq($id)
 	{
 		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
+			redirect('satpam', 'refresh');
 		}
 
-		$data = $this->M_master->getWhere('faq',['id'=> $id])->row();
+		$data = $this->M_master->getWhere('faq', ['id' => $id])->row();
 		echo json_encode($data);
 	}
 
 	function updatefaq()
 	{
 		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
+			redirect('satpam', 'refresh');
 		}
 
 		$data = [
@@ -154,22 +148,20 @@ class News extends MY_Controller {
 			'jawaban'		=> $this->input->post('jawaban')
 		];
 
-		$cek = $this->M_master->update('faq',['id' => $this->input->post('id_faq')],$data);
+		$cek = $this->M_master->update('faq', ['id' => $this->input->post('id_faq')], $data);
 		if (!$cek) {
 			$this->session->set_flashdata('success', 'FAQ diupdate');
-			redirect('news/faq','refresh');
-		}
-		else
-		{
+			redirect('news/faq', 'refresh');
+		} else {
 			$this->session->set_flashdata('error', 'Gagal');
-			redirect('news/faq','refresh');
+			redirect('news/faq', 'refresh');
 		}
 	}
 
 	function addfaq()
 	{
 		if ($this->session->userdata('ses_user') == null) {
-			redirect('satpam','refresh');
+			redirect('satpam', 'refresh');
 		}
 
 		$data = [
@@ -177,18 +169,15 @@ class News extends MY_Controller {
 			'jawaban'		=> $this->input->post('jawaban')
 		];
 
-		$cek = $this->M_master->input('faq',$data);
+		$cek = $this->M_master->input('faq', $data);
 		if (!$cek) {
 			$this->session->set_flashdata('success', 'FAQ ditambah');
-			redirect('news/faq','refresh');
-		}
-		else
-		{
+			redirect('news/faq', 'refresh');
+		} else {
 			$this->session->set_flashdata('error', 'Gagal');
-			redirect('news/faq','refresh');
+			redirect('news/faq', 'refresh');
 		}
 	}
-
 }
 
 /* End of file News.php 

@@ -8,57 +8,18 @@ class Survey extends MY_Controller
 		parent::__construct();
 		$this->load->model('M_survey');
 		$this->load->model('M_master');
+		$this->M_survey->visitor();
 	}
+
 	public function index()
 	{
-		$this->_auto_reset();
 		$data = [
-			'kepuasan' 		=> $this->_get_kepuasan(),
-			'loket'			=> $this->M_master->getall('tb_loket')->num_rows(),
-			'pendidikan'	=> $this->_get_pendidikan(),
-			'pekerjaan'		=> $this->_get_pekerjaan(),
-			'pengunjung' 	=> $this->M_survey->get_responden(),
-			'hasil'			=>  $this->_get_hasil(),
+			'pendidikan'	=> [],
+			'pekerjaan'		=> [],
 			'news1'			=> $this->M_master->getWhere('news', ['id' => 1])->row(),
 			'news2'			=> $this->M_master->getWhere('news', ['id' => 2])->row(),
 			'faq'			=> $this->M_master->getall('faq')->result(),
-			'visitor'		=> $this->M_survey->visitor()
 		];
-		//menentukan tingkat kepuasan
-		$kepuasan = $data['kepuasan'];
-		if ($kepuasan > 81.25 && $kepuasan < 100) {
-			$index = "Sangat Baik";
-		} else if ($kepuasan > 62.50 && $kepuasan < 81.26) {
-			$index = 'Baik';
-		} else if ($kepuasan > 43.75 && $kepuasan < 62.51) {
-			$index = 'Kurang Baik';
-		} else if ($kepuasan > 24.9 && $kepuasan < 43.76) {
-			$index = 'Tidak Baik';
-		} else {
-			$index = null;
-		}
-
-		$data['tingkat_kepuasan'] = $index;
-		$soal = $this->M_master->getall('tb_pertanyaan')->result();
-		$hasil = array();
-		$rata  = array();
-		$no = 1;
-		foreach ($soal as $v) {
-			$hasil[$no] = [
-				'id_soal'	=> $v->id_soal,
-				'kategori'	=> $v->kategori,
-				'soal'		=> $v->soal,
-				'sp'		=> $this->_get_rataan($v->id_soal, 'd'),
-				'p'			=> $this->_get_rataan($v->id_soal, 'c'),
-				'tp'		=> $this->_get_rataan($v->id_soal, 'b'),
-				'kec'		=> $this->_get_rataan($v->id_soal, 'a'),
-				'kepuasan'	=> $this->_get_nilai($v->id_soal),
-			];
-
-			$rata[$no] = [];
-			$no++;
-		}
-		$data['rekap'] = $hasil;
 		$this->load->view('index', $data);
 	}
 
@@ -66,10 +27,9 @@ class Survey extends MY_Controller
 	{
 		$data = [
 			'id_responden' 	=> uniqid(),
-			'pekerjaan'		=> $this->M_master->getall('tb_pekerjaan')->result(),
-			'pendidikan'	=> $this->M_master->getall('tb_pendidikan')->result(),
+			'pekerjaan'		=> $this->db->get('tb_pekerjaan')->result(),
+			'pendidikan'	=> $this->db->get('tb_pendidikan')->result(),
 			'loket'			=> $this->M_survey->loket(),
-			'visitor'		=> $this->M_survey->visitor()
 		];
 		$this->load->view('detil_responden', $data);
 	}
@@ -78,10 +38,9 @@ class Survey extends MY_Controller
 	{
 		$data = [
 			'id_responden' 	=> uniqid(),
-			'pekerjaan'		=> $this->M_master->getall('tb_pekerjaan')->result(),
-			'pendidikan'	=> $this->M_master->getall('tb_pendidikan')->result(),
-			'loket'			=> $this->M_survey->loket(),
-			'visitor'		=> $this->M_survey->visitor()
+			'pekerjaan'		=> $this->db->get('tb_pekerjaan')->result(),
+			'pendidikan'	=> $this->db->get('tb_pendidikan')->result(),
+			'loket'			=> $this->M_survey->loket()
 		];
 		$this->load->view('detil_respondenAdmin', $data);
 	}
@@ -156,7 +115,7 @@ class Survey extends MY_Controller
 
 	public function pertanyaan($responden, $id_detil, $tgl = null)
 	{
-		$tgl 			= ($tgl == null) ? date('Y-m-d H:i:s') : date('Y-m-d', strtotime($tgl));
+		$tgl 			= $tgl ? date('Y-m-d', strtotime($tgl)) : date('Y-m-d H:i:s');
 		$cek 			= $this->M_survey->cekResponden(['id_responden' => $responden])->row();
 
 		if ($cek) {
@@ -164,7 +123,7 @@ class Survey extends MY_Controller
 			redirect('survey/index', 'refresh');
 		} else {
 			$data['nsoal'] 		= $this->M_survey->getSoal()->num_rows();
-			$data['soal']		= $this->M_survey->getSoal()->result();
+			$data['soal']		= $this->db->get('tb_pertanyaan')->result();
 			$data['noreg'] 		= $responden;
 			$data['id_detil']	= $id_detil;
 			$data['tanggal']	= $tgl;
@@ -179,214 +138,10 @@ class Survey extends MY_Controller
 		redirect('survey/end_survey/' . urlencode($cek['star']) . '/' . urlencode($cek['persen']), 'refresh');
 	}
 
-	function get_soal($param)
-	{
-		$data	= $this->M_survey->getSoal()->result();
-		echo json_encode($data[$param]);
-	}
-
-	function getSoalCount()
-	{
-		$data	= $this->M_survey->getSoal()->num_rows();
-		echo json_encode($data);
-	}
-
-	function jawaban()
-	{
-		$data = [
-			'id_kuis'		=> uniqid(12),
-			'id_responden'	=> $this->input->post('id_responden'),
-			'id_soal'		=> $this->input->post('id_soal'),
-			'jawaban'		=> $this->input->post('jawaban')
-		];
-
-		$cek_soal = $this->M_master->getWhere('jawaban_sementara', ['id_soal' => $this->input->post('id_soal')])->num_rows();
-		if ($cek_soal > 0) {
-			$cek 	= $this->M_master->update('jawaban_sementara', ['id_soal' => $this->input->post('id_soal')], $data);
-			if (!$cek) {
-				echo json_encode(array(
-					'hasil' => 'berhasil'
-				));
-			} else {
-				echo json_encode(array(
-					'hasil' => 'gagal'
-				));
-			}
-		} else {
-			$cek 	= $this->M_survey->save('jawaban_sementara', $data);
-			if (!$cek) {
-				echo json_encode(array(
-					'hasil' => 'berhasil'
-				));
-			} else {
-				echo json_encode(array(
-					'hasil' => 'gagal'
-				));
-			}
-		}
-	}
-
-	function upload_jawaban()
-	{
-		$id 	= $this->input->post('id');
-		$saran 	= $this->input->post('saran');
-
-		$jawaban = $this->M_master->getWhere('jawaban_sementara', ['id_responden' => $id])->result();
-
-		$data_saran = [
-			'id_responden'	=> $id,
-			'saran'			=> $saran
-		];
-
-		$this->M_master->input('tb_saran', $data_saran);
-		$cek 	= $this->M_survey->save_batch($jawaban);
-		if ($cek) {
-			$this->M_master->delete('jawaban_sementara', ['id_responden' => $id]);
-			echo json_encode(array(
-				'hasil' => 'berhasil'
-			));
-		} else {
-			echo json_encode(array(
-				'hasil' => 'gagal'
-			));
-		}
-	}
-
 	function saran($id_responden)
 	{
 		$data['responden'] = $id_responden;
 		$this->load->view('saran', $data);
-	}
-
-	function publish_jawaban($id_responden)
-	{
-		$where = ['published' => '1', 'id_responden' => $id_responden];
-
-		$publish 	= $this->M_survey->update('tb_hasil', $where, ['published' => '2']);
-		if (!$publish) {
-			redirect('survey', 'refresh');
-		} else {
-			echo json_encode(array(
-				'hasil' => 'gagal'
-			));
-		}
-	}
-
-	function reset($id)
-	{
-		$this->M_master->delete('jawaban_sementara', ['id_responden' => $id]);
-		$this->M_master->delete('tb_detil_responden', ['id_responden' => $id]);
-		redirect('survey', 'refresh');
-	}
-
-	private function _get_hasil()
-	{
-		$sangat_puas 	= $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'd'])->num_rows();
-		$puas 		 	= $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'c'])->num_rows();
-		$tidak_puas 	= $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'b'])->num_rows();
-		$kecewa 		= $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'a'])->num_rows();
-
-		$all = $sangat_puas + $puas + $tidak_puas + $kecewa;
-
-		if ($all != 0) {
-			$data = [
-				[
-					'name' 	=> 'sangat_puas',
-					'y'		=> $sangat_puas,
-					'color' => '#00FF00'
-				],
-				[
-					'name' 	=> 'puas',
-					'y'		=> $puas,
-					'color' => 'blue'
-				],
-				[
-					'name' 	=> 'tidak_puas',
-					'y'		=> $tidak_puas,
-					'color' => 'purple'
-				],
-				[
-					'name' 	=> 'kecewa',
-					'y'		=> $kecewa,
-					'color' => 'red'
-				]
-			];
-			return $data;
-		} else {
-			return null;
-		}
-	}
-
-	private function _get_kepuasan()
-	{
-		$soal = $this->M_master->getall('tb_pertanyaan')->num_rows();
-		$total_responden = $this->M_survey->get_responden();
-		$a = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'a'])->num_rows();
-		$b = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'b'])->num_rows();
-		$c = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'c'])->num_rows();
-		$d = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'd'])->num_rows();
-
-		if ($total_responden != 0) {
-			$kepuasan = (($d * 4) + ($c * 3) + ($b * 2) + ($a * 1)) / ($total_responden * 4 * $soal);
-			return number_format(($kepuasan * 100), 2);
-		}
-		return 0;
-	}
-
-	private function _get_nilai($id)
-	{
-		$total_responden = $this->M_survey->get_responden();
-		$a = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'a', 'id_soal' => $id])->num_rows();
-		$b = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'b', 'id_soal' => $id])->num_rows();
-		$c = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'c', 'id_soal' => $id])->num_rows();
-		$d = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => 'd', 'id_soal' => $id])->num_rows();
-
-		if ($total_responden != 0) {
-			$kepuasan = (($d * 4) + ($c * 3) + ($b * 2) + ($a * 1)) / ($total_responden);
-			return number_format($kepuasan, 2);
-		}
-		return 0;
-	}
-
-	private function _get_rataan($id_soal, $jawaban)
-	{
-		$data = $this->M_master->getWhere('tb_hasil', ['published' => '2', 'jawaban' => $jawaban, 'id_soal' => $id_soal])->num_rows();
-		return $data;
-	}
-
-	private function _get_pendidikan()
-	{
-		$pendidikan = $this->M_master->getall('tb_pendidikan')->result();
-		$no = 1;
-		foreach ($pendidikan as $p) {
-			$hasil[$no] = [
-				'pendidikan'	=> $p->pendidikan,
-				'jumlah'		=> $this->M_survey->join_get_responden_2('pendidikan', $p->pendidikan)->num_rows()
-			];
-			$no++;
-		}
-		return $hasil;
-	}
-
-	private function _get_pekerjaan()
-	{
-		$pekerjaan = $this->M_master->getall('tb_pekerjaan')->result();
-		$no = 1;
-		foreach ($pekerjaan as $p) {
-			$hasil[$no] = [
-				'pekerjaan'		=> $p->pekerjaan,
-				'jumlah'		=> $this->M_survey->join_get_responden_2('pekerjaan', $p->pekerjaan)->num_rows()
-			];
-			$no++;
-		}
-		return $hasil;
-	}
-
-	private function _auto_reset()
-	{
-		$this->db->where('HOUR(created_date) < ', date('H'));
-		$this->db->or_where('DAY(created_date) ', date('d'));
-		$this->db->delete('jawaban_sementara');
 	}
 
 	/*admin page*/
@@ -407,9 +162,10 @@ class Survey extends MY_Controller
 		$cek = $this->M_survey->auth($data)->num_rows();
 		if ($cek >= 1) {
 			$user = $this->M_survey->auth($data)->row();
-			$this->session->set_userdata('ses_user', $user->username);
-			$this->session->set_userdata('ses_id', $user->id_admin);
-			$this->session->set_userdata('ses_disp', $user->display);
+			$this->session->set_userdata('skm_user', $user->username);
+			$this->session->set_userdata('skm_id', $user->id_admin);
+			$this->session->set_userdata('skm_disp', $user->display);
+			$this->session->set_userdata('skm_level', $user->level);
 			redirect('admin', 'refresh');
 		} else {
 			$this->session->set_flashdata('error', 'username atau password salah');
@@ -424,9 +180,42 @@ class Survey extends MY_Controller
 
 	function visitor()
 	{
+		$visitor = $this->db->get('count_visitor')->row();
+
+		$jumlahSoal = $this->db->get_where('tb_pertanyaan', ['jenis_pertanyaan'	=> KODEPELAYANAN])->num_rows();
+
+		/* MENGHITUNG TOTAL NILAI */
+		$this->db->select('(IFNULL(sum(jumlah_4),0) *4) + (IFNULL(sum(jumlah_3),0) *3) + (IFNULL(sum(jumlah_2),0) *2) + IFNULL(sum(jumlah_1),0) as total');
+		$this->db->join('tb_pertanyaan', 'tb_pertanyaan.id_soal = count_point.id_soal');
+		$totalNilai = $this->db->get_where('count_point', ['jenis_pertanyaan'	=> KODEPELAYANAN])->row();
+		$totalNilai = $totalNilai ? $totalNilai->total : 0;
+
+		/* TOTAL RESPONDEN */
+		$this->db->where('published', '2');
+		$this->db->group_by('id_responden');
+		$totalResponden = $this->db->select('id_responden')->get('tb_hasil')->num_rows();
+
+		$kepuasan = ($totalNilai / ($totalResponden * 4 * $jumlahSoal)) * 100;
+		if ($kepuasan > 81.25 && $kepuasan < 100) {
+			$index = "Sangat Baik";
+		} else if ($kepuasan > 62.50 && $kepuasan < 81.26) {
+			$index = 'Baik';
+		} else if ($kepuasan > 43.75 && $kepuasan < 62.51) {
+			$index = 'Kurang Baik';
+		} else if ($kepuasan > 24.9 && $kepuasan < 43.76) {
+			$index = 'Tidak Baik';
+		} else {
+			$index = null;
+		}
+
 		$data = [
-			'now'		=> $this->db->get_where('visitor', ['tanggal'	=> date('Y-m-d')])->num_rows(),
-			'all'		=> $this->db->get('visitor')->num_rows(),
+			'now'				=> $visitor->now,
+			'all'				=> $visitor->all,
+			'responden' 		=> $totalResponden,
+			'loket'				=> $this->M_master->getall('tb_loket')->num_rows(),
+			'nilai_kepuasan'	=> number_format($kepuasan, 2),
+			'tingkat_kepuasan'	=> $index,
+			'totalNilai'		=> $totalNilai
 		];
 		echo json_encode($data);
 	}
@@ -438,6 +227,196 @@ class Survey extends MY_Controller
 			'persen'	=> urldecode($persen)
 		];
 		$this->load->view('end_survey', $data);
+	}
+
+	/* AJAX */
+	function ajaxPie()
+	{
+		$label = [
+			[
+				'label'		=> 'Sangat Puas',
+				'nilai'		=> 4
+			],
+			[
+				'label'		=> 'Puas',
+				'nilai'		=> 3
+			],
+			[
+				'label'		=> 'Tidak Puas',
+				'nilai'		=> 2
+			],
+			[
+				'label'		=> 'Sangat Tidak Puas',
+				'nilai'		=> 1
+			],
+		];
+
+		$arrayLabel = [];
+		$arrayPersen = [];
+		$string = 'jumlah_';
+
+		$jumlahSoal = $this->db->get_where('tb_pertanyaan', ['jenis_pertanyaan'	=> KODEPELAYANAN])->num_rows();
+
+		$this->db->where('published', '2');
+		$this->db->group_by('id_responden');
+		$totalResponden = $this->db->select('id_responden')->get('tb_hasil')->num_rows();
+
+		foreach ($label as $l) {
+			array_push($arrayLabel, $l['label']);
+			$nilai = strval($l['nilai']);
+			// array_push($arrayPersen, $l['nilai']);
+
+			$kolom = $string . $nilai;
+			$where = [
+				'jenis_pertanyaan'		=> KODEPELAYANAN
+			];
+			$this->db->select('SUM(' . $kolom . ') /' . ($totalResponden * $jumlahSoal) . ' as total');
+			$this->db->join('tb_pertanyaan', 'tb_pertanyaan.id_soal = count_point.id_soal');
+			$cek = $this->db->get_where('count_point', $where)->row();
+
+			array_push($arrayPersen, floatval(number_format(floatval($cek->total * 100), 4)));
+		}
+
+		echo json_encode([
+			'label'		=> $arrayLabel,
+			'persen'	=> $arrayPersen,
+		]);
+	}
+
+	function ajaxPiePend()
+	{
+		$label = [];
+		$data = [];
+		$this->db->select('pendidikan,count(pendidikan) as total');
+		$this->db->group_by('pendidikan');
+		$array = $this->db->get_where('tb_detil_responden', [
+			'status'	=> '2',
+			'pendidikan !='	=> null
+		])->result();
+		$total = array_column($array, 'total');
+		$totalData = array_sum($total);
+
+		foreach ($array as $a) {
+			array_push($label, $a->pendidikan);
+			$persen = ($a->total / $totalData) * 100;
+			$persen = number_format($persen, 2);
+			$persen = floatval($persen);
+			array_push($data, $persen);
+		}
+
+		echo json_encode(
+			[
+				'label'		=> $label,
+				'data'		=> $data,
+			]
+		);
+	}
+
+	function ajaxPiePek()
+	{
+		$label = [];
+		$data = [];
+		$this->db->select('pekerjaan,count(pekerjaan) as total');
+		$this->db->group_by('pekerjaan');
+		$array = $this->db->get_where('tb_detil_responden', [
+			'status'	=> '2',
+			'pendidikan !='	=> null
+		])->result();
+		$total = array_column($array, 'total');
+		$totalData = array_sum($total);
+
+		foreach ($array as $a) {
+			array_push($label, $a->pekerjaan);
+			$persen = ($a->total / $totalData) * 100;
+			$persen = number_format($persen, 2);
+			$persen = floatval($persen);
+			array_push($data, $persen);
+		}
+
+		echo json_encode(
+			[
+				'label'		=> $label,
+				'data'		=> $data,
+			]
+		);
+	}
+
+	function ajaxKategori()
+	{
+		$label = [];
+		$data = [];
+		$jawaban = 0;
+		$where = [
+			'jenis_pertanyaan'		=> KODEPELAYANAN
+		];
+		$this->db->select('kode_soal,sum(jumlah_4) as jumlah_4,sum(jumlah_3) as jumlah_3,sum(jumlah_2) as jumlah_2,sum(jumlah_1) as jumlah_1');
+		$this->db->join('tb_pertanyaan', 'tb_pertanyaan.id_soal = count_point.id_soal');
+		$this->db->group_by('kode_soal');
+		$kategori = $this->db->get_where('count_point', $where)->result();
+		foreach ($kategori as $var) {
+			array_push($label, $var->kode_soal);
+			$totalresponden = intval($var->jumlah_4) + intval($var->jumlah_3) + intval($var->jumlah_2) + intval($var->jumlah_1);
+			$jawaban 		= intval($var->jumlah_4 * 4) + intval($var->jumlah_3 * 3) + intval($var->jumlah_2 * 2) + intval($var->jumlah_1);
+			$persen = $jawaban / $totalresponden;
+			$persen = number_format($persen, 2);
+			$persen = floatval($persen);
+			array_push($data, $persen);
+		}
+
+		echo json_encode(
+			[
+				'label'		=> $label,
+				'data'		=> $data,
+			]
+		);
+	}
+
+	function ajaxMutu()
+	{
+		$where = [
+			'jenis_pertanyaan'		=> KODEPELAYANAN
+		];
+		$this->db->select('kategori,kode_soal,sum(jumlah_4) as jumlah_4,sum(jumlah_3) as jumlah_3,sum(jumlah_2) as jumlah_2,sum(jumlah_1) as jumlah_1');
+		$this->db->join('tb_pertanyaan', 'tb_pertanyaan.id_soal = count_point.id_soal');
+		$this->db->group_by('kode_soal');
+		$this->db->order_by('urutan', 'asc');
+		$kategori = $this->db->get_where('count_point', $where)->result();
+		$html = '';
+		foreach ($kategori as $var) {
+			$totalresponden = intval($var->jumlah_4) + intval($var->jumlah_3) + intval($var->jumlah_2) + intval($var->jumlah_1);
+			$jawaban 		= intval($var->jumlah_4 * 4) + intval($var->jumlah_3 * 3) + intval($var->jumlah_2 * 2) + intval($var->jumlah_1);
+			$persen 		= intval($jawaban) / intval($totalresponden);
+
+			if ($persen >= 1 && $persen <= 2.5996) {
+				$index = 'D';
+			} else if ($persen >= 2.60 && $persen <= 3.064) {
+				$index = 'C';
+			} else if ($persen >= 3.0644 && $persen < 3.532) {
+				$index = 'B';
+			} else if ($persen >= 3.5324 && $persen <= 4) {
+				$index = 'A';
+			} else {
+				$index = null;
+			}
+
+			$persen = number_format($persen, 2);
+			$html .= '<tr class="font-weight-bold">';
+			$html .= '<td class="text-center" style="font-weight: bold;">' . $var->kode_soal . '</td>';
+			$html .= '<td style="font-weight: bold;">' . $var->kategori . '</td>';
+			$html .= '<td class="text-center">' . number_format($var->jumlah_4) . '</td>';
+			$html .= '<td class="text-center">' . number_format($var->jumlah_3) . '</td>';
+			$html .= '<td class="text-center">' . number_format($var->jumlah_2) . '</td>';
+			$html .= '<td class="text-center">' . number_format($var->jumlah_1) . '</td>';
+			$html .= '<td class="text-center" style="font-weight: bold;">' . $persen . '</td>';
+			$html .= '<td class="text-center" style="font-weight: bold;">' . $index . '</td>';
+			$html .= '<tr>';
+		}
+		return $this->output
+			->set_content_type('application/json')
+			->set_status_header(200)
+			->set_output(json_encode([
+				'data' => $html
+			]));
 	}
 }
 

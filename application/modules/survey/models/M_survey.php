@@ -87,6 +87,7 @@ class M_survey extends CI_Model
 		return $res;
 	}
 
+	/* FUNCTION UPDATE 2024 */
 	/*admin*/
 	function auth($where)
 	{
@@ -104,70 +105,61 @@ class M_survey extends CI_Model
 
 		$cek = $this->db->get_where('visitor', $where)->row();
 		if (!$cek) {
+			$total 	= $this->db->get('visitor')->num_rows();
 			$this->db->insert('visitor', $where);
+			$now 	= $this->db->get('visitor', ['tanggal'	=> date('Y-m-d')])->num_rows();
+
+			$this->db->where(['id_count'	=> 1]);
+			$this->db->update(
+				'count_visitor',
+				[
+					'all'	=> $total + 1,
+					'now'	=> $now
+				]
+			);
 		}
 	}
 
-	/* NEW METHOD */
 	function kirimJawaban()
 	{
 		$no = 0;
-		$star = [];
 		$totalStar = 0;
 		$jawaban = $this->input->post('jawaban');
+		$jenis_pertanyaan = $this->input->post('jenis_pertanyaan');
 		$id_soal = $this->input->post('id_soal');
 		$id_responden = $this->input->post('id_responden');
 		$hasil = [];
-		$totalsoal = count($jawaban);
 		$tgl = $this->input->post('tanggal');
 
 		foreach ($jawaban as $j) {
-			switch ($j) {
-				case "4":
-					$nilai = "d";
-					break;
-				case "3":
-					$nilai = "c";
-					break;
-				case "2":
-					$nilai = "b";
-					break;
-				case "1":
-					$nilai = "a";
-					break;
-			}
-
-			$hasil[$no] = [
+			$hasil[] = [
 				'id_kuis'			=> uniqid(),
-				'jawaban'			=> $nilai,
+				'jawaban'			=> $j,
 				'id_soal'			=> $id_soal[$no],
 				'id_responden'		=> $id_responden,
+				'jenis_pertanyaan'	=> $jenis_pertanyaan[$no],
 				'created_date'		=> ($tgl == null) ? date('Y-m-d H:i:s') : date('Y-m-d H:i:s', strtotime($tgl)),
-				'published'			=> '1',
 			];
-
-			$star[$no]  = [
-				'jawaban'		=> $j
-			];
-			$totalStar += $star[$no]['jawaban'];
+			$totalStar += $j;
 			$no++;
 		}
-
-		$totalStar 	= $totalStar / $totalsoal;
-		$persenStar = ($totalStar / 4) * 100;
-
 		$cek = $this->db->insert_batch('tb_hasil', $hasil);
+
+		$nilaiMaksimal = 4 * count($jawaban);
+		$persenStar = ($totalStar / $nilaiMaksimal) * 100;
 		if ($cek) {
-			$saran = [
-				'id_responden'			=> $id_responden,
-				'saran'					=> $this->input->post('saran'),
-				'created_date' 			=> ($tgl == null) ? date('Y-m-d H:i:s') : date('Y-m-d H:i:s', strtotime($tgl)),
-				'status'				=> "1"
-			];
-			$this->db->insert('tb_saran', $saran);
+			if ($this->input->post('saran')) {
+				$saran = [
+					'id_responden'			=> $id_responden,
+					'saran'					=> $this->input->post('saran'),
+					'created_date' 			=> ($tgl == null) ? date('Y-m-d H:i:s') : date('Y-m-d H:i:s', strtotime($tgl)),
+				];
+				$this->db->insert('tb_saran', $saran);
+			}
+
 			return  [
 				'kode'		=> 'success',
-				'star'		=> $totalStar,
+				'star'		=> $totalStar / count($jawaban),
 				'persen'	=> $persenStar,
 				'msg'		=> 'atas partisipasi anda,. Salam Jepara Smart.. '
 			];
