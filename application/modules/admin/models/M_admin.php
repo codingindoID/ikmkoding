@@ -85,40 +85,43 @@ class M_admin extends CI_Model
 	}
 
 	/* FUNCTION YANG DIPAKAI UPDATE 2024*/
-	function belumPublish($bulan, $tahun)
+	function belumPublish($bulan, $tahun, $unsur)
 	{
 		$where = [
 			'published'				=> '1',
-			'jenis_pertanyaan'		=> KODEPELAYANAN,
+			'jenis_pertanyaan'		=> $unsur,
 			'YEAR(created_date)'	=> $tahun
 		];
 		if ($bulan != 'setahun') {
 			$this->db->where('MONTH(created_date)', $bulan);
 		}
-		$this->db->select('id_responden,created_date as tanggal_mengisi, sum(jawaban) as total_nilai');
+		$this->db->select('id_responden,created_date as tanggal_mengisi, sum(jawaban) as total_nilai, jenis_pertanyaan');
 		$this->db->group_by('id_responden');
 		return $this->db->get_where('tb_hasil', $where)->result();
 	}
 
-	function getdetil($id_responden)
+	function getdetil($id_responden, $unsur)
 	{
 		$this->db->join('tb_pertanyaan', 'tb_pertanyaan.id_soal = tb_hasil.id_soal');
 		$this->db->where('id_responden', $id_responden);
-		$this->db->where('tb_hasil.jenis_pertanyaan', KODEPELAYANAN);
+		$this->db->where('tb_hasil.jenis_pertanyaan', $unsur);
 		return $this->db->get('tb_hasil')->result();
 	}
 
-	function aksipublish($id_responden)
+	function aksipublish($id_responden, $jenisPertanyaan)
 	{
-		$where = ['id_responden'	=> $id_responden];
+		$where = [
+			'id_responden'		=> $id_responden,
+			'jenis_pertanyaan'	=> $jenisPertanyaan
+		];
 		$this->db->where($where);
 		$this->db->update('tb_hasil', ['published'	=> '2']);
 
-		$this->db->where($where);
+		$this->db->where(['id_responden'		=> $id_responden,]);
 		$this->db->update('tb_detil_responden', ['status'	=> '2']);
 
 		/* UPDATE REKAP HASIL JENIS PELAYANAN */
-		$this->db->where('jenis_pertanyaan', KODEPELAYANAN);
+		$this->db->where('jenis_pertanyaan', $jenisPertanyaan);
 		$hasil = $this->db->get_where('tb_hasil', $where)->result();
 		$jawabanPelayanan = [];
 		foreach ($hasil as $h) {
@@ -126,28 +129,28 @@ class M_admin extends CI_Model
 		}
 		$data = [
 			'id_responden'		=> $id_responden,
-			'jenis_pertanyaan'	=> KODEPELAYANAN,
+			'jenis_pertanyaan'	=> $jenisPertanyaan,
 			'jawaban'			=> json_encode($jawabanPelayanan),
 			'created_date'		=> $hasil[0]->created_date,
 		];
 		$this->db->insert('rekap_hasil', $data);
 
 		/* UPDATE REKAP HASIL JENIS KPK */
-		$this->db->where('jenis_pertanyaan', KODEKPK);
-		$hasil = $this->db->get_where('tb_hasil', $where)->result();
-		if ($hasil) {
-			$jawabanKpk = [];
-			foreach ($hasil as $h) {
-				array_push($jawabanKpk, $h->jawaban);
-			}
-			$data = [
-				'id_responden'		=> $id_responden,
-				'jenis_pertanyaan'	=> KODEKPK,
-				'jawaban'			=> json_encode($jawabanKpk),
-				'created_date'		=> $hasil[0]->created_date,
-			];
-			$this->db->insert('rekap_hasil', $data);
-		}
+		// $this->db->where('jenis_pertanyaan', KODEKPK);
+		// $hasil = $this->db->get_where('tb_hasil', $where)->result();
+		// if ($hasil) {
+		// 	$jawabanKpk = [];
+		// 	foreach ($hasil as $h) {
+		// 		array_push($jawabanKpk, $h->jawaban);
+		// 	}
+		// 	$data = [
+		// 		'id_responden'		=> $id_responden,
+		// 		'jenis_pertanyaan'	=> KODEKPK,
+		// 		'jawaban'			=> json_encode($jawabanKpk),
+		// 		'created_date'		=> $hasil[0]->created_date,
+		// 	];
+		// 	$this->db->insert('rekap_hasil', $data);
+		// }
 
 		$isianResponden = $this->db->get_where('tb_hasil', $where)->result();
 		$string = 'jumlah_';
@@ -178,7 +181,8 @@ class M_admin extends CI_Model
 		}
 		return [
 			'kode'		=> 'success',
-			'msg'		=> 'berhasil simpan data'
+			'msg'		=> 'berhasil simpan data',
+			'jenis'		=> $jenisPertanyaan
 		];
 	}
 

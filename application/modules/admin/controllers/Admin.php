@@ -110,38 +110,42 @@ class Admin extends MY_Controller
 	{
 		$bulan = $bulan ? $bulan : date('m');
 		$tahun = $tahun  ? $tahun : date('Y');
+		$unsur = $this->input->get('unsur');
+		$unsur = $unsur ? $unsur : KODEPELAYANAN;
 		$data = [
 			'title'			=> 'Survey',
 			'sub'			=> 'pre publish',
 			'icon'			=> 'fa-share',
+			'unsur'			=> $unsur,
 			'tahun'			=> $this->M_master->getall('tahun')->result(),
 			'bulan'			=> $this->M_master->getall('bulan')->result(),
-			'total_soal'	=> $this->db->get_where('tb_pertanyaan', ['jenis_pertanyaan'	=> KODEPELAYANAN])->num_rows(),
+			'total_soal'	=> $this->db->get_where('tb_pertanyaan', ['jenis_pertanyaan'	=> $unsur])->num_rows(),
 			'f_bulan'		=> $bulan,
 			'f_tahun'		=> $tahun,
-			'rekap'			=> $this->M_admin->belumPublish($bulan, $tahun),
+			'rekap'			=> $this->M_admin->belumPublish($bulan, $tahun, $unsur),
 			'menu'			=> 'publish'
 		];
+		// echo json_encode($data);
 		$this->template->load('tema/index', 'publish', $data);
 	}
 
-	function detil($id_responden)
+	function detil($id_responden, $unsur)
 	{
 		$data = [
 			'title'			=> 'Survey',
 			'sub'			=> 'pre publish',
 			'icon'			=> 'fa-share',
-			'rekap'			=> $this->M_admin->getdetil($id_responden),
+			'rekap'			=> $this->M_admin->getdetil($id_responden, $unsur),
 			'menu'			=> 'publish'
 		];
 		$this->template->load('tema/index', 'detil', $data);
 	}
 
-	function aksipublish($id_responden)
+	function aksipublish($id_responden, $jenisPertanyaan)
 	{
-		$cek = $this->M_admin->aksipublish($id_responden);
+		$cek = $this->M_admin->aksipublish($id_responden, $jenisPertanyaan);
 		$this->session->set_flashdata($cek['kode'], $cek['msg']);
-		redirect('admin/publish', 'refresh');
+		redirect('admin/publish/?unsur=' . $cek['jenis'], 'refresh');
 	}
 
 	function log_out()

@@ -22,6 +22,12 @@
 					<?php endforeach ?>
 				</select>
 			</div>
+			<div class="col-sm-3 col-xs-12 text-right" style="margin-top: 0.3em">
+				<select name="tahun" id="unsur" onchange="filterPublish(this)" class="form-control" required>
+					<option value="<?= KODEPELAYANAN ?>" <?= $unsur == KODEPELAYANAN ? 'selected' : '' ?>>PELAYANAN</option>
+					<option value="<?= KODEKPK ?>" <?= $unsur == KODEKPK ? 'selected' : '' ?>>KPK</option>
+				</select>
+			</div>
 		</div>
 	</div>
 	<div class="box-body">
@@ -45,7 +51,7 @@
 						<td class="text-center"><?= date('Y-m-d', strtotime($data->tanggal_mengisi)) ?></td>
 						<td class="text-center"><?= date('H:i:s', strtotime($data->tanggal_mengisi)) ?></td>
 						<td class="text-center"><?= number_format(($data->total_nilai / $total_soal), 2) ?></td>
-						<td class="text-center"><a href="<?= site_url('admin/detil/') . $data->id_responden ?>" class="btn-sm btn-warning" title="detil"><i class="fa fa-eye"></i></a></td>
+						<td class="text-center"><a href="<?= site_url('admin/detil/') . $data->id_responden . '/' . $data->jenis_pertanyaan ?>" class="btn-sm btn-warning" title="detil"><i class="fa fa-eye"></i></a></td>
 					</tr>
 				<?php endforeach ?>
 			</tbody>
@@ -57,8 +63,9 @@
 	function filterPublish() {
 		let baseurl = $('#base_url').data('id')
 		let bulan = $('#bulan_filter').val();
+		let unsur = $('#unsur').val();
 		let tahun = $('#tahun_filter').val();
 		bulan = bulan ? bulan : 'setahun';
-		location.href = `${baseurl}admin/publish/${bulan}/${tahun}`
+		location.href = `${baseurl}admin/publish/${bulan}/${tahun}/?unsur=${unsur}`
 	}
 </script>

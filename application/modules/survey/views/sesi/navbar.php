@@ -12,7 +12,7 @@
         <li><a href="#details"><i class="icofont-info-circle"></i> Info</a></li>
         <li><a href="#faq"><i class="icofont-question-circle"></i> FAQ</a></li>
         <li><a href="#contact"><i class="icofont-contacts"></i> Contact</a></li>
-        <?php if ($this->session->userdata('ses_user') != null) : ?>
+        <?php if ($this->session->userdata('skm_user') != null) : ?>
           <li><a href="<?php echo site_url('admin') ?>"><strong><i class="icofont-gears"></i> Admin</strong></a></li>
         <?php endif ?>
       </ul>
