@@ -14,8 +14,6 @@ class Survey extends MY_Controller
 	public function index()
 	{
 		$data = [
-			'pendidikan'	=> [],
-			'pekerjaan'		=> [],
 			'news1'			=> $this->M_master->getWhere('news', ['id' => 1])->row(),
 			'news2'			=> $this->M_master->getWhere('news', ['id' => 2])->row(),
 			'faq'			=> $this->M_master->getall('faq')->result(),

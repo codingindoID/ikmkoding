@@ -105,18 +105,16 @@ class M_survey extends CI_Model
 
 		$cek = $this->db->get_where('visitor', $where)->row();
 		if (!$cek) {
-			$total 	= $this->db->get('visitor')->num_rows();
 			$this->db->insert('visitor', $where);
-			$now 	= $this->db->get('visitor', ['tanggal'	=> date('Y-m-d')])->num_rows();
+
+			$all = $this->db->get('visitor')->num_rows();
+			$now = $this->db->get_where('visitor', ['tanggal' => date('Y-m-d')])->num_rows();
 
 			$this->db->where(['id_count'	=> 1]);
-			$this->db->update(
-				'count_visitor',
-				[
-					'all'	=> $total + 1,
-					'now'	=> $now
-				]
-			);
+			$this->db->update('count_visitor', [
+				'all'		=> $all,
+				'now'		=> $now,
+			]);
 		}
 	}
 
